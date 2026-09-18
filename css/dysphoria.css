@@ -265,6 +265,16 @@
     overflow: hidden;
     min-height: 48px;
   }
+  .bottom-bar:has(.title-jump.is-open) {
+    overflow: visible;
+    z-index: 50;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .bottom-bar:has(.title-jump:hover) {
+      overflow: visible;
+      z-index: 50;
+    }
+  }
   .title-jump { position: relative; width: min(92vw, 420px); }
   .title-viewport { position: relative; height: 28px; overflow: hidden; }
   .title-btn {
