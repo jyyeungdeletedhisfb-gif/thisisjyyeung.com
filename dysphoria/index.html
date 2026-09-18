@@ -25,6 +25,13 @@
   <link rel="stylesheet" href="css/dysphoria.css" />
 </head>
 <body>
+  <div class="load-gate" id="loadGate" role="status" aria-live="polite" aria-busy="true">
+    <div class="load-gate-inner">
+      <span class="load-gate-mark" aria-hidden="true"></span>
+      <span class="load-gate-label">Dysphoria</span>
+    </div>
+  </div>
+
   <header class="topbar">
     <a class="brand" href="./">Jy Yeüng</a>
     <div class="project-title">Dysphoria</div>
@@ -108,6 +115,7 @@
         title="Dysphoria soundtrack on Apple Music"
         allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
         frameborder="0"
+        height="450"
         sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
         src="https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr"></iframe>
     </div>

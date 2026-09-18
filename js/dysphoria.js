@@ -98,6 +98,9 @@
     replaceBtn.disabled = !s.alt;
     replaceBtn.classList.toggle("on", !!s.alt && usingAlt);
     flipBtn.classList.toggle("on", flipped);
+    flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
+    loupeBtn.classList.toggle("on", loupeOn);
+    loupeBtn.setAttribute("aria-pressed", loupeOn ? "true" : "false");
   }
 
   function commitTo(next, dir) {
@@ -107,6 +110,9 @@
     loupe.classList.remove("on");
     loupeOn = false;
     loupeBtn.classList.remove("on");
+    loupeBtn.setAttribute("aria-pressed", "false");
+    flipBtn.classList.remove("on");
+    flipBtn.setAttribute("aria-pressed", "false");
     setTitle(dir, next);
     const dist = dir > 0 ? -1 : 1;
     plate.style.transition = "transform 0.55s var(--ease), opacity 0.45s var(--ease), filter 0.45s var(--ease)";
@@ -285,11 +291,13 @@
       flipped = !flipped;
       plate.classList.toggle("flipped", flipped);
       flipBtn.classList.toggle("on", flipped);
+      flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
     };
     loupeBtn.onclick = () => {
       loupeOn = !loupeOn;
       loupe.classList.toggle("on", loupeOn);
       loupeBtn.classList.toggle("on", loupeOn);
+      loupeBtn.setAttribute("aria-pressed", loupeOn ? "true" : "false");
       if (loupeOn) {
         const r = plate.getBoundingClientRect();
         moveLoupe(r.left + r.width / 2, r.top + r.height / 2);
@@ -333,6 +341,63 @@
     syncToTop();
   }
 
+  function collectImageUrls(data) {
+    const urls = [];
+    const cover = data.intro && data.intro.cover;
+    if (cover) urls.push(assetUrl(cover));
+    (data.tracks || []).forEach((t) => {
+      if (t.src) urls.push(assetUrl(t.src));
+      if (t.alt) urls.push(assetUrl(t.alt));
+    });
+    return [...new Set(urls.filter(Boolean))];
+  }
+
+  function preloadImages(urls) {
+    return Promise.all(
+      urls.map(
+        (src) =>
+          new Promise((resolve) => {
+            const img = new Image();
+            img.decoding = "async";
+            img.onload = img.onerror = () => resolve(src);
+            img.src = src;
+          })
+      )
+    );
+  }
+
+  function dismissLoadGate() {
+    const gate = document.getElementById("loadGate");
+    if (!gate || gate.classList.contains("is-done")) return;
+    gate.classList.add("is-done");
+    gate.setAttribute("aria-busy", "false");
+    const remove = () => {
+      if (gate.parentNode) gate.parentNode.removeChild(gate);
+    };
+    gate.addEventListener("transitionend", remove, { once: true });
+    setTimeout(remove, 700);
+  }
+
+  async function runLoadGate(data) {
+    const reduced =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const urls = collectImageUrls(data);
+    const timeoutMs = reduced ? 400 : 2200;
+    const minMs = reduced ? 0 : 320;
+
+    const started = performance.now();
+    await Promise.race([
+      preloadImages(urls),
+      new Promise((r) => setTimeout(r, timeoutMs)),
+    ]);
+    const waited = performance.now() - started;
+    if (waited < minMs) {
+      await new Promise((r) => setTimeout(r, minMs - waited));
+    }
+    dismissLoadGate();
+  }
+
   async function boot() {
     plate = document.getElementById("plate");
     plateStage = document.getElementById("plateStage");
@@ -362,6 +427,8 @@
     bindInteractions();
     renderPlate(false);
     scrub();
+    // Gate runs after first paint of chrome so sheets don't hitch on first open
+    runLoadGate(data).catch(() => dismissLoadGate());
   }
 
   if (document.readyState === "loading") {
