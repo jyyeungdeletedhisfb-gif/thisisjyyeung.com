@@ -15,8 +15,8 @@
     return (usingAlt && s.alt) ? s.alt : s.src;
   }
   function plateBox(ar) {
-    const maxH = Math.min(window.innerHeight * 0.48, 480);
-    const maxW = Math.min(window.innerWidth * 0.55, 420);
+    const maxH = Math.min(window.innerHeight * 0.65, 720);
+    const maxW = Math.min(window.innerWidth * 0.72, 560);
     let h = maxH, w = h * ar;
     if (w > maxW) { w = maxW; h = w / ar; }
     return { w, h };
@@ -179,7 +179,7 @@
       brand.setAttribute("href", data.chrome.brandHref || "/");
     }
     if (project && data.chrome) {
-      project.textContent = data.chrome.projectTitle || "DYSPHORIA";
+      project.textContent = data.chrome.projectTitle || "Dysphoria";
     }
   }
 

@@ -43,7 +43,7 @@
   }
   .project-title {
     justify-self: center;
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-size: 13px; letter-spacing: 0.04em; text-transform: none;
     font-weight: 500; opacity: 0.85;
   }
   .top-right { justify-self: end; min-width: 4em; }
