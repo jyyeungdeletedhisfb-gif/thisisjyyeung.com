@@ -2,20 +2,20 @@
   "meta": {
     "title": "Dysphoria — Jy Yeüng",
     "description": "Dysphoria is a fifteen-image self-portrait series built like an album, where each frame plays as its own track. Black and white audiovisual document with soundtrack.",
-    "ogImage": "/assets/dysphoria/00-cover.jpg",
-    "canonicalPath": "/dysphoria/",
+    "ogImage": "assets/dysphoria/00-cover.jpg",
+    "canonicalPath": "dysphoria/",
     "artist": "Jy Yeüng",
     "siteName": "thisisjyyeung.com",
     "year": 2026
   },
   "chrome": {
     "brand": "Jy Yeüng",
-    "brandHref": "/",
+    "brandHref": "./",
     "projectTitle": "Dysphoria"
   },
   "intro": {
     "heading": "Dysphoria",
-    "cover": "/assets/dysphoria/00-cover.jpg",
+    "cover": "assets/dysphoria/00-cover.jpg",
     "body": "Dysphoria is a fifteen-image self-portrait series built like an album, where each frame plays as its own track. Shot in stark black and white, the work resists the usual arc toward healing or resolution. It stays inside the reaction itself — documenting an internal state rather than explaining it away. Contortion, light as current, and abrupt endings stand in for feelings that keep living in the body until they are given somewhere else to go. What remains is not a cure, but a record: an audiovisual document paired with a soundtrack, still living where it was found.",
     "hint": "Scroll to open the sheets"
   },
@@ -31,15 +31,15 @@
       "n": "01",
       "title": "The Host",
       "liner": "Dysphoria as something that keeps living in the body until it is given somewhere else to go.",
-      "src": "/assets/dysphoria/01-the-host.jpg",
+      "src": "assets/dysphoria/01-the-host.jpg",
       "ar": 0.7496
     },
     {
       "n": "02",
       "title": "Grinding Grit onto Grief",
       "liner": "The body reaches for the ground and never arrives.",
-      "src": "/assets/dysphoria/02-grinding-grit-onto-grief.jpg",
-      "alt": "/assets/dysphoria/02-grinding-grit-onto-grief-alt.jpg",
+      "src": "assets/dysphoria/02-grinding-grit-onto-grief.jpg",
+      "alt": "assets/dysphoria/02-grinding-grit-onto-grief-alt.jpg",
       "ar": 1,
       "note": "Chimera remap: bent figure"
     },
@@ -47,7 +47,7 @@
       "n": "03",
       "title": "A Charlatan's Curse",
       "liner": "Imposter air. The exhaustion of doubting the hand that made the picture.",
-      "src": "/assets/dysphoria/03-a-charlatans-curse.jpg",
+      "src": "assets/dysphoria/03-a-charlatans-curse.jpg",
       "ar": 1,
       "note": "Chimera remap: umbrella/briefcase"
     },
@@ -55,22 +55,22 @@
       "n": "04",
       "title": "Funnel",
       "liner": "White light held like current. The mind routed and rerouted.",
-      "src": "/assets/dysphoria/04-funnel.jpg",
+      "src": "assets/dysphoria/04-funnel.jpg",
       "ar": 1
     },
     {
       "n": "05",
       "title": "X-OVER",
       "liner": "Half a face under the drape. One eye in the seam between light and shadow.",
-      "src": "/assets/dysphoria/05-x-over.jpg",
-      "alt": "/assets/dysphoria/05-x-over-alt.jpg",
+      "src": "assets/dysphoria/05-x-over.jpg",
+      "alt": "assets/dysphoria/05-x-over-alt.jpg",
       "ar": 1
     },
     {
       "n": "06",
       "title": "Pin",
       "liner": "Maybe it’s dumb to pin significance onto every little thing — but we still do.",
-      "src": "/assets/dysphoria/06-pin.jpg",
+      "src": "assets/dysphoria/06-pin.jpg",
       "ar": 1
     },
     {
@@ -78,64 +78,64 @@
       "title": "trance",
       "titleDisplay": "t r a n c e",
       "liner": "Same current, thinner air. Hands as the wire the feeling runs through.",
-      "src": "/assets/dysphoria/07-trance.jpg",
+      "src": "assets/dysphoria/07-trance.jpg",
       "ar": 0.75
     },
     {
       "n": "08",
       "title": "Sinister & Dexter",
       "liner": "Left and right, white and black, glance and turn.",
-      "src": "/assets/dysphoria/08-sinister-dexter.jpg",
+      "src": "assets/dysphoria/08-sinister-dexter.jpg",
       "ar": 0.8
     },
     {
       "n": "09",
       "title": "Grooving Grunge in Grudges",
       "liner": "The stretch pushed further. It hurts — and reminds you that you are still here.",
-      "src": "/assets/dysphoria/09-grooving-grunge-in-grudges.jpg",
+      "src": "assets/dysphoria/09-grooving-grunge-in-grudges.jpg",
       "ar": 1
     },
     {
       "n": "10",
       "title": "Unquenchable Thirst",
       "liner": "Solitude as refuge, not absence.",
-      "src": "/assets/dysphoria/10-unquenchable-thirst.jpg",
+      "src": "assets/dysphoria/10-unquenchable-thirst.jpg",
       "ar": 1.5
     },
     {
       "n": "11",
       "title": "One day",
       "liner": "Near-dark. A short fear of losing the light of reality.",
-      "src": "/assets/dysphoria/11-one-day.jpg",
+      "src": "assets/dysphoria/11-one-day.jpg",
       "ar": 1.4305
     },
     {
       "n": "12",
       "title": "Placebo",
       "liner": "The fading returns of things once loved without effort.",
-      "src": "/assets/dysphoria/12-placebo.jpg",
+      "src": "assets/dysphoria/12-placebo.jpg",
       "ar": 0.7504
     },
     {
       "n": "13",
       "title": "Where does the line end?",
       "liner": "Whether forgiveness only becomes real once a life is over.",
-      "src": "/assets/dysphoria/13-where-does-the-line-end.jpg",
+      "src": "assets/dysphoria/13-where-does-the-line-end.jpg",
       "ar": 0.75
     },
     {
       "n": "14",
       "title": "Sad People, Big Ambitions",
       "liner": "Title and image already say it. Nothing to add.",
-      "src": "/assets/dysphoria/14-sad-people-big-ambitions.jpg",
-      "alt": "/assets/dysphoria/14-sad-people-big-ambitions-alt.jpg",
+      "src": "assets/dysphoria/14-sad-people-big-ambitions.jpg",
+      "alt": "assets/dysphoria/14-sad-people-big-ambitions-alt.jpg",
       "ar": 1
     },
     {
       "n": "15",
       "title": "The Divided Line",
       "liner": "An abrupt stop on purpose. The record ends before the feeling does.",
-      "src": "/assets/dysphoria/15-the-divided-line.jpg",
+      "src": "assets/dysphoria/15-the-divided-line.jpg",
       "ar": 1
     }
   ]

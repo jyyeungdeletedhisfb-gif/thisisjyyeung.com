@@ -1,7 +1,12 @@
 (function () {
   "use strict";
 
-  const CONTENT_URL = "/content/dysphoria.json";
+  const CONTENT_URL = new URL("content/dysphoria.json", document.baseURI).href;
+  function assetUrl(path) {
+    if (!path) return "";
+    if (/^https?:/i.test(path)) return path;
+    return new URL(path.replace(/^\//, ""), document.baseURI).href;
+  }
   const ZOOM = 2.2;
 
   let sheets = [];
@@ -12,7 +17,7 @@
   function displayTitle(s) { return s.titleDisplay || s.title; }
   function currentSrc() {
     const s = sheets[i];
-    return (usingAlt && s.alt) ? s.alt : s.src;
+    return assetUrl((usingAlt && s.alt) ? s.alt : s.src);
   }
   function plateBox(ar) {
     const maxH = Math.min(window.innerHeight * 0.65, 720);
@@ -46,7 +51,7 @@
     const { w, h } = peekBox(sheet.ar);
     el.style.width = w + "px";
     el.style.height = h + "px";
-    el.style.backgroundImage = `url("${sheet.src}")`;
+    el.style.backgroundImage = `url("${assetUrl(sheet.src)}")`;
   }
 
   function setTitle(dir, index = i) {
@@ -176,7 +181,7 @@
     const project = document.querySelector(".project-title");
     if (brand && data.chrome) {
       brand.textContent = data.chrome.brand || "Jy Yeüng";
-      brand.setAttribute("href", data.chrome.brandHref || "/");
+      brand.setAttribute("href", data.chrome.brandHref || "./");
     }
     if (project && data.chrome) {
       project.textContent = data.chrome.projectTitle || "Dysphoria";
@@ -186,7 +191,7 @@
   function applyIntro(data) {
     const introData = data.intro || {};
     if (introCover && introData.cover) {
-      introCover.style.backgroundImage = `url('${introData.cover}')`;
+      introCover.style.backgroundImage = `url('${assetUrl(introData.cover)}')`;
     }
     const h1 = introCopy && introCopy.querySelector("h1");
     const p = introCopy && introCopy.querySelector("p");
