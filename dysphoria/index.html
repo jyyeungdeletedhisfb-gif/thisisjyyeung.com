@@ -51,8 +51,30 @@
           What remains is not a cure, but a record: an audiovisual document paired with a soundtrack, still living where
           it was found.
         </p>
-        <div class="intro-hint">Scroll to open the sheets</div>
+        <div class="intro-hint">Scroll to the soundtrack</div>
       </div>
+    </div>
+  </section>
+
+
+  <section class="playlist" id="playlist">
+    <div class="playlist-bg" id="playlistBg" aria-hidden="true"></div>
+    <div class="playlist-scrim" aria-hidden="true"></div>
+    <div class="playlist-inner">
+      <h2>Soundtrack</h2>
+      <p class="sub">An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.</p>
+      <div class="listen-row">
+        <span>Listen on</span>
+        <a data-listen="apple" href="https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr" target="_blank" rel="noopener">Apple Music</a>
+        <span class="soon">Spotify · soon</span>
+      </div>
+      <iframe
+        title="Dysphoria soundtrack on Apple Music"
+        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+        frameborder="0"
+        height="450"
+        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+        src="https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr"></iframe>
     </div>
   </section>
 
@@ -92,7 +114,7 @@
       <div class="bottom-bar">
         <div class="title-jump" id="titleJump">
           <div class="title-viewport">
-            <button class="title-btn" id="titleBtn" type="button">
+            <button class="title-btn" id="titleBtn" type="button" aria-expanded="false" aria-controls="tracklist">
               <span class="num">01 / 15</span><span>—</span><span class="name">The Host</span>
             </button>
           </div>
@@ -102,24 +124,6 @@
     </div>
   </section>
 
-  <section class="playlist" id="playlist">
-    <div class="playlist-inner">
-      <h2>Soundtrack</h2>
-      <p class="sub">An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.</p>
-      <div class="listen-row">
-        <span>Listen on</span>
-        <a data-listen="apple" href="https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr" target="_blank" rel="noopener">Apple Music</a>
-        <span class="soon">Spotify · soon</span>
-      </div>
-      <iframe
-        title="Dysphoria soundtrack on Apple Music"
-        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-        frameborder="0"
-        height="450"
-        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-        src="https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr"></iframe>
-    </div>
-  </section>
 
   <footer class="site-footer">
     <a class="home-btn" href="./">Back home</a>

@@ -17,14 +17,15 @@
     "heading": "Dysphoria",
     "cover": "assets/dysphoria/00-cover.jpg",
     "body": "Dysphoria is a fifteen-image self-portrait series built like an album, where each frame plays as its own track. Shot in stark black and white, the work resists the usual arc toward healing or resolution. It stays inside the reaction itself — documenting an internal state rather than explaining it away. Contortion, light as current, and abrupt endings stand in for feelings that keep living in the body until they are given somewhere else to go. What remains is not a cure, but a record: an audiovisual document paired with a soundtrack, still living where it was found.",
-    "hint": "Scroll to open the sheets"
+    "hint": "Scroll to the soundtrack"
   },
   "soundtrack": {
     "heading": "Soundtrack",
     "sub": "An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.",
     "appleMusicUrl": "https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr",
     "appleMusicEmbed": "https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr",
-    "spotifySoon": true
+    "spotifySoon": true,
+    "backdrop": "assets/dysphoria/soundtrack-promo.jpg"
   },
   "tracks": [
     {

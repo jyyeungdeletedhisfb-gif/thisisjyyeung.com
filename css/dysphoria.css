@@ -48,6 +48,27 @@
   }
   .top-right { justify-self: end; min-width: 4em; }
 
+  /* Optical baseline: Clarendon 17px bold vs Helvetica 13px sit off-center on narrow bars */
+  @media (max-width: 800px) {
+    .topbar {
+      align-items: center;
+    }
+    .brand,
+    .project-title {
+      display: inline-flex;
+      align-items: center;
+      line-height: 1;
+    }
+    /* Nudge project title up ~1px so its optical mid matches Clarendon's heavier face */
+    .project-title {
+      transform: translateY(-1px);
+      padding-top: 0;
+    }
+    .brand {
+      transform: translateY(0.5px);
+    }
+  }
+
   /* ===== SECTION 1 + SCRUB BRIDGE ===== */
   .intro {
     position: relative;
@@ -98,7 +119,7 @@
     color: #999;
   }
 
-  /* ===== SECTION 2 SHEETS ===== */
+  /* ===== SHEETS ===== */
   .sheets {
     background: var(--bg);
     color: var(--fg);
@@ -252,10 +273,23 @@
     padding: 0; font-size: 15px; width: 100%; text-align: center;
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center; gap: 0.35em;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
     transition: transform 0.55s var(--ease), opacity 0.45s var(--ease);
   }
-  .title-btn .num { font-weight: 400; color: var(--muted); letter-spacing: 0.08em; }
-  .title-btn .name { font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .title-btn .num,
+  .title-btn .name,
+  .title-btn > span {
+    font-weight: 700;
+    color: inherit;
+    letter-spacing: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .title-btn .num { letter-spacing: 0.08em; }
   .title-btn.exit-left { transform: translateX(-28%); opacity: 0; }
   .title-btn.exit-right { transform: translateX(28%); opacity: 0; }
   .title-btn.enter-from-right { animation: titleInRight 0.55s var(--ease) both; }
@@ -268,7 +302,10 @@
     width: min(92vw, 320px); max-height: 280px; overflow: auto;
     background: #0c0c0c; border: 1px solid #555; padding: 6px 0; display: none; z-index: 60;
   }
-  .title-jump:hover .tracklist, .title-jump:focus-within .tracklist { display: block; }
+  .title-jump.is-open .tracklist { display: block; }
+  @media (hover: hover) and (pointer: fine) {
+    .title-jump:hover .tracklist { display: block; }
+  }
   .tracklist button {
     display: flex; width: 100%; gap: 10px; appearance: none; border: none; background: transparent;
     color: var(--fg); font: inherit; font-size: 12px; padding: 8px 14px; cursor: pointer; text-align: left;
@@ -276,13 +313,44 @@
   .tracklist button:hover, .tracklist button.active { background: #1a1a1a; }
   .tracklist .n { color: var(--muted); min-width: 1.8em; }
 
-  /* ===== SECTION 3 PLAYLIST ===== */
+  /* ===== SOUNDTRACK (between intro + sheets) ===== */
   .playlist {
-    background: #3a3a3a;
+    position: relative;
+    isolation: isolate;
+    background: #1a1a1a;
     color: #eee;
     padding: 72px 20px 40px;
+    overflow: hidden;
   }
-  .playlist-inner { max-width: 920px; margin: 0 auto; }
+  .playlist-bg {
+    position: absolute;
+    inset: -24px;
+    z-index: 0;
+    background: #2a2a2a center / cover no-repeat;
+    filter: blur(18px);
+    transform: scale(1.06);
+    pointer-events: none;
+  }
+  .playlist-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(8,8,8,0.62) 0%, rgba(8,8,8,0.72) 50%, rgba(8,8,8,0.78) 100%);
+    pointer-events: none;
+  }
+  .playlist-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .playlist-bg {
+      filter: blur(8px);
+      transform: none;
+      inset: 0;
+    }
+  }
   .playlist h2 {
     margin: 0 0 10px;
     font-family: "Clarendon", Georgia, serif;

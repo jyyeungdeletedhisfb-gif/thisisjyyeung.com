@@ -12,7 +12,7 @@
   let sheets = [];
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
   let plate, plateStage, peekLeft, peekRight, flipBtn, loupeBtn, replaceBtn, loupe;
-  let titleBtn, tracklist, intro, introCover, introCopy, introSticky, toTop;
+  let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop, playlist, playlistBg;
 
   function displayTitle(s) { return s.titleDisplay || s.title; }
   function currentSrc() {
@@ -31,12 +31,22 @@
     return { w: w * 0.55, h: h * 0.55 };
   }
 
+  function setTracklistOpen(open) {
+    if (!titleJump) return;
+    titleJump.classList.toggle("is-open", !!open);
+    if (titleBtn) titleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  function closeTracklist() { setTracklistOpen(false); }
+
   function fillTracklist() {
     tracklist.innerHTML = sheets.map((s, idx) =>
       `<button type="button" data-i="${idx}"><span class="n">${String(idx + 1).padStart(2, "0")}</span><span>${displayTitle(s)}</span></button>`
     ).join("");
     tracklist.querySelectorAll("button").forEach((b) => {
-      b.onclick = () => jumpTo(+b.dataset.i);
+      b.onclick = () => {
+        closeTracklist();
+        jumpTo(+b.dataset.i);
+      };
     });
   }
 
@@ -149,6 +159,7 @@
     commitTo(n, d);
   }
   function jumpTo(idx) {
+    closeTracklist();
     if (animating || idx === i) return;
     commitTo(idx, idx > i ? 1 : -1);
   }
@@ -158,14 +169,14 @@
     const total = intro.offsetHeight - window.innerHeight;
     const scrolled = Math.min(Math.max(-rect.top, 0), total);
     const t = total > 0 ? scrolled / total : 0;
-    document.body.classList.toggle(
-      "on-dark",
-      t > 0.55 || window.scrollY > intro.offsetHeight - 80
-    );
+    // Dark chrome once intro scrub deepens, or anywhere past intro (soundtrack → sheets)
+    const pastIntro = window.scrollY > intro.offsetHeight - 80;
+    document.body.classList.toggle("on-dark", t > 0.55 || pastIntro);
     const p = t * t * (3 - 2 * t);
     introCover.style.transform = `translate(${(0.5 - 0.25) * p * -40}vw, ${p * 4}vh) scale(${1 - p * 0.08})`;
     introCopy.style.opacity = String(1 - Math.min(1, p * 1.35));
     introCopy.style.transform = `translateY(${p * -24}px)`;
+    // Bridge white intro toward dark soundtrack backdrop
     intro.style.background = `rgb(${Math.round(255 * (1 - p * 0.98))},${Math.round(255 * (1 - p * 0.98))},${Math.round(255 * (1 - p * 0.98))})`;
   }
 
@@ -209,16 +220,20 @@
 
   function applySoundtrack(data) {
     const st = data.soundtrack || {};
-    const section = document.getElementById("playlist");
+    const section = playlist || document.getElementById("playlist");
     if (!section) return;
     const h2 = section.querySelector("h2");
     const sub = section.querySelector(".sub");
     const apple = section.querySelector('a[data-listen="apple"]');
     const iframe = section.querySelector("iframe");
+    const bg = playlistBg || document.getElementById("playlistBg");
     if (h2 && st.heading) h2.textContent = st.heading;
     if (sub && st.sub) sub.textContent = st.sub;
     if (apple && st.appleMusicUrl) apple.href = st.appleMusicUrl;
     if (iframe && st.appleMusicEmbed) iframe.src = st.appleMusicEmbed;
+    if (bg && st.backdrop) {
+      bg.style.backgroundImage = `url("${assetUrl(st.backdrop)}")`;
+    }
   }
 
   function applyMeta(data) {
@@ -320,6 +335,32 @@
       }, 520);
     };
 
+    if (titleBtn && titleJump) {
+      titleBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const open = !titleJump.classList.contains("is-open");
+        setTracklistOpen(open);
+        if (!open) titleBtn.blur();
+      });
+      document.addEventListener(
+        "pointerdown",
+        (e) => {
+          if (!titleJump.classList.contains("is-open")) return;
+          if (titleJump.contains(e.target)) return;
+          closeTracklist();
+        },
+        true
+      );
+      titleJump.addEventListener("focusout", (e) => {
+        // Close when focus leaves the jump control (keyboard)
+        if (!titleJump.contains(e.relatedTarget)) closeTracklist();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeTracklist();
+      });
+    }
+
     window.addEventListener("keydown", (e) => {
       if (e.key === "ArrowRight") go(1);
       if (e.key === "ArrowLeft") go(-1);
@@ -345,6 +386,8 @@
     const urls = [];
     const cover = data.intro && data.intro.cover;
     if (cover) urls.push(assetUrl(cover));
+    const backdrop = data.soundtrack && data.soundtrack.backdrop;
+    if (backdrop) urls.push(assetUrl(backdrop));
     (data.tracks || []).forEach((t) => {
       if (t.src) urls.push(assetUrl(t.src));
       if (t.alt) urls.push(assetUrl(t.alt));
@@ -408,11 +451,14 @@
     replaceBtn = document.getElementById("replaceBtn");
     loupe = document.getElementById("loupe");
     titleBtn = document.getElementById("titleBtn");
+    titleJump = document.getElementById("titleJump");
     tracklist = document.getElementById("tracklist");
     intro = document.getElementById("intro");
     introCover = document.getElementById("introCover");
     introCopy = document.getElementById("introCopy");
     introSticky = document.querySelector(".intro-sticky");
+    playlist = document.getElementById("playlist");
+    playlistBg = document.getElementById("playlistBg");
     toTop = document.getElementById("toTop");
 
     const res = await fetch(CONTENT_URL);
