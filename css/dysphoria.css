@@ -48,24 +48,29 @@
   }
   .top-right { justify-self: end; min-width: 4em; }
 
-  /* Optical baseline: Clarendon 17px bold vs Helvetica 13px sit off-center on narrow bars */
+  /* Optical mid-axis on phone: shared line box + metric nudges (Clarendon 17 vs Helvetica 13) */
   @media (max-width: 800px) {
     .topbar {
       align-items: center;
     }
     .brand,
     .project-title {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      line-height: 1;
+      align-self: center;
+      height: 22px;
+      line-height: 22px;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    /* Nudge project title up ~1px so its optical mid matches Clarendon's heavier face */
-    .project-title {
-      transform: translateY(-1px);
-      padding-top: 0;
-    }
+    /* Clarendon bold optical mid sits slightly high in the em box — settle it */
     .brand {
-      transform: translateY(0.5px);
+      transform: translateY(1px);
+    }
+    /* Smaller Helvetica reads low in the shared 22px box — lift to match brand mid */
+    .project-title {
+      transform: translateY(-2px);
     }
   }
 
@@ -124,7 +129,7 @@
     background: var(--bg);
     color: var(--fg);
     min-height: 100vh;
-    padding: 24px 16px 48px;
+    padding: 16px 16px 48px;
   }
   .sheets-inner {
     max-width: 1100px;
@@ -249,57 +254,61 @@
   .icon-btn:disabled { opacity: 0.28; cursor: default; border-color: #555; color: #777; background-color: transparent; }
 
   .loupe {
-    position: absolute; width: 140px; height: 140px; border-radius: 50%;
+    position: absolute; width: 148px; height: 148px; border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.7);
     box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 12px 28px rgba(0,0,0,0.45);
     pointer-events: none; z-index: 40; display: none; background-repeat: no-repeat;
+    will-change: left, top, background-position;
   }
   .loupe.on { display: block; }
+  @media (pointer: coarse) {
+    .loupe { width: 168px; height: 168px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loupe { will-change: auto; }
+  }
 
-  .bottom-bar {
+  /* Title jump sits ABOVE the plate carousel (still in sheets) */
+  .title-jump {
     position: relative;
-    display: flex; align-items: center; justify-content: center;
-    padding: 14px 8px 8px;
-    border-top: 1px solid var(--line);
-    margin-top: 8px;
-    overflow: hidden;
-    min-height: 48px;
-  }
-  .bottom-bar:has(.title-jump.is-open) {
-    overflow: visible;
+    width: min(92vw, 420px);
+    margin: 4px auto 14px;
+    flex-shrink: 0;
     z-index: 50;
+    overflow: visible;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .bottom-bar:has(.title-jump:hover) {
-      overflow: visible;
-      z-index: 50;
-    }
-  }
-  .title-jump { position: relative; width: min(92vw, 420px); }
+  .title-jump.is-open { z-index: 70; }
   .title-viewport { position: relative; height: 28px; overflow: hidden; }
   .title-btn {
     appearance: none; border: none; background: transparent;
     color: var(--fg); font: inherit; cursor: pointer;
     padding: 0; font-size: 15px; width: 100%; text-align: center;
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center; gap: 0.35em;
+    display: flex; align-items: center; justify-content: center;
     font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.55s var(--ease), opacity 0.45s var(--ease);
+  }
+  /* One uninterrupted underline across "NN / 15 — Title" (inline run, not per-span) */
+  .title-btn .title-line {
+    display: inline;
+    font-weight: 700;
+    color: inherit;
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 4px;
-    transition: transform 0.55s var(--ease), opacity 0.45s var(--ease);
+    text-decoration-skip-ink: none;
   }
-  .title-btn .num,
-  .title-btn .name,
-  .title-btn > span {
+  .title-btn .title-line .num,
+  .title-btn .title-line .name,
+  .title-btn .title-line > span {
     font-weight: 700;
     color: inherit;
     letter-spacing: inherit;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
+    text-decoration: none;
   }
   .title-btn .num { letter-spacing: 0.08em; }
+  .title-btn .title-line > span + span { margin-left: 0.35em; }
   .title-btn.exit-left { transform: translateX(-28%); opacity: 0; }
   .title-btn.exit-right { transform: translateX(28%); opacity: 0; }
   .title-btn.enter-from-right { animation: titleInRight 0.55s var(--ease) both; }
@@ -307,9 +316,9 @@
   @keyframes titleInRight { from { transform: translateX(32%); opacity: 0; } to { transform: none; opacity: 1; } }
   @keyframes titleInLeft { from { transform: translateX(-32%); opacity: 0; } to { transform: none; opacity: 1; } }
   .tracklist {
-    position: absolute; left: 50%; bottom: calc(100% + 8px);
+    position: absolute; left: 50%; top: calc(100% + 8px); bottom: auto;
     transform: translateX(-50%);
-    width: min(92vw, 320px); max-height: 280px; overflow: auto;
+    width: min(92vw, 320px); max-height: min(280px, 42vh); overflow: auto;
     background: #0c0c0c; border: 1px solid #555; padding: 6px 0; display: none; z-index: 60;
   }
   .title-jump.is-open .tracklist { display: block; }

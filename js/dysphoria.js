@@ -72,13 +72,13 @@
       titleBtn.className = "title-btn";
       titleBtn.style.transform = "";
       titleBtn.style.opacity = "";
-      titleBtn.innerHTML = `<span class="num">${label}</span><span>—</span><span class="name">${name}</span>`;
+      titleBtn.innerHTML = `<span class="title-line"><span class="num">${label}</span><span>—</span><span class="name">${name}</span></span>`;
       return;
     }
     titleBtn.classList.remove("enter-from-left", "enter-from-right");
     titleBtn.classList.add(dir > 0 ? "exit-left" : "exit-right");
     setTimeout(() => {
-      titleBtn.innerHTML = `<span class="num">${label}</span><span>—</span><span class="name">${name}</span>`;
+      titleBtn.innerHTML = `<span class="title-line"><span class="num">${label}</span><span>—</span><span class="name">${name}</span></span>`;
       titleBtn.className = "title-btn " + (dir > 0 ? "enter-from-right" : "enter-from-left");
     }, 160);
   }
@@ -184,12 +184,27 @@
     if (!loupeOn) return;
     const stage = plateStage.getBoundingClientRect();
     const rect = plate.getBoundingClientRect();
-    const x = cx - rect.left;
-    const y = cy - rect.top;
+    const x = Math.max(0, Math.min(rect.width, cx - rect.left));
+    const y = Math.max(0, Math.min(rect.height, cy - rect.top));
     const lw = loupe.offsetWidth;
     const lh = loupe.offsetHeight;
-    loupe.style.left = cx - stage.left - lw / 2 + "px";
-    loupe.style.top = cy - stage.top - lh / 2 + "px";
+    // Apple Preview-style: pointer anchors at loupe corner/edge so finger/cursor
+    // does not cover the magnified region. Prefer upper-left of the pointer.
+    const gap = 12;
+    const localX = cx - stage.left;
+    const localY = cy - stage.top;
+    let left = localX - lw - gap;
+    let top = localY - lh - gap;
+    // Flip to keep loupe on-stage when near edges
+    if (left < 4) left = localX + gap;
+    if (top < 4) top = localY + gap;
+    if (left + lw > stage.width - 4) left = Math.max(4, localX - lw - gap);
+    if (top + lh > stage.height - 4) top = Math.max(4, localY - lh - gap);
+    left = Math.max(0, Math.min(stage.width - lw, left));
+    top = Math.max(0, Math.min(stage.height - lh, top));
+    loupe.style.left = left + "px";
+    loupe.style.top = top + "px";
+    // Sample stays under the pointer (center of magnified view = touch/cursor point)
     loupe.style.backgroundPosition = `${-(x * ZOOM - lw / 2)}px ${-(y * ZOOM - lh / 2)}px`;
   }
 
