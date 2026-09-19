@@ -271,7 +271,8 @@
     const hint = introCopy && introCopy.querySelector(".intro-hint");
     if (h1 && introData.heading) h1.textContent = introData.heading;
     if (p && introData.body) p.textContent = introData.body;
-    if (hint && introData.hint) hint.textContent = introData.hint;
+    // Visual is a chevron affordance in markup; JSON hint stays the accessible label
+    if (hint && introData.hint) hint.setAttribute("aria-label", introData.hint);
   }
 
   function applySoundtrack(data) {

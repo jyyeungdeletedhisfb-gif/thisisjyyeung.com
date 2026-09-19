@@ -68,9 +68,9 @@
     .brand {
       transform: translateY(1px);
     }
-    /* Clarendon optical mid sits low vs Helvetica bbox mid — settle Dysphoria further */
+    /* Clarendon optical mid sits low vs Helvetica bbox mid — slight settle (was 5px, still ~1–2px low) */
     .project-title {
-      transform: translateY(5px);
+      transform: translateY(3px);
     }
   }
 
@@ -86,8 +86,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 48px;
-    align-items: center;
-    padding: 40px clamp(20px, 5vw, 64px);
+    align-items: end; /* bottom-align title+body to cover bottom */
+    padding: 16px clamp(20px, 5vw, 64px) 40px; /* top gap cut ≥50% vs prior 40px */
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -118,10 +118,16 @@
   }
   .intro-hint {
     margin-top: 28px;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
     color: #999;
+    line-height: 1;
+  }
+  .intro-hint .chevrons {
+    display: inline-block;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    transform: translateY(1px);
   }
 
   /* ===== SHEETS ===== */
@@ -144,8 +150,13 @@
     min-height: min(70vh, 680px);
     overflow: hidden;
   }
-  /* Phone: collapse flex air so title→plate gap equals plate→controls (20px) */
+  /* Phone: collapse flex air so title→plate gap equals plate→controls (20px);
+     also drop section min-height + bottom pad so carousel sits closer to footer */
   @media (max-width: 800px) {
+    .sheets {
+      min-height: 0;
+      padding-bottom: 20px;
+    }
     .sheets-inner {
       min-height: 0;
     }
@@ -428,11 +439,19 @@
     border: 1px solid #555;
     background: transparent;
   }
+  /* iPad / tablet+: no chrome border around the widget */
+  @media (min-width: 768px) {
+    .playlist iframe {
+      border: 0;
+      outline: none;
+    }
+  }
   @media (min-width: 801px) {
     .playlist iframe { height: 500px; }
   }
+  /* Phone: taller so full embed paints without inner vertical scroll */
   @media (max-width: 800px) {
-    .playlist iframe { height: 420px; }
+    .playlist iframe { height: 560px; }
   }
 
   .site-footer {
@@ -499,7 +518,8 @@
     .intro-sticky {
       grid-template-columns: 1fr;
       gap: 24px;
-      padding-top: 28px;
+      padding-top: 14px; /* ≥50% cut vs prior 28px */
+      align-items: center;
       align-content: center;
     }
     .intro-cover { justify-self: center; max-width: 360px; }
