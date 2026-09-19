@@ -55,6 +55,8 @@
       el.classList.add("empty");
       el.style.backgroundImage = "";
       el.style.width = el.style.height = "120px";
+      el.style.setProperty("--peek-x", "0px");
+      el.style.transition = "";
       return;
     }
     el.classList.remove("empty");
@@ -62,6 +64,33 @@
     el.style.width = w + "px";
     el.style.height = h + "px";
     el.style.backgroundImage = `url("${assetUrl(sheet.src)}")`;
+    el.style.setProperty("--peek-x", "0px");
+    el.style.transition = "";
+  }
+
+  function setPeekShift(px, withTransition) {
+    const val = (px || 0) + "px";
+    [peekLeft, peekRight].forEach((el) => {
+      if (!el) return;
+      if (withTransition) {
+        el.style.transition = "transform 0.4s var(--ease)";
+      } else {
+        el.style.transition = "none";
+      }
+      el.style.setProperty("--peek-x", val);
+    });
+  }
+
+  function clearPeekShift(withTransition) {
+    setPeekShift(0, withTransition);
+  }
+
+  function titleMarkup(label, name) {
+    // Spaces inside title-line keep one continuous underline through the em dash
+    return (
+      `<span class="title-line"><span class="num">${label}</span> — <span class="name">${name}</span></span>` +
+      `<span class="title-caret" aria-hidden="true">▾</span>`
+    );
   }
 
   function setTitle(dir, index = i) {
@@ -72,13 +101,13 @@
       titleBtn.className = "title-btn";
       titleBtn.style.transform = "";
       titleBtn.style.opacity = "";
-      titleBtn.innerHTML = `<span class="title-line"><span class="num">${label}</span><span>—</span><span class="name">${name}</span></span>`;
+      titleBtn.innerHTML = titleMarkup(label, name);
       return;
     }
     titleBtn.classList.remove("enter-from-left", "enter-from-right");
     titleBtn.classList.add(dir > 0 ? "exit-left" : "exit-right");
     setTimeout(() => {
-      titleBtn.innerHTML = `<span class="title-line"><span class="num">${label}</span><span>—</span><span class="name">${name}</span></span>`;
+      titleBtn.innerHTML = titleMarkup(label, name);
       titleBtn.className = "title-btn " + (dir > 0 ? "enter-from-right" : "enter-from-left");
     }, 160);
   }
@@ -105,6 +134,14 @@
     );
     loupe.style.backgroundImage = `url("${currentSrc()}")`;
     loupe.style.backgroundSize = `${w * ZOOM}px ${h * ZOOM}px`;
+    // Phone: peek cy = plate mid. Desktop keeps CSS top:50% of tall stage.
+    if (plateStage) {
+      if (window.matchMedia("(max-width: 800px)").matches) {
+        plateStage.style.setProperty("--peek-cy", h / 2 + "px");
+      } else {
+        plateStage.style.removeProperty("--peek-cy");
+      }
+    }
     replaceBtn.disabled = !s.alt;
     replaceBtn.classList.toggle("on", !!s.alt && usingAlt);
     flipBtn.classList.toggle("on", flipped);
@@ -125,10 +162,12 @@
     flipBtn.setAttribute("aria-pressed", "false");
     setTitle(dir, next);
     const dist = dir > 0 ? -1 : 1;
+    const exitPx = dist * (plate.offsetWidth || 300) * 0.18;
     plate.style.transition = "transform 0.55s var(--ease), opacity 0.45s var(--ease), filter 0.45s var(--ease)";
     plate.style.transform = `translateX(${dist * 18}%)`;
     plate.style.opacity = "0";
     plate.style.filter = "blur(2px)";
+    setPeekShift(exitPx, true);
     setTimeout(() => {
       i = next;
       renderPlate(true);
@@ -136,6 +175,7 @@
       plate.style.transform = `translateX(${-dist * 18}%)`;
       plate.style.opacity = "0";
       plate.style.filter = "blur(2px)";
+      setPeekShift(-exitPx, false);
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
           plate.style.transition =
@@ -143,8 +183,10 @@
           plate.style.transform = "translateX(0)";
           plate.style.opacity = "1";
           plate.style.filter = "none";
+          clearPeekShift(true);
           setTimeout(() => {
             plate.style.transition = "";
+            clearPeekShift(false);
             animating = false;
           }, 620);
         })
@@ -184,28 +226,27 @@
     if (!loupeOn) return;
     const stage = plateStage.getBoundingClientRect();
     const rect = plate.getBoundingClientRect();
-    const x = Math.max(0, Math.min(rect.width, cx - rect.left));
-    const y = Math.max(0, Math.min(rect.height, cy - rect.top));
     const lw = loupe.offsetWidth;
     const lh = loupe.offsetHeight;
-    // Apple Preview-style: pointer anchors at loupe corner/edge so finger/cursor
-    // does not cover the magnified region. Prefer upper-left of the pointer.
-    const gap = 12;
+    const r = lw / 2;
+    // Hotspot = bottom-right rim (~4 o'clock). Pointer sits on the rim while
+    // the glass sits up-left of the finger so it is not covered.
+    const ang = Math.PI / 6; // 4 o'clock ≈ 30° below +x
     const localX = cx - stage.left;
     const localY = cy - stage.top;
-    let left = localX - lw - gap;
-    let top = localY - lh - gap;
-    // Flip to keep loupe on-stage when near edges
-    if (left < 4) left = localX + gap;
-    if (top < 4) top = localY + gap;
-    if (left + lw > stage.width - 4) left = Math.max(4, localX - lw - gap);
-    if (top + lh > stage.height - 4) top = Math.max(4, localY - lh - gap);
+    let left = localX - r - r * Math.cos(ang);
+    let top = localY - r - r * Math.sin(ang);
+    // Keep loupe on-stage; hotspot stays BR-biased (never UL / glass-center)
     left = Math.max(0, Math.min(stage.width - lw, left));
     top = Math.max(0, Math.min(stage.height - lh, top));
     loupe.style.left = left + "px";
     loupe.style.top = top + "px";
-    // Sample stays under the pointer (center of magnified view = touch/cursor point)
-    loupe.style.backgroundPosition = `${-(x * ZOOM - lw / 2)}px ${-(y * ZOOM - lh / 2)}px`;
+    // Magnified sample = what's under the glass CENTER (not the rim hotspot)
+    const centerClientX = stage.left + left + lw / 2;
+    const centerClientY = stage.top + top + lh / 2;
+    const sx = Math.max(0, Math.min(rect.width, centerClientX - rect.left));
+    const sy = Math.max(0, Math.min(rect.height, centerClientY - rect.top));
+    loupe.style.backgroundPosition = `${-(sx * ZOOM - lw / 2)}px ${-(sy * ZOOM - lh / 2)}px`;
   }
 
   function applyChrome(data) {
@@ -277,6 +318,7 @@
       drag = { id: e.pointerId, x0: e.clientX, dx: 0 };
       plateStage.setPointerCapture(e.pointerId);
       plate.style.transition = "none";
+      setPeekShift(0, false);
     });
     plateStage.addEventListener("pointermove", (e) => {
       if (loupeOn) {
@@ -287,12 +329,18 @@
       drag.dx = e.clientX - drag.x0;
       const w = plate.offsetWidth || 300;
       const p = Math.max(-1, Math.min(1, drag.dx / w));
+      const shiftPx = p * w;
       plate.style.transform = `translateX(${p * 100}%)`;
       plate.style.opacity = String(1 - Math.abs(p) * 0.35);
       plate.style.filter = `blur(${Math.abs(p) * 3}px)`;
+      // Peeks share the same translate family as the central plate
+      setPeekShift(shiftPx, false);
       titleBtn.style.transition = "none";
       titleBtn.style.transform = `translateX(${p * 40}%)`;
-      titleBtn.style.opacity = String(1 - Math.abs(p) * 0.5);
+      // Mid-scrub fade: opacity dips as |drag| approaches ~0.5, recovers on commit
+      const ap = Math.abs(p);
+      const midFade = Math.min(1, ap / 0.5); // 0→1 as |p|→0.5
+      titleBtn.style.opacity = String(1 - midFade * 0.62);
     });
     function endDrag(e) {
       if (!drag || e.pointerId !== drag.id) return;
@@ -310,6 +358,7 @@
         plate.style.transform = "translateX(0)";
         plate.style.opacity = "1";
         plate.style.filter = "none";
+        clearPeekShift(true);
       }
     }
     plateStage.addEventListener("pointerup", endDrag);
@@ -330,7 +379,13 @@
       loupeBtn.setAttribute("aria-pressed", loupeOn ? "true" : "false");
       if (loupeOn) {
         const r = plate.getBoundingClientRect();
-        moveLoupe(r.left + r.width / 2, r.top + r.height / 2);
+        // Seed hotspot at BR rim so glass center lands near plate mid
+        const lw = loupe.offsetWidth || 168;
+        const ang = Math.PI / 6;
+        const hr = lw / 2;
+        const hx = r.left + r.width / 2 + hr * Math.cos(ang);
+        const hy = r.top + r.height / 2 + hr * Math.sin(ang);
+        moveLoupe(hx, hy);
       }
     };
     replaceBtn.onclick = () => {
