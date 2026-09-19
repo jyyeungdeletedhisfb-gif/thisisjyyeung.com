@@ -26,6 +26,21 @@
     if (w > maxW) { w = maxW; h = w / ar; }
     return { w, h };
   }
+  /** Tallest plate box across all sheets (smallest AR under same maxW/maxH). */
+  function maxPlateBox() {
+    let maxH = 0;
+    for (let n = 0; n < sheets.length; n++) {
+      const { h } = plateBox(sheets[n].ar);
+      if (h > maxH) maxH = h;
+    }
+    return { h: maxH };
+  }
+  function syncStageReserve() {
+    if (!plateStage || !sheets.length) return;
+    const { h } = maxPlateBox();
+    plateStage.style.setProperty("--plate-reserve-h", h + "px");
+    return h;
+  }
   function peekBox(ar) {
     const { w, h } = plateBox(ar);
     return { w: w * 0.55, h: h * 0.55 };
@@ -134,10 +149,13 @@
     );
     loupe.style.backgroundImage = `url("${currentSrc()}")`;
     loupe.style.backgroundSize = `${w * ZOOM}px ${h * ZOOM}px`;
-    // Phone: peek cy = plate mid. Desktop keeps CSS top:50% of tall stage.
+    // Reserve tallest sheet height so title + tools stay fixed while plate varies.
+    const reserveH = syncStageReserve() || h;
+    // Phone: peek cy = mid of reserved stage (plate is vertically centered in it).
+    // Desktop keeps CSS top:50% of tall stage.
     if (plateStage) {
       if (window.matchMedia("(max-width: 800px)").matches) {
-        plateStage.style.setProperty("--peek-cy", h / 2 + "px");
+        plateStage.style.setProperty("--peek-cy", reserveH / 2 + "px");
       } else {
         plateStage.style.removeProperty("--peek-cy");
       }

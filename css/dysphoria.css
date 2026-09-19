@@ -87,7 +87,8 @@
     grid-template-columns: 1fr 1fr;
     gap: 48px;
     align-items: end; /* bottom-align title+body to cover bottom */
-    padding: 16px clamp(20px, 5vw, 64px) 40px; /* top gap cut ≥50% vs prior 40px */
+    align-content: start; /* pack row under topbar — kill empty band above cover */
+    padding: 16px clamp(20px, 5vw, 64px) 40px;
     max-width: 1200px;
     margin: 0 auto;
   }
@@ -122,12 +123,19 @@
     line-height: 1;
   }
   .intro-hint .chevrons {
-    display: inline-block;
-    font-size: 22px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    line-height: 1;
-    transform: translateY(1px);
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 0.62;
+    transform: none;
+  }
+  .intro-hint .chevrons > span {
+    display: block;
   }
 
   /* ===== SHEETS ===== */
@@ -195,7 +203,14 @@
     display: flex; align-items: center; justify-content: center;
     touch-action: none;
   }
-  .plate-wrap { position: relative; z-index: 10; }
+  .plate-wrap {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    width: max-content; max-width: 100%;
+    height: var(--plate-reserve-h, auto);
+    /* room for absolutely positioned plate-controls below reserve */
+    margin-bottom: calc(20px + 48px);
+  }
   .plate {
     position: relative;
     border: 1px solid var(--line);
@@ -228,8 +243,13 @@
   .plate.swapping .shot { filter: blur(14px) brightness(1.08); }
 
   .plate-controls {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex; justify-content: center; align-items: center; gap: 16px;
     margin-top: 20px; /* matches title-jump → plate gap */
+    width: max-content;
   }
   .icon-btn {
     -webkit-appearance: none;
@@ -449,9 +469,12 @@
   @media (min-width: 801px) {
     .playlist iframe { height: 500px; }
   }
-  /* Phone: taller so full embed paints without inner vertical scroll */
+  /* Phone: hug white embed card — never leave taller bordered chrome than the card */
   @media (max-width: 800px) {
-    .playlist iframe { height: 560px; }
+    .playlist iframe {
+      height: 450px;
+      overflow: hidden;
+    }
   }
 
   .site-footer {
@@ -524,6 +547,8 @@
     }
     .intro-cover { justify-self: center; max-width: 360px; }
     .intro-copy { justify-self: center; text-align: left; }
+    .intro-hint { text-align: center; }
+    .intro-hint .chevrons { margin-inline: auto; }
   }
 
 
