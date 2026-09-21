@@ -13,7 +13,7 @@
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
   let plate, plateStage, peekLeft, peekRight, flipBtn, loupeBtn, replaceBtn, loupe;
   let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop;
-  let playlistBg, soundtrackInner;
+  let playlistBg, soundtrackLayer, soundtrackDarken, soundtrackInner;
   let enterGate, exitGate, enterBg, enterGateImg, exitGateImg;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -247,15 +247,14 @@
   function scrubEnter(t) {
     if (!enterGateImg) return;
     // Solid black void under gate (no blurred backdrop).
-    // Soundtrack lives in its own document-flow section after this gate —
-    // do not fade/wipe it from scrub.
     if (enterBg) enterBg.style.opacity = "1";
 
     // 0.00–0.10 gate fades in small on black
-    // 0.06–0.78 scale up / circle expand until engulf
-    // 0.78–0.96 soft fade into void → persistent soundtrack section follows
+    // 0.06–0.58 scale up / circle expand until engulf
+    // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
+    // 0.92–1.00 brief darken wipe → sheets (hold soundtrack opacity; no inner fade-out)
     const gateIn = smoothstep((t - 0.0) / 0.10);
-    const scaleT = smoothstep((t - 0.06) / 0.72);
+    const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
     const clipR = lerp(32, 78, scaleT);
 
@@ -263,10 +262,21 @@
     enterGateImg.style.transform = `scale(${scale})`;
     enterGateImg.style.clipPath = `circle(${clipR}% at 50% 50%)`;
 
-    if (t > 0.78) {
-      const fadeGate = 1 - smoothstep((t - 0.78) / 0.18);
+    const snd = smoothstep((t - 0.48) / 0.24);
+    if (soundtrackLayer) {
+      soundtrackLayer.style.opacity = String(snd);
+      soundtrackLayer.classList.toggle("is-live", snd > 0.4);
+    }
+    if (t > 0.62) {
+      const fadeGate = 1 - smoothstep((t - 0.62) / 0.16);
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
+
+    // Brief black wipe into sheets only — keep soundtrack content visible
+    // (fading inner opacity felt like a jarring vanish before sheets took over).
+    const darken = smoothstep((t - 0.92) / 0.08);
+    if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
+    if (soundtrackInner) soundtrackInner.style.opacity = "1";
   }
 
   function scrubExit(t) {
@@ -289,14 +299,12 @@
 
     if (reduceMotion) {
       const mid = window.scrollY + window.innerHeight * 0.4;
-      const soundtrackEl = document.getElementById("soundtrack");
-      const afterEnter = soundtrackEl
-        ? soundtrackEl.offsetTop
-        : (document.getElementById("sheets") || {}).offsetTop || 0;
+      const sheetsEl = document.getElementById("sheets");
+      const sheetsTop = sheetsEl ? sheetsEl.offsetTop : 0;
       if (!enterGate || mid < enterGate.offsetTop) {
         scrubEnter(0);
         scrubExit(0);
-      } else if (mid < afterEnter) {
+      } else if (mid < sheetsTop) {
         scrubEnter(1);
         scrubExit(0);
       } else if (!exitGate || mid < exitGate.offsetTop) {
@@ -804,6 +812,8 @@
     introCopy = document.getElementById("introCopy");
     introSticky = document.querySelector(".intro-sticky");
     playlistBg = document.getElementById("playlistBg");
+    soundtrackLayer = document.getElementById("soundtrackLayer");
+    soundtrackDarken = document.getElementById("soundtrackDarken");
     soundtrackInner = document.getElementById("soundtrackInner");
     enterGate = document.getElementById("enterGate");
     exitGate = document.getElementById("exitGate");

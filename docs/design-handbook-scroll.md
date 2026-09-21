@@ -4,18 +4,16 @@ Site-wide motion and interaction language for thisisjyyeung.com (Dysphoria and f
 
 ## Scroll-scrubbed sticky float (major beats)
 
-Major narrative beats (enter gate, exit gate) use a **tall scroll section + sticky stage**:
+Major narrative beats (enter gate, soundtrack mid-gate, exit gate) use a **tall scroll section + sticky stage**:
 
-- Section height is larger than the viewport (e.g. ~150vh enter / ~240vh exit).
+- Section height is larger than the viewport (e.g. ~130vh / ~240vh).
 - Inner stage is `position: sticky` under the topbar and fills the remaining viewport.
-- Scroll progress through the section (0→1) drives transforms, opacity, and clip-path.
+- Scroll progress through the section (0→1) drives transforms, opacity, clip-path, and layer crossfades.
 
 This reads as a floating beat that the page scrubs through, not a separate “page” or a JS scroll-jack. Prefer progress math from layout geometry (`getBoundingClientRect` / section height) over wheel hijacking.
 
-**Soundtrack** is a **persistent document-flow section** between enter-gate and sheets (heading, copy, Listen on, Apple Music iframe). It must never fade or get covered by a scrub wipe — keep pointer events on so the iframe works without sticky-overlay quirks.
-
-**Do:** keep pointer events off decorative gate layers.  
-**Don’t:** rebuild cylinder / 3D tunnels for these beats; stay with 2D sticky scrub for gates only.
+**Do:** keep pointer events off decorative gate layers; enable them only on live interactive layers (e.g. soundtrack when faded in).  
+**Don’t:** rebuild cylinder / 3D tunnels for these beats; stay with 2D sticky scrub.
 
 ## Axis-locked nested horizontal carousels
 
@@ -45,7 +43,7 @@ Desktop pointer drag can share the same lock path. Keyboard arrows remain availa
 
 Validate on a real Android phone (or remote device) before signing off carousel work:
 
-- Vertical scroll through intro → enter gate → soundtrack → sheets → exit still feels continuous.
+- Vertical scroll through intro → enter gate → sheets → exit still feels continuous.
 - A mostly-horizontal swipe on the plate advances/rewinds sheets without the page jumping.
 - A mostly-vertical drag that begins on the plate scrolls the page instead of nudging the plate.
 - Loupe, flip, and replace still work after axis-lock changes.

@@ -66,39 +66,38 @@
     </div>
   </section>
 
-  <!-- 2. ENTER GATE scrub (circular expand → black void) -->
+  <!-- 2. ENTER GATE scrub (~240vh) + soundtrack mid-scrub -->
   <section class="enter-gate" id="enterGate" data-scrub="enter">
     <div class="enter-sticky" id="enterSticky">
       <div class="enter-bg" id="enterBg"></div>
       <div class="gate-wrap">
         <div class="gate-img enter" id="enterGateImg" role="img" aria-label="Enter gate"></div>
       </div>
-    </div>
-  </section>
-
-  <!-- 3. SOUNDTRACK — persistent document-flow section (never scrub-fades / wiped) -->
-  <section class="soundtrack" id="soundtrack">
-    <div class="soundtrack-bg" id="playlistBg" aria-hidden="true"></div>
-    <div class="soundtrack-scrim" aria-hidden="true"></div>
-    <div class="soundtrack-inner" id="soundtrackInner">
-      <h2>Soundtrack</h2>
-      <p class="sub">An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.</p>
-      <div class="listen-row">
-        <span>Listen on</span>
-        <a data-listen="apple" href="https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr" target="_blank" rel="noopener">Apple Music</a>
-        <span class="soon">Spotify · soon</span>
+      <div class="soundtrack-layer" id="soundtrackLayer">
+        <div class="soundtrack-bg" id="playlistBg" aria-hidden="true"></div>
+        <div class="soundtrack-scrim" aria-hidden="true"></div>
+        <div class="soundtrack-darken" id="soundtrackDarken"></div>
+        <div class="soundtrack-inner" id="soundtrackInner">
+          <h2>Soundtrack</h2>
+          <p class="sub">An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.</p>
+          <div class="listen-row">
+            <span>Listen on</span>
+            <a data-listen="apple" href="https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr" target="_blank" rel="noopener">Apple Music</a>
+            <span class="soon">Spotify · soon</span>
+          </div>
+          <iframe
+            title="Dysphoria soundtrack on Apple Music"
+            allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+            frameborder="0"
+            height="450"
+            sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+            src="https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr"></iframe>
+        </div>
       </div>
-      <iframe
-        title="Dysphoria soundtrack on Apple Music"
-        allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-        frameborder="0"
-        height="450"
-        sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-        src="https://embed.music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr"></iframe>
     </div>
   </section>
 
-  <!-- 4. SHEETS — live carousel (fixed stage, loupe, flip, replace, title jump) -->
+  <!-- 3. SHEETS — live carousel (fixed stage, loupe, flip, replace, title jump) -->
   <section class="sheets" id="sheets">
     <div class="sheets-inner">
       <h2 class="sheets-heading" id="sheetsHeading">The Images</h2>
@@ -146,7 +145,7 @@
     </div>
   </section>
 
-  <!-- 5. EXIT GATE scrub (~240vh) -->
+  <!-- 4. EXIT GATE scrub (~240vh) -->
   <section class="exit-gate" id="exitGate" data-scrub="exit">
     <div class="exit-sticky" id="exitSticky">
       <div class="exit-gate-wrap">
@@ -155,7 +154,7 @@
     </div>
   </section>
 
-  <!-- 6. FOOTER -->
+  <!-- 5. FOOTER -->
   <footer class="site-footer" id="footer">
     <a class="home-btn" href="./">Back home</a>
     <div class="copy">© <span data-year>2026</span> JY YEÜNG</div>
