@@ -147,10 +147,10 @@
     margin-top: -10px;
   }
 
-  /* ===== 2. ENTER GATE (scroll scrub ~240vh) ===== */
+  /* ===== 2. ENTER GATE (scroll scrub — gate expand → void) ===== */
   .enter-gate {
     position: relative;
-    height: 240vh;
+    height: 150vh; /* enough for expand; soundtrack no longer mid-scrub */
     background: #030303; /* edge-sampled enter gate black */
   }
   .enter-sticky {
@@ -190,45 +190,34 @@
   .gate-img.enter { background-image: url("../assets/dysphoria/gate-enter.jpg"); }
   .gate-img.exit { background-image: url("../assets/dysphoria/gate-exit.jpg"); }
 
-  .soundtrack-layer {
-    position: absolute; inset: 0;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    will-change: opacity;
+  /* ===== 3. SOUNDTRACK (persistent document-flow section) ===== */
+  .soundtrack {
+    position: relative;
+    background: #030303; /* seamless with enter void */
+    color: var(--fg);
+    padding: calc(var(--top-h) + 28px) 16px 56px;
+    overflow: hidden;
   }
-  .soundtrack-layer.is-live { pointer-events: auto; }
   .soundtrack-bg {
     position: absolute; inset: 0;
     background: #111 center/cover no-repeat;
     filter: blur(18px) saturate(0.85) brightness(0.45);
     transform: scale(1.12);
+    pointer-events: none;
   }
   .soundtrack-scrim {
     position: absolute; inset: 0;
     background: rgba(5,5,5,0.62);
-  }
-  .soundtrack-darken {
-    position: absolute; inset: 0;
-    z-index: 2;
-    background: #030303; /* match enter void for brief wipe into sheets */
-    opacity: 0;
     pointer-events: none;
-    will-change: opacity;
   }
   .soundtrack-inner {
     position: relative;
     z-index: 1;
     width: min(920px, 92vw);
-    max-height: 100%;
-    overflow: auto;
+    margin: 0 auto;
     text-align: left;
     color: var(--fg);
-    padding: 24px 16px;
-    -webkit-overflow-scrolling: touch;
+    padding: 8px 0 0;
   }
   .soundtrack-inner h2 {
     margin: 0 0 10px;
@@ -312,7 +301,7 @@
 
   /* ===== SHEETS ===== */
   .sheets {
-    /* match enter void so soundtrack wipe → sheets has no grey step */
+    /* match enter/soundtrack blacks — no grey step */
     background: #030303;
     color: var(--fg);
     min-height: 100vh;
@@ -786,7 +775,7 @@
     html { scroll-behavior: auto; }
     .plate, .title-btn, .intro-cover, .intro-copy,
     .float-up, .sheets-heading, .sheets-reveal { transition: none !important; animation: none !important; }
-    .gate-img, .enter-bg, .soundtrack-layer, .soundtrack-darken {
+    .gate-img, .enter-bg {
       transition: none !important;
     }
   }
