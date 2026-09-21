@@ -252,7 +252,7 @@
     // 0.00–0.10 gate fades in small on black
     // 0.06–0.58 scale up / circle expand until engulf
     // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // 0.92–1.00 brief darken wipe → sheets (hold soundtrack opacity; no inner fade-out)
+    // No exit fade / darken wipe — keep soundtrack fully visible once present
     const gateIn = smoothstep((t - 0.0) / 0.10);
     const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
@@ -272,10 +272,8 @@
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
 
-    // Brief black wipe into sheets only — keep soundtrack content visible
-    // (fading inner opacity felt like a jarring vanish before sheets took over).
-    const darken = smoothstep((t - 0.92) / 0.08);
-    if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
+    // Never fade soundtrack out; darken wipe stays off
+    if (soundtrackDarken) soundtrackDarken.style.opacity = "0";
     if (soundtrackInner) soundtrackInner.style.opacity = "1";
   }
 
