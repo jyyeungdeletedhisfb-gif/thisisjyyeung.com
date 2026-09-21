@@ -147,10 +147,10 @@
     margin-top: -10px;
   }
 
-  /* ===== 2. ENTER GATE (scroll scrub ~130vh) ===== */
+  /* ===== 2. ENTER GATE (scroll scrub ~240vh) ===== */
   .enter-gate {
     position: relative;
-    height: 130vh;
+    height: 240vh;
     background: #000;
   }
   .enter-sticky {

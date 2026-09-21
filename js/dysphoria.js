@@ -252,7 +252,7 @@
     // 0.00–0.10 gate fades in small on black
     // 0.06–0.58 scale up / circle expand until engulf
     // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // 0.90–1.00 darken → solid black into sheets (tighter late segment)
+    // 0.85–1.00 darken → solid black into sheets (late/tight; keep soundtrack→sheets gap short)
     const gateIn = smoothstep((t - 0.0) / 0.10);
     const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
@@ -272,7 +272,7 @@
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
 
-    const darken = smoothstep((t - 0.90) / 0.10);
+    const darken = smoothstep((t - 0.85) / 0.15);
     if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
     if (soundtrackInner) soundtrackInner.style.opacity = String(1 - darken * 0.98);
   }
@@ -480,11 +480,8 @@
           } catch (_) { /* ignore */ }
           plate.style.transition = "none";
           setPeekShift(0, false);
-          // Re-zero so commit distance is measured after lock (avoids diagonal jump)
-          drag.x0 = e.clientX;
-          drag.y0 = e.clientY;
-          drag.dx = 0;
-          drag.dy = 0;
+          // Keep x0/dx from pointerdown so pre-lock travel counts toward commit
+          // (re-zeroing dropped short/fast swipes below threshold).
         } else {
           // Dominant vertical — abandon carousel; let page scroll.
           drag.axis = "y";
