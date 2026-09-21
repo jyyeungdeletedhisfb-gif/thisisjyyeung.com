@@ -126,8 +126,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    /* lower cue ~3 description lines (16px × 1.55 × 3 ≈ 74px) */
-    padding: calc(3 * 16px * 1.55) 0 32px;
+    /* lower cue ~1.5 description lines (half of prior 3-line gap) */
+    padding: calc(1.5 * 16px * 1.55) 0 32px;
     color: #777;
   }
   .intro-scroll-cue .chevrons {
@@ -151,19 +151,19 @@
   .enter-gate {
     position: relative;
     height: 240vh;
-    background: #000;
+    background: #030303; /* edge-sampled enter gate black */
   }
   .enter-sticky {
     position: sticky;
     top: var(--top-h);
     height: calc(100vh - var(--top-h));
     overflow: hidden;
-    background: #000;
+    background: #030303;
     isolation: isolate;
   }
   .enter-bg {
     position: absolute; inset: 0;
-    background: #000;
+    background: #030303;
     opacity: 1;
     will-change: opacity;
   }
@@ -184,7 +184,7 @@
     transform: scale(0.35);
     opacity: 0;
     will-change: transform, opacity, clip-path;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    /* no outline — circle must blend into backdrop blacks */
     clip-path: circle(38% at 50% 50%);
   }
   .gate-img.enter { background-image: url("../assets/dysphoria/gate-enter.jpg"); }
@@ -214,7 +214,7 @@
   .soundtrack-darken {
     position: absolute; inset: 0;
     z-index: 2;
-    background: #050505;
+    background: #030303; /* match enter void for brief wipe into sheets */
     opacity: 0;
     pointer-events: none;
     will-change: opacity;
@@ -283,14 +283,14 @@
   .exit-gate {
     position: relative;
     height: 240vh;
-    background: #000;
+    background: #000000; /* edge-sampled exit gate black */
   }
   .exit-sticky {
     position: sticky;
     top: var(--top-h);
     height: calc(100vh - var(--top-h));
     overflow: hidden;
-    background: #000;
+    background: #000000;
     isolation: isolate;
   }
   .exit-gate-wrap {
@@ -312,7 +312,8 @@
 
   /* ===== SHEETS ===== */
   .sheets {
-    background: var(--bg);
+    /* match enter void so soundtrack wipe → sheets has no grey step */
+    background: #030303;
     color: var(--fg);
     min-height: 100vh;
     padding: calc(var(--top-h) + 16px) 16px 48px;
@@ -324,6 +325,16 @@
     display: flex; flex-direction: column;
   }
   /* Section h2 — mirrors soundtrack-inner h2 hierarchy */
+  .sheets-reveal {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+  }
+  @media (max-width: 800px) {
+    .sheets-reveal { flex: 0 0 auto; }
+  }
   .sheets-heading {
     margin: 0 0 18px;
     padding: 0 4px;
@@ -386,11 +397,12 @@
   .plate-stage {
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
-    /* pan-x: Android Chrome delivers horizontal swipes; page scroll from outside stage */
-    touch-action: pan-x;
+    /* pan-y until x-lock: vertical page scroll works on plates; L/R via JS + preventDefault */
+    touch-action: pan-y;
     -webkit-user-select: none;
     user-select: none;
   }
+  .plate-stage.is-axis-x,
   .plate-stage.is-loupe {
     touch-action: none;
   }
@@ -665,6 +677,48 @@
 
 
 
+
+  /* ===== Soft float-up reveals (intro + sheets heading) ===== */
+  .float-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1.05s var(--ease), transform 1.05s var(--ease);
+    will-change: opacity, transform;
+  }
+  .float-up.is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .intro-cover.float-up { transition-delay: 0.05s; }
+  .intro-copy.float-up h1 {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 1.05s var(--ease), transform 1.05s var(--ease);
+    transition-delay: 0.18s;
+  }
+  .intro-copy.float-up p {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 1.05s var(--ease), transform 1.05s var(--ease);
+    transition-delay: 0.32s;
+  }
+  .intro-copy.float-up.is-in h1,
+  .intro-copy.float-up.is-in p {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .sheets-heading.float-up { transition-delay: 0.06s; }
+  .sheets-reveal.float-up { transition-delay: 0.16s; }
+  @media (prefers-reduced-motion: reduce) {
+    .float-up,
+    .intro-copy.float-up h1,
+    .intro-copy.float-up p {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
   /* ===== FIRST-OPEN LOAD GATE ===== */
   .load-gate {
     position: fixed;
@@ -730,7 +784,8 @@
   .home-hero a.era:hover { border-color: #fff; color: #fff; }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .plate, .title-btn, .intro-cover, .intro-copy { transition: none !important; animation: none !important; }
+    .plate, .title-btn, .intro-cover, .intro-copy,
+    .float-up, .sheets-heading, .sheets-reveal { transition: none !important; animation: none !important; }
     .gate-img, .enter-bg, .soundtrack-layer, .soundtrack-darken {
       transition: none !important;
     }

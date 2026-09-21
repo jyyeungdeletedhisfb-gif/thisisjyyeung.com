@@ -252,7 +252,7 @@
     // 0.00–0.10 gate fades in small on black
     // 0.06–0.58 scale up / circle expand until engulf
     // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // 0.85–1.00 darken → solid black into sheets (late/tight; keep soundtrack→sheets gap short)
+    // 0.92–1.00 brief darken wipe → sheets (hold soundtrack opacity; no inner fade-out)
     const gateIn = smoothstep((t - 0.0) / 0.10);
     const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
@@ -272,9 +272,11 @@
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
 
-    const darken = smoothstep((t - 0.85) / 0.15);
+    // Brief black wipe into sheets only — keep soundtrack content visible
+    // (fading inner opacity felt like a jarring vanish before sheets took over).
+    const darken = smoothstep((t - 0.92) / 0.08);
     if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
-    if (soundtrackInner) soundtrackInner.style.opacity = String(1 - darken * 0.98);
+    if (soundtrackInner) soundtrackInner.style.opacity = "1";
   }
 
   function scrubExit(t) {
@@ -416,8 +418,74 @@
     if (yearEl && m.year) yearEl.textContent = m.year;
   }
 
+
+  function preferReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  function markFloatIn(el) {
+    if (!el) return;
+    if (preferReducedMotion()) {
+      el.classList.add("is-in");
+      return;
+    }
+    // Double-rAF so initial opacity/transform paint before transition
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => el.classList.add("is-in"));
+    });
+  }
+
+  function bindFloatEntrances() {
+    const cover = document.getElementById("introCover");
+    const copy = document.getElementById("introCopy");
+    const heading = document.getElementById("sheetsHeading");
+    const reveal = document.getElementById("sheetsReveal");
+
+    [cover, copy, heading, reveal].forEach((el) => {
+      if (el) el.classList.add("float-up");
+    });
+
+    if (preferReducedMotion()) {
+      [cover, copy, heading, reveal].forEach((el) => el && el.classList.add("is-in"));
+      return;
+    }
+
+    // Intro: soft float after load gate dismisses (or immediately if already gone)
+    const startIntro = () => {
+      markFloatIn(cover);
+      markFloatIn(copy);
+    };
+    const gate = document.getElementById("loadGate");
+    if (!gate || gate.classList.contains("is-done") || !gate.parentNode) {
+      startIntro();
+    } else {
+      gate.addEventListener("transitionend", startIntro, { once: true });
+      // Fallback if transitionend never fires
+      setTimeout(startIntro, 900);
+    }
+
+    // The Images heading (+ optional sheets block) once when scrolled into view
+    const ioTargets = [heading, reveal].filter(Boolean);
+    if (!ioTargets.length || !("IntersectionObserver" in window)) {
+      ioTargets.forEach(markFloatIn);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          markFloatIn(entry.target);
+          io.unobserve(entry.target);
+        });
+      },
+      { root: null, threshold: 0.18, rootMargin: "0px 0px -8% 0px" }
+    );
+    ioTargets.forEach((el) => io.observe(el));
+  }
+
   function bindInteractions() {
-    // Android Chrome: pan-x on stage + touch handlers. Do not use pan-y (kills L/R swipe).
+    // Nested two-direction scroll: pan-y default; lock to x with preventDefault so Android
+    // Chrome still delivers L/R swipe. Bias adx>=ady; do not re-zero dx; lower commit th.
     const AXIS_LOCK_PX = 6;
     let drag = null; // { id, x0, y0, dx, dy, axis, captured, pointerType }
     function clearAxisLock() {
@@ -773,6 +841,7 @@
     applySheets(data);
     fillTracklist();
     bindInteractions();
+    bindFloatEntrances();
     renderPlate(false);
     scrub();
     // QA harness for gate scrub (mirrors locked mock)

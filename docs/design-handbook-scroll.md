@@ -27,6 +27,16 @@ Horizontal carousels nested inside a vertically scrolling page (sheets plate sta
 
 Desktop pointer drag can share the same lock path. Keyboard arrows remain available for plate changes.
 
+
+## Android note (pan-y vs pan-x)
+
+`touch-action: pan-x` alone makes vertical page scroll feel broken when the finger starts on the plate stage — users expect two-direction nested scroll. Prefer:
+
+- Default **`touch-action: pan-y`** so vertical page scroll works until the gesture locks.
+- On axis lock to **x** (`adx >= ady` after a small threshold): set `is-axis-x` (`touch-action: none`), capture pointer, and **`preventDefault` immediately** on non-passive `touchmove` / `pointermove`. Mid-gesture `touch-action` changes are ignored by Chromium; preventDefault is what keeps Android Chrome from stealing a horizontal swipe.
+- Do **not** re-zero `dx` at lock (pre-lock travel counts toward commit). Use a lower commit threshold so short/fast L/R swipes still advance.
+- Keep a dedicated touch listener path in addition to pointer events for Android Chrome reliability.
+
 ## Primary QA device
 
 **Android Chrome** is the primary QA target for nested scroll and touch.
