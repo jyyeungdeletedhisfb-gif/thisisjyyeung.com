@@ -251,7 +251,7 @@
     // 0.00–0.10 gate fades in small on black
     // 0.06–0.58 scale up / circle expand until engulf
     // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // 0.82–1.00 darken → solid black into sheets (short late segment)
+    // 0.90–1.00 darken → solid black into sheets (tighter late segment)
     const gateIn = smoothstep((t - 0.0) / 0.10);
     const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
@@ -271,7 +271,7 @@
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
 
-    const darken = smoothstep((t - 0.82) / 0.18);
+    const darken = smoothstep((t - 0.90) / 0.10);
     if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
     if (soundtrackInner) soundtrackInner.style.opacity = String(1 - darken * 0.98);
   }
