@@ -14,7 +14,7 @@
   let plate, plateStage, peekLeft, peekRight, flipBtn, loupeBtn, replaceBtn, loupe;
   let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop;
   let playlistBg, soundtrackLayer, soundtrackDarken, soundtrackInner;
-  let enterGate, exitGate, enterBg, enterGateImg, exitGateImg, exitReveal;
+  let enterGate, exitGate, enterBg, enterGateImg, exitGateImg;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function displayTitle(s) { return s.titleDisplay || s.title; }
@@ -251,7 +251,7 @@
     // 0.00–0.10 gate fades in small on black
     // 0.06–0.58 scale up / circle expand until engulf
     // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // 0.72–1.00 darken → solid black into sheets
+    // 0.82–1.00 darken → solid black into sheets (short late segment)
     const gateIn = smoothstep((t - 0.0) / 0.10);
     const scaleT = smoothstep((t - 0.06) / 0.52);
     const scale = lerp(0.32, 4.6, scaleT);
@@ -271,7 +271,7 @@
       enterGateImg.style.opacity = String(gateIn * fadeGate);
     }
 
-    const darken = smoothstep((t - 0.72) / 0.28);
+    const darken = smoothstep((t - 0.82) / 0.18);
     if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
     if (soundtrackInner) soundtrackInner.style.opacity = String(1 - darken * 0.98);
   }
@@ -288,10 +288,6 @@
     exitGateImg.style.transform = `scale(${scale})`;
     exitGateImg.style.clipPath = `circle(${clipR}% at 50% 50%)`;
 
-    if (exitReveal) {
-      const reveal = smoothstep((t - 0.55) / 0.25) * (1 - smoothstep((t - 0.9) / 0.1));
-      exitReveal.style.opacity = String(reveal * 0.85);
-    }
   }
 
   function scrub() {
@@ -641,7 +637,6 @@
     enterBg = document.getElementById("enterBg");
     enterGateImg = document.getElementById("enterGateImg");
     exitGateImg = document.getElementById("exitGateImg");
-    exitReveal = document.getElementById("exitReveal");
     toTop = document.getElementById("toTop");
 
     // Gate backgrounds via assetUrl so <base href> resolves correctly
