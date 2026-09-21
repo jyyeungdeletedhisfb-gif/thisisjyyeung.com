@@ -323,6 +323,19 @@
     min-height: calc(100vh - var(--top-h) - 40px);
     display: flex; flex-direction: column;
   }
+  /* Section h2 — mirrors soundtrack-inner h2 hierarchy */
+  .sheets-heading {
+    margin: 0 0 18px;
+    padding: 0 4px;
+    font-family: "Clarendon", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+    text-align: left;
+    flex-shrink: 0;
+  }
   .frame-wrap {
     flex: 1;
     position: relative;
@@ -373,6 +386,14 @@
   .plate-stage {
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
+    /* pan-y by default so vertical page scroll works until horizontal lock */
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Once dominant axis is horizontal, kill browser scroll steal mid-swipe */
+  .plate-stage.is-axis-x,
+  .plate-stage.is-loupe {
     touch-action: none;
   }
   .plate-wrap {

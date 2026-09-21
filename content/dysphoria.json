@@ -27,6 +27,9 @@
     "spotifySoon": true,
     "backdrop": "assets/dysphoria/soundtrack-promo.jpg"
   },
+  "sheets": {
+    "heading": "The Images"
+  },
   "tracks": [
     {
       "n": "01",

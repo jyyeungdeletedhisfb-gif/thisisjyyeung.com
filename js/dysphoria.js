@@ -179,6 +179,7 @@
     loupeOn = false;
     loupeBtn.classList.remove("on");
     loupeBtn.setAttribute("aria-pressed", "false");
+    if (plateStage) plateStage.classList.remove("is-loupe");
     flipBtn.classList.remove("on");
     flipBtn.setAttribute("aria-pressed", "false");
     setTitle(dir, next);
@@ -391,6 +392,12 @@
     }
   }
 
+  function applySheets(data) {
+    const sh = data.sheets || {};
+    const el = document.getElementById("sheetsHeading");
+    if (el && sh.heading) el.textContent = sh.heading;
+  }
+
   function applyMeta(data) {
     const m = data.meta || {};
     if (m.title) document.title = m.title;
@@ -410,14 +417,47 @@
   }
 
   function bindInteractions() {
-    let drag = null;
+    // Android-first nested scroll: wait for dominant axis, then lock.
+    // Vertical stays with the page until |dx| clearly wins; once locked to x,
+    // preventDefault + pointer capture so slight vertical cannot steal mid-swipe.
+    const AXIS_LOCK_PX = 10;
+    let drag = null; // { id, x0, y0, dx, dy, axis: null|'x'|'y', captured }
+    function clearAxisLock() {
+      if (plateStage) plateStage.classList.remove("is-axis-x");
+    }
+    function applyPlateDrag(dx) {
+      const w = plate.offsetWidth || 300;
+      const p = Math.max(-1, Math.min(1, dx / w));
+      const shiftPx = p * w;
+      plate.style.transform = `translateX(${p * 100}%)`;
+      plate.style.opacity = String(1 - Math.abs(p) * 0.35);
+      plate.style.filter = `blur(${Math.abs(p) * 3}px)`;
+      setPeekShift(shiftPx, false);
+      titleBtn.style.transition = "none";
+      titleBtn.style.transform = `translateX(${p * 40}%)`;
+      const ap = Math.abs(p);
+      const midFade = Math.min(1, ap / 0.5);
+      titleBtn.style.opacity = String(1 - midFade * 0.62);
+    }
+    function resetTitleDragChrome() {
+      titleBtn.style.transition = "";
+      titleBtn.style.transform = "";
+      titleBtn.style.opacity = "";
+    }
     plateStage.addEventListener("pointerdown", (e) => {
       if (animating || loupeOn) return;
       if (e.target.closest(".icon-btn,.peek,.plate-controls")) return;
-      drag = { id: e.pointerId, x0: e.clientX, dx: 0 };
-      plateStage.setPointerCapture(e.pointerId);
-      plate.style.transition = "none";
-      setPeekShift(0, false);
+      // Do not capture yet — vertical page scroll must remain possible until lock.
+      drag = {
+        id: e.pointerId,
+        x0: e.clientX,
+        y0: e.clientY,
+        dx: 0,
+        dy: 0,
+        axis: null,
+        captured: false,
+      };
+      clearAxisLock();
     });
     plateStage.addEventListener("pointermove", (e) => {
       if (loupeOn) {
@@ -426,28 +466,58 @@
       }
       if (!drag || e.pointerId !== drag.id) return;
       drag.dx = e.clientX - drag.x0;
-      const w = plate.offsetWidth || 300;
-      const p = Math.max(-1, Math.min(1, drag.dx / w));
-      const shiftPx = p * w;
-      plate.style.transform = `translateX(${p * 100}%)`;
-      plate.style.opacity = String(1 - Math.abs(p) * 0.35);
-      plate.style.filter = `blur(${Math.abs(p) * 3}px)`;
-      // Peeks share the same translate family as the central plate
-      setPeekShift(shiftPx, false);
-      titleBtn.style.transition = "none";
-      titleBtn.style.transform = `translateX(${p * 40}%)`;
-      // Mid-scrub fade: opacity dips as |drag| approaches ~0.5, recovers on commit
-      const ap = Math.abs(p);
-      const midFade = Math.min(1, ap / 0.5); // 0→1 as |p|→0.5
-      titleBtn.style.opacity = String(1 - midFade * 0.62);
+      drag.dy = e.clientY - drag.y0;
+      if (!drag.axis) {
+        const adx = Math.abs(drag.dx);
+        const ady = Math.abs(drag.dy);
+        if (adx < AXIS_LOCK_PX && ady < AXIS_LOCK_PX) return;
+        if (adx > ady) {
+          drag.axis = "x";
+          plateStage.classList.add("is-axis-x");
+          try {
+            plateStage.setPointerCapture(e.pointerId);
+            drag.captured = true;
+          } catch (_) { /* ignore */ }
+          plate.style.transition = "none";
+          setPeekShift(0, false);
+          // Re-zero so commit distance is measured after lock (avoids diagonal jump)
+          drag.x0 = e.clientX;
+          drag.y0 = e.clientY;
+          drag.dx = 0;
+          drag.dy = 0;
+        } else {
+          // Dominant vertical — abandon carousel; let page scroll.
+          drag.axis = "y";
+          return;
+        }
+      }
+      if (drag.axis !== "x") return;
+      applyPlateDrag(drag.dx);
     });
+    // Non-passive touchmove: Android Chrome needs preventDefault after x-lock
+    // because touch-action changes do not apply mid-gesture.
+    plateStage.addEventListener(
+      "touchmove",
+      (e) => {
+        if (loupeOn || (drag && drag.axis === "x")) {
+          e.preventDefault();
+        }
+      },
+      { passive: false }
+    );
     function endDrag(e) {
       if (!drag || e.pointerId !== drag.id) return;
       const dx = drag.dx;
+      const axis = drag.axis;
+      const wasCaptured = drag.captured;
+      const pid = drag.id;
       drag = null;
-      titleBtn.style.transition = "";
-      titleBtn.style.transform = "";
-      titleBtn.style.opacity = "";
+      clearAxisLock();
+      if (wasCaptured) {
+        try { plateStage.releasePointerCapture(pid); } catch (_) { /* ignore */ }
+      }
+      resetTitleDragChrome();
+      if (axis !== "x") return; // vertical / undecided — no carousel commit
       const th = Math.min(80, (plate.offsetWidth || 300) * 0.22);
       if (dx < -th && i < sheets.length - 1) commitTo(i + 1, 1);
       else if (dx > th && i > 0) commitTo(i - 1, -1);
@@ -462,6 +532,12 @@
     }
     plateStage.addEventListener("pointerup", endDrag);
     plateStage.addEventListener("pointercancel", endDrag);
+    plateStage.addEventListener("lostpointercapture", (e) => {
+      if (drag && e.pointerId === drag.id && drag.axis === "x") {
+        // Treat capture loss like end so we don't leave plate mid-drag
+        endDrag(e);
+      }
+    });
 
     peekLeft.onclick = () => go(-1);
     peekRight.onclick = () => go(1);
@@ -476,6 +552,7 @@
       loupe.classList.toggle("on", loupeOn);
       loupeBtn.classList.toggle("on", loupeOn);
       loupeBtn.setAttribute("aria-pressed", loupeOn ? "true" : "false");
+      plateStage.classList.toggle("is-loupe", loupeOn);
       if (loupeOn) {
         const r = plate.getBoundingClientRect();
         // Seed hotspot at BR rim so glass center lands near plate mid
@@ -655,6 +732,7 @@
     applyChrome(data);
     applyIntro(data);
     applySoundtrack(data);
+    applySheets(data);
     fillTracklist();
     bindInteractions();
     renderPlate(false);

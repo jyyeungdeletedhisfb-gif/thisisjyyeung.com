@@ -1,0 +1,41 @@
+# Design handbook — scroll language
+
+Site-wide motion and interaction language for thisisjyyeung.com (Dysphoria and future projects). Keep these patterns consistent unless a page explicitly opts out.
+
+## Scroll-scrubbed sticky float (major beats)
+
+Major narrative beats (enter gate, soundtrack mid-gate, exit gate) use a **tall scroll section + sticky stage**:
+
+- Section height is larger than the viewport (e.g. ~130vh / ~240vh).
+- Inner stage is `position: sticky` under the topbar and fills the remaining viewport.
+- Scroll progress through the section (0→1) drives transforms, opacity, clip-path, and layer crossfades.
+
+This reads as a floating beat that the page scrubs through, not a separate “page” or a JS scroll-jack. Prefer progress math from layout geometry (`getBoundingClientRect` / section height) over wheel hijacking.
+
+**Do:** keep pointer events off decorative gate layers; enable them only on live interactive layers (e.g. soundtrack when faded in).  
+**Don’t:** rebuild cylinder / 3D tunnels for these beats; stay with 2D sticky scrub.
+
+## Axis-locked nested horizontal carousels
+
+Horizontal carousels nested inside a vertically scrolling page (sheets plate stage) must not fight the page scroll:
+
+1. Default `touch-action: pan-y` on the carousel stage so vertical page scroll still works when the gesture is clearly vertical.
+2. On pointer/touch move, wait until movement clears a small threshold (~10px).
+3. If **horizontal** dominates, lock to **x**: add an `is-axis-x` class (`touch-action: none`), `setPointerCapture`, and `preventDefault` on non-passive `touchmove` so Android Chrome cannot steal the gesture mid-swipe with a slight vertical drift.
+4. If **vertical** dominates, abandon the carousel gesture and let the page scroll.
+5. Preserve in-carousel tools (loupe / flip / replace) — they are not scroll gestures; ignore them when starting a drag.
+
+Desktop pointer drag can share the same lock path. Keyboard arrows remain available for plate changes.
+
+## Primary QA device
+
+**Android Chrome** is the primary QA target for nested scroll and touch.
+
+Validate on a real Android phone (or remote device) before signing off carousel work:
+
+- Vertical scroll through intro → enter gate → sheets → exit still feels continuous.
+- A mostly-horizontal swipe on the plate advances/rewinds sheets without the page jumping.
+- A mostly-vertical drag that begins on the plate scrolls the page instead of nudging the plate.
+- Loupe, flip, and replace still work after axis-lock changes.
+
+iOS Safari and desktop Chromium are secondary checks; do not optimize nested scroll only for desktop `wheel` behavior.
