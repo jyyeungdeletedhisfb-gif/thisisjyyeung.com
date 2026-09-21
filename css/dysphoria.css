@@ -386,13 +386,11 @@
   .plate-stage {
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
-    /* pan-y by default so vertical page scroll works until horizontal lock */
-    touch-action: pan-y;
+    /* pan-x: Android Chrome delivers horizontal swipes; page scroll from outside stage */
+    touch-action: pan-x;
     -webkit-user-select: none;
     user-select: none;
   }
-  /* Once dominant axis is horizontal, kill browser scroll steal mid-swipe */
-  .plate-stage.is-axis-x,
   .plate-stage.is-loupe {
     touch-action: none;
   }

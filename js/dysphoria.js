@@ -417,11 +417,9 @@
   }
 
   function bindInteractions() {
-    // Android-first nested scroll: wait for dominant axis, then lock.
-    // Vertical stays with the page until |dx| clearly wins; once locked to x,
-    // preventDefault + pointer capture so slight vertical cannot steal mid-swipe.
-    const AXIS_LOCK_PX = 10;
-    let drag = null; // { id, x0, y0, dx, dy, axis: null|'x'|'y', captured }
+    // Android Chrome: pan-x on stage + touch handlers. Do not use pan-y (kills L/R swipe).
+    const AXIS_LOCK_PX = 6;
+    let drag = null; // { id, x0, y0, dx, dy, axis, captured, pointerType }
     function clearAxisLock() {
       if (plateStage) plateStage.classList.remove("is-axis-x");
     }
@@ -444,66 +442,59 @@
       titleBtn.style.transform = "";
       titleBtn.style.opacity = "";
     }
-    plateStage.addEventListener("pointerdown", (e) => {
+    function shouldIgnoreTarget(t) {
+      return !!(t && t.closest && t.closest(".icon-btn,.peek,.plate-controls"));
+    }
+    function startDrag(id, x, y, pointerType) {
       if (animating || loupeOn) return;
-      if (e.target.closest(".icon-btn,.peek,.plate-controls")) return;
-      // Do not capture yet — vertical page scroll must remain possible until lock.
       drag = {
-        id: e.pointerId,
-        x0: e.clientX,
-        y0: e.clientY,
+        id,
+        x0: x,
+        y0: y,
         dx: 0,
         dy: 0,
         axis: null,
         captured: false,
+        pointerType: pointerType || "touch",
       };
       clearAxisLock();
-    });
-    plateStage.addEventListener("pointermove", (e) => {
+    }
+    function moveDrag(id, x, y, e) {
       if (loupeOn) {
-        moveLoupe(e.clientX, e.clientY);
+        moveLoupe(x, y);
         return;
       }
-      if (!drag || e.pointerId !== drag.id) return;
-      drag.dx = e.clientX - drag.x0;
-      drag.dy = e.clientY - drag.y0;
+      if (!drag || id !== drag.id) return;
+      drag.dx = x - drag.x0;
+      drag.dy = y - drag.y0;
       if (!drag.axis) {
         const adx = Math.abs(drag.dx);
         const ady = Math.abs(drag.dy);
         if (adx < AXIS_LOCK_PX && ady < AXIS_LOCK_PX) return;
-        if (adx > ady) {
+        // Bias to horizontal: equal travel counts as x (carousel intent on stage)
+        if (adx >= ady) {
           drag.axis = "x";
           plateStage.classList.add("is-axis-x");
-          try {
-            plateStage.setPointerCapture(e.pointerId);
-            drag.captured = true;
-          } catch (_) { /* ignore */ }
           plate.style.transition = "none";
           setPeekShift(0, false);
-          // Keep x0/dx from pointerdown so pre-lock travel counts toward commit
-          // (re-zeroing dropped short/fast swipes below threshold).
+          if (e && e.pointerId != null) {
+            try {
+              plateStage.setPointerCapture(e.pointerId);
+              drag.captured = true;
+            } catch (_) { /* ignore */ }
+          }
+          if (e && e.cancelable) e.preventDefault();
         } else {
-          // Dominant vertical — abandon carousel; let page scroll.
           drag.axis = "y";
           return;
         }
       }
       if (drag.axis !== "x") return;
+      if (e && e.cancelable) e.preventDefault();
       applyPlateDrag(drag.dx);
-    });
-    // Non-passive touchmove: Android Chrome needs preventDefault after x-lock
-    // because touch-action changes do not apply mid-gesture.
-    plateStage.addEventListener(
-      "touchmove",
-      (e) => {
-        if (loupeOn || (drag && drag.axis === "x")) {
-          e.preventDefault();
-        }
-      },
-      { passive: false }
-    );
-    function endDrag(e) {
-      if (!drag || e.pointerId !== drag.id) return;
+    }
+    function finishDrag(id) {
+      if (!drag || id !== drag.id) return;
       const dx = drag.dx;
       const axis = drag.axis;
       const wasCaptured = drag.captured;
@@ -514,8 +505,8 @@
         try { plateStage.releasePointerCapture(pid); } catch (_) { /* ignore */ }
       }
       resetTitleDragChrome();
-      if (axis !== "x") return; // vertical / undecided — no carousel commit
-      const th = Math.min(80, (plate.offsetWidth || 300) * 0.22);
+      if (axis !== "x") return;
+      const th = Math.min(44, (plate.offsetWidth || 300) * 0.12);
       if (dx < -th && i < sheets.length - 1) commitTo(i + 1, 1);
       else if (dx > th && i > 0) commitTo(i - 1, -1);
       else {
@@ -527,14 +518,64 @@
         clearPeekShift(true);
       }
     }
-    plateStage.addEventListener("pointerup", endDrag);
-    plateStage.addEventListener("pointercancel", endDrag);
-    plateStage.addEventListener("lostpointercapture", (e) => {
-      if (drag && e.pointerId === drag.id && drag.axis === "x") {
-        // Treat capture loss like end so we don't leave plate mid-drag
-        endDrag(e);
-      }
+
+    // Pointer path (mouse + some Android)
+    plateStage.addEventListener("pointerdown", (e) => {
+      if (shouldIgnoreTarget(e.target)) return;
+      startDrag(e.pointerId, e.clientX, e.clientY, e.pointerType);
     });
+    plateStage.addEventListener("pointermove", (e) => {
+      moveDrag(e.pointerId, e.clientX, e.clientY, e);
+    }, { passive: false });
+    function endPointer(e) {
+      finishDrag(e.pointerId);
+    }
+    plateStage.addEventListener("pointerup", endPointer);
+    plateStage.addEventListener("pointercancel", endPointer);
+    plateStage.addEventListener("lostpointercapture", (e) => {
+      if (drag && e.pointerId === drag.id) finishDrag(e.pointerId);
+    });
+
+    // Touch path — primary on Android Chrome (more reliable than pointer+pan-y)
+    plateStage.addEventListener(
+      "touchstart",
+      (e) => {
+        if (shouldIgnoreTarget(e.target)) return;
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        startDrag(t.identifier, t.clientX, t.clientY, "touch");
+      },
+      { passive: true }
+    );
+    plateStage.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!drag || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        if (t.identifier !== drag.id) return;
+        moveDrag(t.identifier, t.clientX, t.clientY, e);
+      },
+      { passive: false }
+    );
+    plateStage.addEventListener(
+      "touchend",
+      (e) => {
+        if (!drag) return;
+        // Changed touches may hold the ended id
+        const ended = e.changedTouches[0];
+        if (ended) finishDrag(ended.identifier);
+      },
+      { passive: true }
+    );
+    plateStage.addEventListener(
+      "touchcancel",
+      (e) => {
+        if (!drag) return;
+        const ended = e.changedTouches[0];
+        if (ended) finishDrag(ended.identifier);
+      },
+      { passive: true }
+    );
 
     peekLeft.onclick = () => go(-1);
     peekRight.onclick = () => go(1);
