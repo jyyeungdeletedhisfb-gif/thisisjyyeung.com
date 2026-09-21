@@ -19,7 +19,7 @@
     -webkit-font-smoothing: antialiased;
   }
   .topbar {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     height: var(--top-h);
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -74,22 +74,25 @@
     }
   }
 
-  /* ===== SECTION 1 + SCRUB BRIDGE ===== */
+  /* ===== 1. INTRO (white) — static, no cover-slide ===== */
   .intro {
     position: relative;
-    min-height: 220vh; /* tall for scrub room */
+    min-height: 100vh;
     background: #fff;
+    padding-top: var(--top-h);
+    display: flex;
+    flex-direction: column;
   }
   .intro-sticky {
-    position: sticky; top: var(--top-h);
-    height: calc(100vh - var(--top-h));
+    flex: 0 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 48px;
     align-items: end; /* bottom-align title+body to cover bottom */
-    align-content: start; /* pack row under topbar — kill empty band above cover */
-    padding: 16px clamp(20px, 5vw, 64px) 40px;
+    align-content: start;
+    padding: 16px clamp(20px, 5vw, 64px) 24px; /* topbar→cover gap ~16px */
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
   }
   .intro-cover {
@@ -99,12 +102,11 @@
     background: #111 center/cover no-repeat;
     border: 1px solid #ddd;
     justify-self: end;
-    transform-origin: center center;
-    will-change: transform, border-radius;
   }
   .intro-copy { max-width: 420px; justify-self: start; }
   .intro-copy h1 {
-    margin: 0 0 18px;
+    /* More air title↔body (~42px): 18px + 1.5rem */
+    margin: 0 0 calc(18px + 1.5rem);
     font-family: "Clarendon", Georgia, serif;
     font-weight: 700;
     font-size: clamp(42px, 6vw, 64px);
@@ -117,25 +119,205 @@
     line-height: 1.55;
     color: #333;
   }
-  .intro-hint {
-    margin-top: 28px;
-    color: #999;
-    line-height: 1;
+  .intro-scroll-cue {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* lower cue ~3 description lines (16px × 1.55 × 3 ≈ 74px) */
+    padding: calc(3 * 16px * 1.55) 0 32px;
+    color: #777;
   }
-  .intro-hint .chevrons {
-    display: inline-flex;
+  .intro-scroll-cue .chevrons {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 0;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0;
-    line-height: 0.62;
-    transform: none;
+    line-height: 0;
   }
-  .intro-hint .chevrons > span {
+  .intro-scroll-cue .chev-svg {
     display: block;
+    width: 51px;
+    height: 27px;
+    opacity: 0.92;
+  }
+  .intro-scroll-cue .chev-svg + .chev-svg {
+    margin-top: -10px;
+  }
+
+  /* ===== 2. ENTER GATE (scroll scrub ~320vh) ===== */
+  .enter-gate {
+    position: relative;
+    height: 320vh;
+    background: #000;
+  }
+  .enter-sticky {
+    position: sticky;
+    top: var(--top-h);
+    height: calc(100vh - var(--top-h));
+    overflow: hidden;
+    background: #000;
+    isolation: isolate;
+  }
+  .enter-bg {
+    position: absolute; inset: 0;
+    background: #000;
+    opacity: 1;
+    will-change: opacity;
+  }
+  .gate-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .gate-img {
+    width: min(42vmin, 320px);
+    height: min(42vmin, 320px);
+    background: center/cover no-repeat;
+    border-radius: 50%;
+    transform: scale(0.35);
+    opacity: 0;
+    will-change: transform, opacity, clip-path;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06);
+    clip-path: circle(38% at 50% 50%);
+  }
+  .gate-img.enter { background-image: url("../assets/dysphoria/gate-enter.jpg"); }
+  .gate-img.exit { background-image: url("../assets/dysphoria/gate-exit.jpg"); }
+
+  .soundtrack-layer {
+    position: absolute; inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+  .soundtrack-layer.is-live { pointer-events: auto; }
+  .soundtrack-bg {
+    position: absolute; inset: 0;
+    background: #111 center/cover no-repeat;
+    filter: blur(18px) saturate(0.85) brightness(0.45);
+    transform: scale(1.12);
+  }
+  .soundtrack-scrim {
+    position: absolute; inset: 0;
+    background: rgba(5,5,5,0.62);
+  }
+  .soundtrack-darken {
+    position: absolute; inset: 0;
+    z-index: 2;
+    background: #050505;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+  .soundtrack-inner {
+    position: relative;
+    z-index: 1;
+    width: min(920px, 92vw);
+    max-height: 100%;
+    overflow: auto;
+    text-align: left;
+    color: var(--fg);
+    padding: 24px 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .soundtrack-inner h2 {
+    margin: 0 0 10px;
+    font-family: "Clarendon", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(28px, 5vw, 40px);
+  }
+  .soundtrack-inner .sub {
+    margin: 0 0 22px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #c8c8c8;
+  }
+  .soundtrack-inner .listen-row {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .soundtrack-inner .listen-row a { color: #fff; text-decoration: none; border-bottom: 1px solid #777; }
+  .soundtrack-inner .listen-row .soon { color: #999; }
+  .soundtrack-inner iframe {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 450px;
+    border: 1px solid #555;
+    background: transparent;
+  }
+  @media (min-width: 768px) {
+    .soundtrack-inner iframe {
+      border: 0;
+      outline: none;
+    }
+  }
+  @media (min-width: 801px) {
+    .soundtrack-inner iframe { height: 500px; }
+  }
+  /* Phone: hug white embed card — never leave taller bordered chrome than the card */
+  @media (max-width: 800px) {
+    .soundtrack-inner iframe {
+      height: 450px;
+      overflow: hidden;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .soundtrack-bg {
+      filter: blur(8px);
+      transform: none;
+    }
+  }
+
+  /* ===== 4. EXIT GATE (~240vh) ===== */
+  .exit-gate {
+    position: relative;
+    height: 240vh;
+    background: #000;
+  }
+  .exit-sticky {
+    position: sticky;
+    top: var(--top-h);
+    height: calc(100vh - var(--top-h));
+    overflow: hidden;
+    background: #000;
+    isolation: isolate;
+  }
+  .exit-reveal {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    z-index: 1;
+  }
+  .exit-gate-wrap {
+    position: absolute; inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .exit-gate-wrap .gate-img {
+    width: min(42vmin, 320px);
+    height: min(42vmin, 320px);
+    opacity: 1;
+    transform: scale(4.2);
+    clip-path: circle(70% at 50% 50%);
+    border-radius: 50%;
   }
 
   /* ===== SHEETS ===== */
@@ -143,7 +325,7 @@
     background: var(--bg);
     color: var(--fg);
     min-height: 100vh;
-    padding: 16px 16px 48px;
+    padding: calc(var(--top-h) + 16px) 16px 48px;
   }
   .sheets-inner {
     max-width: 1100px;
@@ -397,106 +579,28 @@
   .tracklist button:hover, .tracklist button.active { background: #1a1a1a; }
   .tracklist .n { color: var(--muted); min-width: 1.8em; }
 
-  /* ===== SOUNDTRACK (between intro + sheets) ===== */
-  .playlist {
-    position: relative;
-    isolation: isolate;
-    background: #1a1a1a;
-    color: #eee;
-    padding: 72px 20px 40px;
-    overflow: hidden;
-  }
-  .playlist-bg {
-    position: absolute;
-    inset: -24px;
-    z-index: 0;
-    background: #2a2a2a center / cover no-repeat;
-    filter: blur(18px);
-    transform: scale(1.06);
-    pointer-events: none;
-  }
-  .playlist-scrim {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: linear-gradient(180deg, rgba(8,8,8,0.62) 0%, rgba(8,8,8,0.72) 50%, rgba(8,8,8,0.78) 100%);
-    pointer-events: none;
-  }
-  .playlist-inner {
-    position: relative;
-    z-index: 2;
-    max-width: 920px;
-    margin: 0 auto;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .playlist-bg {
-      filter: blur(8px);
-      transform: none;
-      inset: 0;
-    }
-  }
-  .playlist h2 {
-    margin: 0 0 10px;
-    font-family: "Clarendon", Georgia, serif;
-    font-weight: 700;
-    font-size: 28px;
-  }
-  .playlist .sub {
-    margin: 0 0 22px;
-    font-size: 14px; color: #bbb; line-height: 1.5;
-  }
-  .listen-row {
-    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  }
-  .listen-row a { color: #fff; text-decoration: none; border-bottom: 1px solid #777; }
-  .listen-row .soon { color: #999; }
-  .playlist iframe {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: 450px;
-    border: 1px solid #555;
-    background: transparent;
-  }
-  /* iPad / tablet+: no chrome border around the widget */
-  @media (min-width: 768px) {
-    .playlist iframe {
-      border: 0;
-      outline: none;
-    }
-  }
-  @media (min-width: 801px) {
-    .playlist iframe { height: 500px; }
-  }
-  /* Phone: hug white embed card — never leave taller bordered chrome than the card */
-  @media (max-width: 800px) {
-    .playlist iframe {
-      height: 450px;
-      overflow: hidden;
-    }
-  }
-
   .site-footer {
-    background: #3a3a3a;
-    color: #999;
+    background: #050505;
+    color: #aaa;
     text-align: center;
-    padding: 28px 20px 40px;
-    border-top: 1px solid #4a4a4a;
+    padding: 64px 24px 80px;
+    border-top: 1px solid #1a1a1a;
   }
   .home-btn {
     display: inline-block;
-    margin-bottom: 22px;
-    padding: 12px 20px;
-    border: 1px solid #aaa;
-    color: #eee;
+    margin-bottom: 28px;
+    padding: 12px 28px;
+    border: 1px solid #3a3a3a;
+    border-radius: 999px;
+    color: #f2f2f2;
     text-decoration: none;
-    font-size: 12px;
-    letter-spacing: 0.16em;
+    font-size: 13px;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    transition: background 0.2s ease, border-color 0.2s ease;
   }
-  .home-btn:hover { border-color: #fff; color: #fff; }
-  .copy { font-size: 11px; letter-spacing: 0.12em; }
+  .home-btn:hover { background: rgba(255,255,255,0.08); border-color: #666; color: #fff; }
+  .copy { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #666; }
 
 
   .to-top {
@@ -540,15 +644,14 @@
   @media (max-width: 800px) {
     .intro-sticky {
       grid-template-columns: 1fr;
-      gap: 24px;
-      padding-top: 14px; /* ≥50% cut vs prior 28px */
-      align-items: center;
-      align-content: center;
+      gap: 28px;
+      padding: 16px 20px 24px;
+      align-items: start;
+      align-content: start;
     }
-    .intro-cover { justify-self: center; max-width: 360px; }
-    .intro-copy { justify-self: center; text-align: left; }
-    .intro-hint { text-align: center; }
-    .intro-hint .chevrons { margin-inline: auto; }
+    .intro-cover { justify-self: center; max-width: 280px; }
+    .intro-copy { justify-self: center; text-align: left; max-width: 360px; }
+    .intro-scroll-cue { padding-bottom: 20px; }
   }
 
 
@@ -619,4 +722,7 @@
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     .plate, .title-btn, .intro-cover, .intro-copy { transition: none !important; animation: none !important; }
+    .gate-img, .enter-bg, .soundtrack-layer, .soundtrack-darken, .exit-reveal {
+      transition: none !important;
+    }
   }

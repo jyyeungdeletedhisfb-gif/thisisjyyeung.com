@@ -12,7 +12,10 @@
   let sheets = [];
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
   let plate, plateStage, peekLeft, peekRight, flipBtn, loupeBtn, replaceBtn, loupe;
-  let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop, playlist, playlistBg;
+  let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop;
+  let playlistBg, soundtrackLayer, soundtrackDarken, soundtrackInner;
+  let enterGate, exitGate, enterBg, enterGateImg, exitGateImg, exitReveal;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function displayTitle(s) { return s.titleDisplay || s.title; }
   function currentSrc() {
@@ -224,20 +227,102 @@
     commitTo(idx, idx > i ? 1 : -1);
   }
 
+  function clamp(v, a, b) { return Math.min(b, Math.max(a, v)); }
+  function smoothstep(t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  /** Progress 0–1 through a tall sticky scrub section */
+  function sectionProgress(el) {
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    const topH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--top-h")) || 52;
+    const viewH = window.innerHeight - topH;
+    const total = el.offsetHeight - viewH;
+    if (total <= 0) return 0;
+    const scrolled = -rect.top + topH;
+    return clamp(scrolled / total, 0, 1);
+  }
+
+  function scrubEnter(t) {
+    if (!enterGateImg) return;
+    // Solid black void under gate (no blurred backdrop).
+    if (enterBg) enterBg.style.opacity = "1";
+
+    // 0.00–0.10 gate fades in small on black
+    // 0.06–0.58 scale up / circle expand until engulf
+    // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
+    // 0.72–1.00 darken → solid black into sheets
+    const gateIn = smoothstep((t - 0.0) / 0.10);
+    const scaleT = smoothstep((t - 0.06) / 0.52);
+    const scale = lerp(0.32, 4.6, scaleT);
+    const clipR = lerp(32, 78, scaleT);
+
+    enterGateImg.style.opacity = String(gateIn);
+    enterGateImg.style.transform = `scale(${scale})`;
+    enterGateImg.style.clipPath = `circle(${clipR}% at 50% 50%)`;
+
+    const snd = smoothstep((t - 0.48) / 0.24);
+    if (soundtrackLayer) {
+      soundtrackLayer.style.opacity = String(snd);
+      soundtrackLayer.classList.toggle("is-live", snd > 0.4);
+    }
+    if (t > 0.62) {
+      const fadeGate = 1 - smoothstep((t - 0.62) / 0.16);
+      enterGateImg.style.opacity = String(gateIn * fadeGate);
+    }
+
+    const darken = smoothstep((t - 0.72) / 0.28);
+    if (soundtrackDarken) soundtrackDarken.style.opacity = String(darken);
+    if (soundtrackInner) soundtrackInner.style.opacity = String(1 - darken * 0.98);
+  }
+
+  function scrubExit(t) {
+    if (!exitGateImg) return;
+    // hold ~0–0.12; contract 0.12–0.80; fade late; footer reveal
+    const contractT = smoothstep((t - 0.12) / 0.68);
+    const scale = lerp(4.4, 0.28, contractT);
+    const clipR = lerp(78, 34, contractT);
+    const fadeOut = 1 - smoothstep((t - 0.78) / 0.18);
+
+    exitGateImg.style.opacity = String(fadeOut);
+    exitGateImg.style.transform = `scale(${scale})`;
+    exitGateImg.style.clipPath = `circle(${clipR}% at 50% 50%)`;
+
+    if (exitReveal) {
+      const reveal = smoothstep((t - 0.55) / 0.25) * (1 - smoothstep((t - 0.9) / 0.1));
+      exitReveal.style.opacity = String(reveal * 0.85);
+    }
+  }
+
   function scrub() {
-    const rect = intro.getBoundingClientRect();
-    const total = intro.offsetHeight - window.innerHeight;
-    const scrolled = Math.min(Math.max(-rect.top, 0), total);
-    const t = total > 0 ? scrolled / total : 0;
-    // Dark chrome once intro scrub deepens, or anywhere past intro (soundtrack → sheets)
-    const pastIntro = window.scrollY > intro.offsetHeight - 80;
-    document.body.classList.toggle("on-dark", t > 0.55 || pastIntro);
-    const p = t * t * (3 - 2 * t);
-    introCover.style.transform = `translate(${(0.5 - 0.25) * p * -40}vw, ${p * 4}vh) scale(${1 - p * 0.08})`;
-    introCopy.style.opacity = String(1 - Math.min(1, p * 1.35));
-    introCopy.style.transform = `translateY(${p * -24}px)`;
-    // Bridge white intro toward dark soundtrack backdrop
-    intro.style.background = `rgb(${Math.round(255 * (1 - p * 0.98))},${Math.round(255 * (1 - p * 0.98))},${Math.round(255 * (1 - p * 0.98))})`;
+    const enterT = sectionProgress(enterGate);
+    const exitT = sectionProgress(exitGate);
+
+    if (reduceMotion) {
+      const mid = window.scrollY + window.innerHeight * 0.4;
+      const sheetsEl = document.getElementById("sheets");
+      const sheetsTop = sheetsEl ? sheetsEl.offsetTop : 0;
+      if (!enterGate || mid < enterGate.offsetTop) {
+        scrubEnter(0);
+        scrubExit(0);
+      } else if (mid < sheetsTop) {
+        scrubEnter(1);
+        scrubExit(0);
+      } else if (!exitGate || mid < exitGate.offsetTop) {
+        scrubEnter(1);
+        scrubExit(0);
+      } else {
+        scrubEnter(1);
+        scrubExit(1);
+      }
+    } else {
+      scrubEnter(enterT);
+      scrubExit(exitT);
+    }
+
+    // Topbar dark once past intro (entering gate scrub or beyond)
+    const pastIntro = window.scrollY > intro.offsetHeight - 80 || enterT > 0.01;
+    document.body.classList.toggle("on-dark", pastIntro);
   }
 
   function moveLoupe(cx, cy) {
@@ -286,16 +371,15 @@
     }
     const h1 = introCopy && introCopy.querySelector("h1");
     const p = introCopy && introCopy.querySelector("p");
-    const hint = introCopy && introCopy.querySelector(".intro-hint");
+    const hint = document.getElementById("introHint");
     if (h1 && introData.heading) h1.textContent = introData.heading;
     if (p && introData.body) p.textContent = introData.body;
-    // Visual is a chevron affordance in markup; JSON hint stays the accessible label
     if (hint && introData.hint) hint.setAttribute("aria-label", introData.hint);
   }
 
   function applySoundtrack(data) {
     const st = data.soundtrack || {};
-    const section = playlist || document.getElementById("playlist");
+    const section = soundtrackInner || document.getElementById("soundtrackInner");
     if (!section) return;
     const h2 = section.querySelector("h2");
     const sub = section.querySelector(".sub");
@@ -477,6 +561,8 @@
     if (cover) urls.push(assetUrl(cover));
     const backdrop = data.soundtrack && data.soundtrack.backdrop;
     if (backdrop) urls.push(assetUrl(backdrop));
+    urls.push(assetUrl("assets/dysphoria/gate-enter.jpg"));
+    urls.push(assetUrl("assets/dysphoria/gate-exit.jpg"));
     (data.tracks || []).forEach((t) => {
       if (t.src) urls.push(assetUrl(t.src));
       if (t.alt) urls.push(assetUrl(t.alt));
@@ -546,9 +632,25 @@
     introCover = document.getElementById("introCover");
     introCopy = document.getElementById("introCopy");
     introSticky = document.querySelector(".intro-sticky");
-    playlist = document.getElementById("playlist");
     playlistBg = document.getElementById("playlistBg");
+    soundtrackLayer = document.getElementById("soundtrackLayer");
+    soundtrackDarken = document.getElementById("soundtrackDarken");
+    soundtrackInner = document.getElementById("soundtrackInner");
+    enterGate = document.getElementById("enterGate");
+    exitGate = document.getElementById("exitGate");
+    enterBg = document.getElementById("enterBg");
+    enterGateImg = document.getElementById("enterGateImg");
+    exitGateImg = document.getElementById("exitGateImg");
+    exitReveal = document.getElementById("exitReveal");
     toTop = document.getElementById("toTop");
+
+    // Gate backgrounds via assetUrl so <base href> resolves correctly
+    if (enterGateImg) {
+      enterGateImg.style.backgroundImage = `url("${assetUrl("assets/dysphoria/gate-enter.jpg")}")`;
+    }
+    if (exitGateImg) {
+      exitGateImg.style.backgroundImage = `url("${assetUrl("assets/dysphoria/gate-exit.jpg")}")`;
+    }
 
     const res = await fetch(CONTENT_URL);
     if (!res.ok) throw new Error("Failed to load content/dysphoria.json");
@@ -562,6 +664,25 @@
     bindInteractions();
     renderPlate(false);
     scrub();
+    // QA harness for gate scrub (mirrors locked mock)
+    window.__gateMock = {
+      sectionProgress,
+      scrubEnter,
+      scrubExit,
+      update: scrub,
+      getEnterT: () => sectionProgress(enterGate),
+      getExitT: () => sectionProgress(exitGate),
+      scrollToProgress(kind, t) {
+        const el = kind === "exit" ? exitGate : enterGate;
+        if (!el) return;
+        const topH = 52;
+        const viewH = window.innerHeight - topH;
+        const total = el.offsetHeight - viewH;
+        const y = el.offsetTop - topH + total * clamp(t, 0, 1);
+        window.scrollTo(0, y);
+        scrub();
+      }
+    };
     // Gate runs after first paint of chrome so sheets don't hitch on first open
     runLoadGate(data).catch(() => dismissLoadGate());
   }
