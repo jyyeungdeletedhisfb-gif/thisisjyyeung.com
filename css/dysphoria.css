@@ -335,9 +335,15 @@
   @media (max-width: 800px) {
     .sheets-reveal { flex: 0 0 auto; }
   }
+  /* Align with soundtrack-inner content column (left edge match) */
   .sheets-heading {
-    margin: 0 0 18px;
-    padding: 0 4px;
+    width: min(920px, 92vw);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 18px;
+    margin-top: 0;
+    padding: 0 16px;
+    box-sizing: border-box;
     font-family: "Clarendon", Georgia, serif;
     font-weight: 700;
     font-size: clamp(28px, 5vw, 40px);
