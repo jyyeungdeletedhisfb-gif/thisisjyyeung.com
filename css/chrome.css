@@ -179,3 +179,93 @@ body:not(.on-dark) .topbar .nav-toggle {
   flex: 1;
   min-height: 0;
 }
+
+/* Quiet Privacy link under © */
+.footer-links {
+  margin: 12px 0 0;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.footer-links a {
+  color: #666;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-links a:hover {
+    color: #bbb;
+    border-bottom-color: #555;
+  }
+}
+.footer-links a[aria-current="page"] {
+  color: #999;
+}
+
+/* Simple content pages (contact, privacy) */
+.page-shell .page-main {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: calc(var(--top-h, 52px) + 48px) 24px 64px;
+  color: #ddd;
+  text-align: left;
+}
+.page-shell .page-main h1 {
+  margin: 0 0 16px;
+  font-family: "Clarendon", "Clarendon Text", Georgia, serif;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #f2f2f2;
+}
+.page-shell .page-lede {
+  margin: 0 0 28px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #999;
+}
+.page-shell .contact-disclaimer {
+  margin: 0;
+  padding: 18px 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #bbb;
+  border: 1px solid #2a2a2a;
+  background: #0c0c0c;
+}
+.page-shell .page-main--prose section {
+  margin: 0 0 28px;
+}
+.page-shell .page-main--prose h2 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #aaa;
+}
+.page-shell .page-main--prose p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: #c8c8c8;
+}
+.page-shell .page-main--prose a {
+  color: #eee;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .page-shell .page-main--prose a:hover {
+    color: #fff;
+  }
+}
+.page-shell .page-main--prose strong {
+  color: #eee;
+  font-weight: 600;
+}

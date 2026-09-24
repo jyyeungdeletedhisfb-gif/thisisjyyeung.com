@@ -150,3 +150,5 @@ Ordered next steps:
 ---
 
 *Doc for Dex ↔ Jy. No secrets. Aligns with `docs/design-taste.md`.*
+
+**Implemented since this brief:** site chrome + footer, `/contact/` placeholder, `/privacy/`. Operational copy (disclaimer, Formspree plan, analytics/cookie policy) lives in `docs/legal-and-contact.md`.
