@@ -12,9 +12,10 @@
 
 /* ===== Hamburger / nav stub =====
    Intended hamburger offset (QA): 16px from the viewport’s right edge.
-   Home uses .site-nav--float { padding: 0 16px }. Topbar pages (Dysphoria)
-   inherit 20px side padding from dysphoria.css — .topbar .top-right pulls
-   4px so the 40×40 .nav-toggle’s right edge lands on the same 16px inset. */
+   Home: .site-nav--float { padding: 0 16px } → toggle right edge at 16px.
+   Topbar (Dysphoria): dysphoria.css pads 20px + .top-right { min-width: 4em }
+   left-aligns the 40px toggle inside that box (was ~40px inset). Fix: flex-end
+   the toggle and pull 4px so right inset matches home’s 16px. */
 .site-nav {
   position: relative;
   z-index: 210;
@@ -30,6 +31,10 @@
   z-index: 210;
 }
 .topbar .top-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0; /* override dysphoria.css 4em so toggle isn’t inset further */
   margin-right: -4px; /* 20px topbar pad → match home’s 16px hamburger inset */
 }
 .nav-toggle {
