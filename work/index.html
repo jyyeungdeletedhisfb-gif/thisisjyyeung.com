@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary" />
   <link href="https://fonts.cdnfonts.com/css/clarendon-2" rel="stylesheet" />
   <link rel="stylesheet" href="css/dysphoria.css" />
-  <link rel="stylesheet" href="css/chrome.css" />
+  <link rel="stylesheet" href="css/chrome.css?v=730ff50-burger2" />
 </head>
 <body class="home-shell page-shell">
   <nav class="site-nav site-nav--float" data-chrome-nav>
@@ -32,24 +32,52 @@
     </div>
   </nav>
 
-  <main class="page-main">
+  <main class="page-main page-main--work">
     <h1>Work</h1>
     <p class="page-lede">Projects and eras. Live work opens below; the rest are placeholders for what’s next.</p>
-    <ul class="work-list">
+    <ul class="work-grid">
       <li>
-        <a href="dysphoria/">Dysphoria</a>
+        <a class="work-tile" href="dysphoria/">
+          <div class="work-tile__frame">
+            <img src="assets/work/dysphoria.jpg" alt="Dysphoria cover" width="1080" height="1080" loading="lazy" />
+          </div>
+          <div class="work-tile__meta">
+            <span class="work-tile__title">Dysphoria</span>
+          </div>
+        </a>
       </li>
       <li>
-        <span class="work-title is-soon">Front</span>
-        <em class="work-soon">Coming soon</em>
+        <article class="work-tile is-soon" aria-disabled="true">
+          <div class="work-tile__frame">
+            <img src="assets/work/front.jpg" alt="" width="1080" height="1080" loading="lazy" />
+          </div>
+          <div class="work-tile__meta">
+            <span class="work-tile__title">Front</span>
+            <em class="work-tile__soon">Coming soon</em>
+          </div>
+        </article>
       </li>
       <li>
-        <span class="work-title is-soon">Authenticity + Imitation</span>
-        <em class="work-soon">Coming soon</em>
+        <article class="work-tile is-soon" aria-disabled="true">
+          <div class="work-tile__frame">
+            <div class="work-tile__ghost" aria-hidden="true">A+I</div>
+          </div>
+          <div class="work-tile__meta">
+            <span class="work-tile__title">Authenticity + Imitation</span>
+            <em class="work-tile__soon">Coming soon</em>
+          </div>
+        </article>
       </li>
       <li>
-        <span class="work-title is-soon">State</span>
-        <em class="work-soon">Coming soon</em>
+        <article class="work-tile is-soon" aria-disabled="true">
+          <div class="work-tile__frame">
+            <img src="assets/work/state.jpg" alt="" width="1400" height="1400" loading="lazy" />
+          </div>
+          <div class="work-tile__meta">
+            <span class="work-tile__title">State</span>
+            <em class="work-tile__soon">Coming soon</em>
+          </div>
+        </article>
       </li>
     </ul>
   </main>
@@ -76,6 +104,6 @@
     <p class="footer-links"><a href="privacy/">Privacy</a></p>
   </footer>
 
-  <script src="js/chrome.js" defer></script>
+  <script src="js/chrome.js?v=730ff50-burger2" defer></script>
 </body>
 </html>
