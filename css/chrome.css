@@ -1,7 +1,20 @@
-/* Site-wide chrome: hamburger stub + footer
-   Linked from home + dysphoria. Respects <base href="../"> on era pages. */
+/* Site-wide chrome: hamburger + footer
+   Linked from home, dysphoria, contact, privacy.
+   Respects <base href="../"> on era/sub pages. */
 
-/* ===== Hamburger / nav stub ===== */
+/* Base chrome type: Helvetica stack (non-Dysphoria + shared footer/nav).
+   Dysphoria era titles/brand keep Clarendon in dysphoria.css. */
+.site-nav,
+.site-footer,
+.page-shell .page-main {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ===== Hamburger / nav stub =====
+   Intended hamburger offset (QA): 16px from the viewport’s right edge.
+   Home uses .site-nav--float { padding: 0 16px }. Topbar pages (Dysphoria)
+   inherit 20px side padding from dysphoria.css — .topbar .top-right pulls
+   4px so the 40×40 .nav-toggle’s right edge lands on the same 16px inset. */
 .site-nav {
   position: relative;
   z-index: 210;
@@ -15,6 +28,9 @@
   align-items: center;
   padding: 0 16px;
   z-index: 210;
+}
+.topbar .top-right {
+  margin-right: -4px; /* 20px topbar pad → match home’s 16px hamburger inset */
 }
 .nav-toggle {
   -webkit-appearance: none;
@@ -59,6 +75,7 @@
   color: #f2f2f2;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
   display: none;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 .site-nav.is-open .nav-panel {
   display: block;
@@ -111,7 +128,29 @@ body:not(.on-dark) .topbar .nav-toggle {
   text-align: center;
   padding: 56px 24px 72px;
   border-top: 1px solid #1a1a1a;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
+
+/* Clear “Back home” on every page except home (logo + hamburger also go home) */
+.footer-home {
+  display: inline-block;
+  margin: 0 0 28px;
+  padding: 12px 20px;
+  border: 1px solid #777;
+  color: #eee;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-home:hover {
+    border-color: #fff;
+    color: #fff;
+  }
+}
+
 .footer-icons {
   display: flex;
   align-items: center;
@@ -167,6 +206,12 @@ body:not(.on-dark) .topbar .nav-toggle {
   color: #666;
   margin: 0;
 }
+.site-footer .footer-credit {
+  margin: 10px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #777;
+}
 
 /* Home layout: hero + footer */
 .home-shell {
@@ -180,7 +225,14 @@ body:not(.on-dark) .topbar .nav-toggle {
   min-height: 0;
 }
 
-/* Quiet Privacy link under © */
+/* Home brand mark: Helvetica caps (Clarendon reserved for Dysphoria era) */
+.home-hero h1 {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Privacy + prose links: interactive text always underlined */
 .footer-links {
   margin: 12px 0 0;
   font-size: 11px;
@@ -189,21 +241,21 @@ body:not(.on-dark) .topbar .nav-toggle {
 }
 .footer-links a {
   color: #666;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: color 0.2s ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .footer-links a:hover {
     color: #bbb;
-    border-bottom-color: #555;
   }
 }
 .footer-links a[aria-current="page"] {
   color: #999;
 }
 
-/* Simple content pages (contact, privacy) */
+/* Simple content pages (contact, privacy) — Helvetica base */
 .page-shell .page-main {
   flex: 1;
   min-height: 0;
@@ -216,10 +268,11 @@ body:not(.on-dark) .topbar .nav-toggle {
 }
 .page-shell .page-main h1 {
   margin: 0 0 16px;
-  font-family: "Clarendon", "Clarendon Text", Georgia, serif;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.75rem, 4vw, 2.25rem);
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #f2f2f2;
 }
 .page-shell .page-lede {
