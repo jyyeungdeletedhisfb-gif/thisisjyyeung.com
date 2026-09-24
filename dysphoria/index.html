@@ -23,6 +23,7 @@
 
   <link href="https://fonts.cdnfonts.com/css/clarendon-2" rel="stylesheet" />
   <link rel="stylesheet" href="css/dysphoria.css" />
+  <link rel="stylesheet" href="css/chrome.css" />
 </head>
 <body>
   <div class="load-gate" id="loadGate" role="status" aria-live="polite" aria-busy="true">
@@ -35,7 +36,20 @@
   <header class="topbar">
     <a class="brand" href="./">Jy Yeüng</a>
     <div class="project-title">Dysphoria</div>
-    <div class="top-right"></div>
+    <div class="top-right">
+      <nav class="site-nav" data-chrome-nav>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>
+          </svg>
+        </button>
+        <div class="nav-panel" id="site-menu" hidden>
+          <a href="./">Home</a>
+          <a href="dysphoria/" aria-current="page">Dysphoria</a>
+          <span class="nav-soon" aria-disabled="true">About<em>soon</em></span>
+        </div>
+      </nav>
+    </div>
   </header>
 
   <!-- 1. INTRO (white) — no cover-slide motion -->
@@ -154,16 +168,31 @@
     </div>
   </section>
 
-  <!-- 5. FOOTER -->
+  <!-- 5. FOOTER (site-wide chrome) -->
   <footer class="site-footer" id="footer">
-    <a class="home-btn" href="./">Back home</a>
-    <div class="copy">© <span data-year>2026</span> JY YEÜNG</div>
+    <div class="footer-icons">
+      <a class="footer-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <span class="footer-icon is-soon" role="button" tabindex="0" title="Coming soon" aria-label="Email — Coming soon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
+          <path d="M4 7.5 L12 13 L20 7.5"/>
+        </svg>
+      </span>
+    </div>
+    <p class="copy">© 2026 JY YEÜNG. ALL RIGHTS RESERVED</p>
   </footer>
 
   <button type="button" class="to-top" id="toTop" aria-label="Back to top" title="Back to top">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19 V7"/><path d="M6 11 l6 -6 l6 6"/></svg>
   </button>
 
+  <script src="js/chrome.js" defer></script>
   <script src="js/dysphoria.js" defer></script>
 </body>
 </html>

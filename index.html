@@ -15,12 +15,47 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link href="https://fonts.cdnfonts.com/css/clarendon-2" rel="stylesheet" />
   <link rel="stylesheet" href="css/dysphoria.css" />
+  <link rel="stylesheet" href="css/chrome.css" />
 </head>
-<body>
+<body class="home-shell">
+  <nav class="site-nav site-nav--float" data-chrome-nav>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 7h14"/><path d="M5 12h14"/><path d="M5 17h14"/>
+      </svg>
+    </button>
+    <div class="nav-panel" id="site-menu" hidden>
+      <a href="./" aria-current="page">Home</a>
+      <a href="dysphoria/">Dysphoria</a>
+      <span class="nav-soon" aria-disabled="true">About<em>soon</em></span>
+    </div>
+  </nav>
+
   <main class="home-hero">
     <h1>Jy Yeüng</h1>
     <p>thisisjyyeung.com</p>
     <a class="era" href="dysphoria/">Enter Dysphoria</a>
   </main>
+
+  <footer class="site-footer" id="footer">
+    <div class="footer-icons">
+      <a class="footer-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <span class="footer-icon is-soon" role="button" tabindex="0" title="Coming soon" aria-label="Email — Coming soon">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
+          <path d="M4 7.5 L12 13 L20 7.5"/>
+        </svg>
+      </span>
+    </div>
+    <p class="copy">© 2026 JY YEÜNG. ALL RIGHTS RESERVED</p>
+  </footer>
+
+  <script src="js/chrome.js" defer></script>
 </body>
 </html>

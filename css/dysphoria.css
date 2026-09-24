@@ -606,28 +606,7 @@
   .tracklist button:hover, .tracklist button.active { background: #1a1a1a; }
   .tracklist .n { color: var(--muted); min-width: 1.8em; }
 
-  .site-footer {
-    background: #050505;
-    color: #aaa;
-    text-align: center;
-    padding: 64px 24px 80px;
-    border-top: 1px solid #1a1a1a;
-  }
-  .home-btn {
-    display: inline-block;
-    margin-bottom: 28px;
-    padding: 12px 28px;
-    border: 1px solid #3a3a3a;
-    border-radius: 999px;
-    color: #f2f2f2;
-    text-decoration: none;
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    transition: background 0.2s ease, border-color 0.2s ease;
-  }
-  .home-btn:hover { background: rgba(255,255,255,0.08); border-color: #666; color: #fff; }
-  .copy { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #666; }
+  /* site-footer + .copy live in css/chrome.css (shared chrome) */
 
 
   .to-top {
