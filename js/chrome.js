@@ -65,5 +65,44 @@
     });
   }
 
+  function initWorkFloat() {
+    var tiles = document.querySelectorAll(".work-tile");
+    if (!tiles.length) return;
+
+    var reduce =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    tiles.forEach(function (tile) {
+      tile.classList.add("float-up");
+    });
+
+    if (reduce || !("IntersectionObserver" in window)) {
+      tiles.forEach(function (tile) {
+        tile.classList.add("is-in");
+      });
+      return;
+    }
+
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          requestAnimationFrame(function () {
+            el.classList.add("is-in");
+          });
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -4% 0px" }
+    );
+
+    tiles.forEach(function (tile) {
+      io.observe(tile);
+    });
+  }
+
   document.querySelectorAll("[data-chrome-nav]").forEach(initNav);
+  initWorkFloat();
 })();
