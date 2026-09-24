@@ -1,6 +1,15 @@
-/* Site-wide chrome: hamburger + footer
-   Linked from home, dysphoria, contact, privacy.
+/* Site-wide chrome: hamburger drawer + footer
+   Linked from home, work, dysphoria, contact, privacy.
    Respects <base href="../"> on era/sub pages. */
+
+:root {
+  --footer-muted: #666;
+  --nav-z-scrim: 300;
+  --nav-z-drawer: 310;
+  --nav-z-toggle: 320;
+  --nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-duration: 0.42s;
+}
 
 /* Base chrome type: Helvetica stack (non-Dysphoria + shared footer/nav).
    Dysphoria era titles/brand keep Clarendon in dysphoria.css. */
@@ -10,12 +19,11 @@
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ===== Hamburger / nav stub =====
+/* ===== Hamburger / slide-over drawer =====
    Intended hamburger offset (QA): 16px from the viewport’s right edge.
    Home: .site-nav--float { padding: 0 16px } → toggle right edge at 16px.
-   Topbar (Dysphoria): dysphoria.css pads 20px + .top-right { min-width: 4em }
-   left-aligns the 40px toggle inside that box (was ~40px inset). Fix: flex-end
-   the toggle and pull 4px so right inset matches home’s 16px. */
+   Topbar (Dysphoria): dysphoria.css pads 20px + .top-right flex-end + -4px
+   so right inset matches home’s 16px. */
 .site-nav {
   position: relative;
   z-index: 210;
@@ -28,7 +36,7 @@
   display: flex;
   align-items: center;
   padding: 0 16px;
-  z-index: 210;
+  z-index: var(--nav-z-toggle);
 }
 .topbar .top-right {
   display: flex;
@@ -36,10 +44,14 @@
   align-items: center;
   min-width: 0; /* override dysphoria.css 4em so toggle isn’t inset further */
   margin-right: -4px; /* 20px topbar pad → match home’s 16px hamburger inset */
+  position: relative;
+  z-index: var(--nav-z-toggle);
 }
 .nav-toggle {
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
+  z-index: var(--nav-z-toggle);
   width: 40px;
   height: 40px;
   border: none;
@@ -52,15 +64,47 @@
   padding: 0;
   -webkit-tap-highlight-color: transparent;
 }
-.nav-toggle svg {
+
+/* Icon morph: 3 bars → X */
+.nav-burger {
+  display: block;
+  position: relative;
   width: 20px;
-  height: 20px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.7;
-  stroke-linecap: round;
+  height: 14px;
   pointer-events: none;
 }
+.nav-burger span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.7px;
+  border-radius: 1px;
+  background: currentColor;
+  transition:
+    transform var(--nav-duration) var(--nav-ease),
+    opacity calc(var(--nav-duration) * 0.65) ease;
+  transform-origin: center;
+}
+.nav-burger span:nth-child(1) { top: 0; }
+.nav-burger span:nth-child(2) { top: 50%; margin-top: -0.85px; }
+.nav-burger span:nth-child(3) { bottom: 0; }
+
+.site-nav.is-open .nav-burger span:nth-child(1) {
+  top: 50%;
+  margin-top: -0.85px;
+  transform: rotate(45deg);
+}
+.site-nav.is-open .nav-burger span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.4);
+}
+.site-nav.is-open .nav-burger span:nth-child(3) {
+  bottom: auto;
+  top: 50%;
+  margin-top: -0.85px;
+  transform: rotate(-45deg);
+}
+
 .home-shell .site-nav--float,
 .home-shell .nav-toggle {
   color: #f2f2f2;
@@ -68,62 +112,120 @@
 .topbar .nav-toggle {
   color: inherit;
 }
-
-.nav-panel {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  min-width: 168px;
-  padding: 8px 0;
-  background: #0c0c0c;
-  border: 1px solid #3a3a3a;
+body:not(.on-dark) .topbar .nav-toggle {
+  color: inherit;
+}
+/* Keep toggle readable when drawer is open over light intro */
+.site-nav.is-open .nav-toggle {
   color: #f2f2f2;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
-  display: none;
+}
+
+/* Scrim */
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--nav-z-scrim);
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--nav-duration) ease,
+    visibility var(--nav-duration) ease;
+}
+.site-nav.is-open .nav-scrim {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Full slide-over panel (from right) */
+.nav-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  height: 100dvh;
+  z-index: var(--nav-z-drawer);
+  box-sizing: border-box;
+  padding: calc(var(--top-h, 52px) + 28px) 28px 48px;
+  background: #0a0a0a;
+  color: #f2f2f2;
+  border: none;
+  box-shadow: -24px 0 48px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  transform: translateX(100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    transform var(--nav-duration) var(--nav-ease),
+    opacity var(--nav-duration) ease,
+    visibility var(--nav-duration) ease;
 }
 .site-nav.is-open .nav-panel {
-  display: block;
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
-.site-nav--float .nav-panel {
-  right: 12px;
-  top: calc(var(--top-h, 52px) - 4px);
-}
+
 .nav-panel a,
 .nav-panel .nav-soon {
   display: block;
-  padding: 10px 18px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
+  padding: 18px 8px;
+  font-size: clamp(1.65rem, 5.5vw, 2.35rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
   text-decoration: none;
   color: #eee;
   text-align: left;
-  white-space: nowrap;
+  border-bottom: 1px solid #222;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.nav-panel a:last-child,
+.nav-panel .nav-soon:last-child {
+  border-bottom: none;
 }
 .nav-panel a:hover {
-  background: #1a1a1a;
   color: #fff;
+  background: transparent;
 }
 .nav-panel a[aria-current="page"] {
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
 }
 .nav-panel .nav-soon {
-  color: #777;
+  color: #666;
   cursor: default;
 }
 .nav-panel .nav-soon em {
   font-style: normal;
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-size: 0.42em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin-left: 0.45em;
-  opacity: 0.85;
+  margin-left: 0.55em;
+  vertical-align: middle;
+  opacity: 0.9;
 }
 
-/* Light topbar (intro): dark panel stays; toggle inherits ink via topbar */
-body:not(.on-dark) .topbar .nav-toggle {
-  color: inherit;
+html.nav-open {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-burger span,
+  .nav-scrim,
+  .nav-panel {
+    transition: none !important;
+  }
 }
 
 /* ===== Site footer ===== */
@@ -188,7 +290,6 @@ body:not(.on-dark) .topbar .nav-toggle {
   stroke-linejoin: round;
   pointer-events: none;
 }
-/* Instagram glyph uses filled paths traditionally — keep line style */
 .footer-icon svg.ig-icon {
   fill: none;
 }
@@ -208,14 +309,14 @@ body:not(.on-dark) .topbar .nav-toggle {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #666;
+  color: var(--footer-muted);
   margin: 0;
 }
 .site-footer .footer-credit {
   margin: 10px 0 0;
   font-size: 12px;
   letter-spacing: 0.04em;
-  color: #777;
+  color: var(--footer-muted);
 }
 
 /* Home layout: hero + footer */
@@ -245,7 +346,7 @@ body:not(.on-dark) .topbar .nav-toggle {
   text-transform: uppercase;
 }
 .footer-links a {
-  color: #666;
+  color: var(--footer-muted);
   text-decoration: underline;
   text-underline-offset: 0.18em;
   text-decoration-thickness: 1px;
@@ -260,7 +361,7 @@ body:not(.on-dark) .topbar .nav-toggle {
   color: #999;
 }
 
-/* Simple content pages (contact, privacy) — Helvetica base */
+/* Simple content pages (contact, privacy, work) — Helvetica base */
 .page-shell .page-main {
   flex: 1;
   min-height: 0;
@@ -326,4 +427,49 @@ body:not(.on-dark) .topbar .nav-toggle {
 .page-shell .page-main--prose strong {
   color: #eee;
   font-weight: 600;
+}
+
+/* Work hub list */
+.work-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #2a2a2a;
+}
+.work-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55em 0.85em;
+  padding: 18px 0;
+  border-bottom: 1px solid #2a2a2a;
+}
+.work-list a,
+.work-list .work-title {
+  font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #f2f2f2;
+  text-decoration: none;
+}
+.work-list a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .work-list a:hover {
+    color: #fff;
+  }
+}
+.work-list .work-title.is-soon {
+  color: #888;
+  font-weight: 500;
+}
+.work-list .work-soon {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #666;
 }
