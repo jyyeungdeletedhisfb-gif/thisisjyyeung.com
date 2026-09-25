@@ -180,11 +180,14 @@
     window.addEventListener("resize", onScroll, { passive: true });
   })();
 
-  // Soft float-up on first enter
-  (function initAboutFloat() {
-    var targets = [];
+  // Page enter. A fixed hero often never "enters" for IntersectionObserver,
+  // and adding is-in in the same turn as float-up skips the first paint so
+  // the transition never runs. Arm is-in on a double rAF after the hidden
+  // state has painted. Once per load — do not re-bind on scroll.
+  (function initAboutEnter() {
     var hero = document.querySelector(".about-hero");
     var intro = document.querySelector(".about-intro");
+    var targets = [];
     if (hero) targets.push(hero);
     if (intro) targets.push(intro);
     if (!targets.length) return;
@@ -193,29 +196,29 @@
       el.classList.add("float-up");
     });
 
-    if (reduce || !("IntersectionObserver" in window)) {
+    function show() {
       targets.forEach(function (el) {
         el.classList.add("is-in");
       });
+    }
+
+    if (reduce) {
+      show();
       return;
     }
 
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var el = entry.target;
-          requestAnimationFrame(function () {
-            el.classList.add("is-in");
-          });
-          io.unobserve(el);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        targets.forEach(function (el) {
+          el.classList.add("is-entering");
         });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -2% 0px" }
-    );
-
-    targets.forEach(function (el) {
-      io.observe(el);
+        show();
+        window.setTimeout(function () {
+          targets.forEach(function (el) {
+            el.classList.remove("is-entering");
+          });
+        }, 1500);
+      });
     });
   })();
 })();

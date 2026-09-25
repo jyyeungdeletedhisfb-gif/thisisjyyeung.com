@@ -1,7 +1,19 @@
 /* About — sticky hero + scrolling sheet. Franklin name. Studio-ground blend. */
 
+/* Page ground is continuous: kill the UA body margin so the sheet is not a white-framed card. */
+html {
+  margin: 0;
+  background: #bebebe;
+  transition: background-color 0.45s ease;
+}
+html:has(body.about-voice-he) {
+  background: #6e6e6e;
+}
+
 .about-page {
   --about-ground: #bebebe;
+  margin: 0;
+  width: 100%;
   --about-ink: #1a1a1a;
   --about-muted: #4a4a4a;
   --about-chip: rgba(0, 0, 0, 0.08);
@@ -123,13 +135,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 15%;
+  /* I full-body: 60% halves the empty studio above the head (15% left ~143px of crown).
+     He is already a tight headshot — keep 15% so the crop does not shave the hair. */
+  object-position: center 60%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
   border: none;
   outline: none;
   box-shadow: none;
+}
+.about-hero__img[data-voice="he"] {
+  object-position: center 15%;
 }
 .about-hero__img.is-active {
   opacity: 1;
@@ -139,23 +156,51 @@
 .about-sheet {
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: none;
   margin-top: calc(var(--about-hero-h) - 6vh);
+  margin-left: 0;
+  margin-right: 0;
   background: var(--about-ground);
   border: none;
+  border-radius: 0;
   outline: none;
   box-shadow: none;
   transition: background-color 0.45s ease;
 }
 .about-sheet__veil {
-  height: min(18vh, 160px);
-  margin-top: calc(-1 * min(18vh, 160px));
-  background: linear-gradient(
+  /* Absolute so the negative offset cannot collapse into .about-sheet's
+     margin and yank the solid ground up over the face. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  --veil-h: min(28vh, 240px);
+  top: calc(-1 * var(--veil-h));
+  /* 2px extra so the solid stop tucks under the sheet and cannot hairline. */
+  height: calc(var(--veil-h) + 2px);
+  margin: 0;
+  background: var(--about-ground);
+  -webkit-mask-image: linear-gradient(
     to bottom,
     transparent 0%,
-    var(--about-ground) 92%
+    rgba(0, 0, 0, 0.06) 14%,
+    rgba(0, 0, 0, 0.22) 36%,
+    rgba(0, 0, 0, 0.55) 62%,
+    rgba(0, 0, 0, 0.86) 84%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.06) 14%,
+    rgba(0, 0, 0, 0.22) 36%,
+    rgba(0, 0, 0, 0.55) 62%,
+    rgba(0, 0, 0, 0.86) 84%,
+    #000 100%
   );
   pointer-events: none;
-  transition: background 0.45s ease;
+  transition: background-color 0.45s ease;
 }
 
 /* ===== Intro ===== */
@@ -326,22 +371,29 @@
   }
 }
 
-/* Soft float-up on About enter */
-.about-hero.float-up,
-.about-intro.float-up {
+/* Page enter.
+   Fixed hero: slow fade only. translateY on a fixed layer reads as a glitch
+   against the parked photo, so the hero does not travel.
+   Intro: small float-up so the copy lands. Veil stays put (moving it
+   would tear the seam). Transition class is removed after enter so the
+   scroll-driven hero fade/blur is not eased. */
+.about-hero.float-up:not(.is-in) {
   opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
 }
-.about-intro.float-up {
-  transition-delay: 0.08s;
+.about-hero.float-up.is-entering {
+  transition: opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .about-hero.float-up.is-in {
   opacity: var(--about-hero-fade);
-  transform: none;
+}
+.about-intro.float-up:not(.is-in) {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.about-intro.float-up.is-entering {
+  transition:
+    opacity 1.08s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    transform 1.08s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
 }
 .about-intro.float-up.is-in {
   opacity: 1;
@@ -352,11 +404,15 @@
   .about-page,
   .about-hero,
   .about-hero__img,
+  .about-sheet,
   .about-voice__btn,
   .about-bio,
   .about-hero.float-up,
-  .about-intro.float-up {
+  .about-intro.float-up,
+  .about-hero.float-up.is-entering,
+  .about-intro.float-up.is-entering {
     transition: none !important;
+    animation: none !important;
   }
   .about-hero {
     filter: none !important;
