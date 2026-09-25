@@ -1,5 +1,6 @@
 (function () {
   var STORAGE_KEY = "about-voice";
+  var THEME = { i: "#bebebe", he: "#6e6e6e" };
   var body = document.body;
   if (!body || !body.classList.contains("about-page")) return;
 
@@ -12,8 +13,8 @@
   }
 
   var nameEl = document.querySelector("[data-about-name]");
-  var handshakeEl = document.querySelector("[data-about-handshake]");
   var bioEl = document.querySelector("[data-about-bio]");
+  var heroEl = document.querySelector("[data-about-hero]");
   var imgs = document.querySelectorAll(".about-hero__img");
   var buttons = document.querySelectorAll(".about-voice__btn");
   var reduce =
@@ -55,7 +56,7 @@
     body.setAttribute("data-about-voice", voice);
     document
       .querySelector('meta[name="theme-color"]')
-      .setAttribute("content", voice === "he" ? "#0a0a0a" : "#f4f4f4");
+      .setAttribute("content", THEME[voice] || THEME.i);
 
     buttons.forEach(function (btn) {
       var on = btn.getAttribute("data-voice") === voice;
@@ -70,7 +71,6 @@
       );
     }
 
-    // Portraits crossfade
     imgs.forEach(function (img) {
       var on = img.getAttribute("data-voice") === voice;
       if (on) {
@@ -98,7 +98,6 @@
 
     function applyCopy() {
       if (nameEl) nameEl.textContent = data.name;
-      if (handshakeEl) handshakeEl.textContent = data.handshake;
       if (bioEl) setBio(data.bio);
     }
 
@@ -130,7 +129,6 @@
     });
   });
 
-  // Keyboard: left/right within tablist
   var tablist = document.querySelector(".about-voice__toggle");
   if (tablist) {
     tablist.addEventListener("keydown", function (e) {
@@ -149,7 +147,40 @@
   var initial = stored() || "i";
   setVoice(initial, { instant: true });
 
-  // Soft float-up on first enter (match Work / Dysphoria)
+  // Scroll: park hero under sheet — blur + fade (fade-only if reduced motion)
+  (function initHeroScroll() {
+    if (!heroEl || !body.style) return;
+
+    var ticking = false;
+
+    function apply() {
+      ticking = false;
+      var heroH =
+        heroEl.getBoundingClientRect().height || window.innerHeight * 0.5;
+      var y = window.scrollY || window.pageYOffset || 0;
+      var progress = Math.min(1, Math.max(0, y / (heroH * 0.85)));
+      var fade = (1 - progress * 0.72).toFixed(3);
+      body.style.setProperty("--about-hero-fade", fade);
+      if (reduce) {
+        body.style.setProperty("--about-hero-blur", "0px");
+      } else {
+        var blur = (progress * 14).toFixed(2);
+        body.style.setProperty("--about-hero-blur", blur + "px");
+      }
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(apply);
+    }
+
+    apply();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+  })();
+
+  // Soft float-up on first enter
   (function initAboutFloat() {
     var targets = [];
     var hero = document.querySelector(".about-hero");

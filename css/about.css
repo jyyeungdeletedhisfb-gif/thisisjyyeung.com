@@ -1,16 +1,17 @@
-/* About — Apple Music artist-page energy. Helvetica only (no Clarendon). */
+/* About — sticky hero + scrolling sheet. Franklin name. Studio-ground blend. */
 
 .about-page {
-  --about-ground: #f4f4f4;
+  --about-ground: #bebebe;
   --about-ink: #1a1a1a;
-  --about-muted: #666;
-  --about-fade-from: rgba(244, 244, 244, 0);
-  --about-fade-to: #f4f4f4;
-  --about-chip: rgba(0, 0, 0, 0.06);
+  --about-muted: #4a4a4a;
+  --about-chip: rgba(0, 0, 0, 0.08);
   --about-chip-active: #111;
   --about-chip-active-ink: #f4f4f4;
-  --about-border: rgba(0, 0, 0, 0.12);
-  --about-trail-muted: #999;
+  --about-border: rgba(0, 0, 0, 0.14);
+  --about-trail-muted: #666;
+  --about-hero-h: 50dvh;
+  --about-hero-blur: 0px;
+  --about-hero-fade: 1;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
@@ -21,19 +22,17 @@
 }
 
 .about-page.about-voice-he {
-  --about-ground: #0a0a0a;
-  --about-ink: #f0f0f0;
-  --about-muted: #9a9a9a;
-  --about-fade-from: rgba(10, 10, 10, 0);
-  --about-fade-to: #0a0a0a;
-  --about-chip: rgba(255, 255, 255, 0.08);
+  --about-ground: #6e6e6e;
+  --about-ink: #f2f2f2;
+  --about-muted: #d0d0d0;
+  --about-chip: rgba(255, 255, 255, 0.12);
   --about-chip-active: #f2f2f2;
-  --about-chip-active-ink: #111;
-  --about-border: rgba(255, 255, 255, 0.14);
-  --about-trail-muted: #666;
+  --about-chip-active-ink: #222;
+  --about-border: rgba(255, 255, 255, 0.18);
+  --about-trail-muted: #b0b0b0;
 }
 
-/* Light-mode hamburger: dark bars on light ground */
+/* Light-mode hamburger: dark bars on mid-grey ground */
 .about-page.about-voice-i .nav-toggle,
 .about-page.about-voice-i .nav-burger {
   color: #111;
@@ -50,8 +49,10 @@
 }
 
 .about-page .site-footer {
-  --footer-muted: #888;
-  background: transparent;
+  --footer-muted: #555;
+  position: relative;
+  z-index: 2;
+  background: var(--about-ground);
   border-top: 1px solid var(--about-border);
   color: var(--about-muted);
 }
@@ -59,35 +60,54 @@
 .about-page.about-voice-i .site-footer .footer-links a,
 .about-page.about-voice-i .site-footer .copy,
 .about-page.about-voice-i .site-footer .footer-credit {
-  color: #777;
+  color: #444;
 }
 .about-page.about-voice-i .site-footer .footer-icon {
-  color: #555;
-  border-color: rgba(0, 0, 0, 0.2);
+  color: #333;
+  border-color: rgba(0, 0, 0, 0.25);
 }
 .about-page.about-voice-he .site-footer {
-  --footer-muted: #666;
+  --footer-muted: #c8c8c8;
+}
+.about-page.about-voice-he .site-footer .footer-home,
+.about-page.about-voice-he .site-footer .footer-links a,
+.about-page.about-voice-he .site-footer .copy,
+.about-page.about-voice-he .site-footer .footer-credit {
+  color: #ddd;
+}
+.about-page.about-voice-he .site-footer .footer-icon {
+  color: #eee;
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .about-main {
   flex: 1;
   min-height: 0;
   width: 100%;
+  position: relative;
 }
 
-/* ===== Hero — full-bleed first screen (no card chrome) ===== */
+/* ===== Hero — fixed/parked full-bleed, shorter stage ===== */
 .about-hero {
-  position: relative;
-  min-height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height: var(--about-hero-h);
+  min-height: var(--about-hero-h);
+  max-height: var(--about-hero-h);
   width: 100%;
   overflow: hidden;
-  background: #c4c4c4;
+  background: var(--about-ground);
   border: none;
   outline: none;
   box-shadow: none;
-}
-.about-page.about-voice-he .about-hero {
-  background: #2a2a2a;
+  opacity: var(--about-hero-fade);
+  filter: blur(var(--about-hero-blur));
+  transform: translateZ(0);
+  will-change: opacity, filter;
+  pointer-events: none;
 }
 .about-hero__stage {
   position: absolute;
@@ -95,6 +115,7 @@
   border: none;
   outline: none;
   box-shadow: none;
+  overflow: hidden;
 }
 .about-hero__img {
   position: absolute;
@@ -102,7 +123,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center 15%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
@@ -112,50 +133,50 @@
 }
 .about-hero__img.is-active {
   opacity: 1;
-  pointer-events: auto;
 }
-.about-hero__fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: min(42vh, 420px);
+
+/* ===== Scrolling sheet over parked hero ===== */
+.about-sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: calc(var(--about-hero-h) - 6vh);
+  background: var(--about-ground);
+  border: none;
+  outline: none;
+  box-shadow: none;
+  transition: background-color 0.45s ease;
+}
+.about-sheet__veil {
+  height: min(18vh, 160px);
+  margin-top: calc(-1 * min(18vh, 160px));
   background: linear-gradient(
     to bottom,
-    var(--about-fade-from) 0%,
-    var(--about-fade-to) 88%
+    transparent 0%,
+    var(--about-ground) 92%
   );
   pointer-events: none;
   transition: background 0.45s ease;
 }
 
-/* ===== Intro band under gradient ===== */
+/* ===== Intro ===== */
 .about-intro {
   position: relative;
-  margin-top: -18vh;
   z-index: 1;
-  padding: 0 24px 48px;
+  padding: 8px 24px 48px;
 }
 .about-intro__inner {
   max-width: 40rem;
   margin: 0 auto;
 }
 .about-name {
-  margin: 0 0 14px;
+  margin: 0 0 22px;
   font-family: "ITC Franklin Gothic Std", "Franklin Gothic Medium", "Franklin Gothic", Helvetica, Arial, sans-serif;
   font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--about-ink);
   line-height: 1.05;
-}
-.about-handshake {
-  margin: 0 0 22px;
-  font-size: 15px;
-  line-height: 1.55;
-  color: var(--about-muted);
-  max-width: 34rem;
 }
 
 /* I / He toggle */
@@ -208,14 +229,14 @@
   display: flex;
   flex-direction: column;
   gap: 1.1em;
-  margin: 0 0 32px;
+  margin: 0 0 8px;
 }
 .about-bio p {
   margin: 0;
   font-size: 16px;
   line-height: 1.65;
   color: var(--about-ink);
-  opacity: 0.92;
+  opacity: 0.94;
 }
 .about-bio.is-fading {
   opacity: 0;
@@ -224,25 +245,6 @@
 .about-bio.is-ready {
   opacity: 1;
   transition: opacity 0.35s ease;
-}
-
-/* Craft truths — short labels */
-.about-truths {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.about-truths li {
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: lowercase;
-  color: var(--about-muted);
-  padding: 7px 12px;
-  border: 1px solid var(--about-border);
-  border-radius: 999px;
 }
 
 /* Work trail */
@@ -324,8 +326,7 @@
   }
 }
 
-
-/* Soft float-up on About enter (match Work / Dysphoria) */
+/* Soft float-up on About enter */
 .about-hero.float-up,
 .about-intro.float-up {
   opacity: 0;
@@ -338,25 +339,35 @@
 .about-intro.float-up {
   transition-delay: 0.08s;
 }
-.about-hero.float-up.is-in,
+.about-hero.float-up.is-in {
+  opacity: var(--about-hero-fade);
+  transform: none;
+}
 .about-intro.float-up.is-in {
   opacity: 1;
   transform: none;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .about-page,
+  .about-hero,
   .about-hero__img,
-  .about-hero__fade,
   .about-voice__btn,
   .about-bio,
   .about-hero.float-up,
   .about-intro.float-up {
     transition: none !important;
   }
+  .about-hero {
+    filter: none !important;
+  }
   .about-hero.float-up,
   .about-intro.float-up {
     opacity: 1 !important;
     transform: none !important;
     transition-delay: 0s !important;
+  }
+  .about-hero.float-up.is-in {
+    opacity: var(--about-hero-fade) !important;
   }
 }
