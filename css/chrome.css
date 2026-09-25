@@ -423,6 +423,19 @@ html.nav-open {
   min-width: 0.55ch;
   text-align: center;
 }
+/* Force Geist during enter scramble so Clarendon settle is visible */
+.site-name.is-shuffling-from-geist {
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: var(--site-name-tracking, 0) !important;
+  transform: none !important;
+}
+/* Force Clarendon during exit-arrival scramble so Geist settle is visible */
+.site-name.is-shuffling-from-clarendon {
+  font-family: "Clarendon", "Clarendon Text", Georgia, serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .nav-burger span,

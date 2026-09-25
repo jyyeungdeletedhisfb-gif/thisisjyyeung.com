@@ -143,22 +143,48 @@
     }
   }
 
+  var FACE_GEIST = "is-shuffling-from-geist";
+  var FACE_CLARENDON = "is-shuffling-from-clarendon";
+
+  function clearShuffleFace(el) {
+    if (!el) return;
+    el.classList.remove(FACE_GEIST, FACE_CLARENDON);
+  }
+
+  function setShuffleFace(el, face) {
+    if (!el) return;
+    clearShuffleFace(el);
+    if (face === "geist") el.classList.add(FACE_GEIST);
+    if (face === "clarendon") el.classList.add(FACE_CLARENDON);
+  }
+
   /**
    * Short letter-scramble / decode on the brand mark only.
-   * finalText settles in place; duration capped ~720ms.
+   * opts.fromFace: "geist" | "clarendon" — force that face during scramble,
+   * then clear so page CSS settles the destination face.
+   * Duration capped ≤800ms. Reduced-motion skips glyphs but still settles face.
    */
   function scrambleBrand(el, finalText, opts) {
     opts = opts || {};
     if (!el) return;
     var done = typeof opts.onDone === "function" ? opts.onDone : function () {};
     var duration = Math.min(800, Math.max(400, opts.duration || SHUFFLE_MS));
+    var fromFace = opts.fromFace || null;
+
+    function settle() {
+      /* Drop forced face so page CSS settles (Clarendon on Dysphoria, Geist elsewhere). */
+      clearShuffleFace(el);
+    }
 
     if (prefersReducedMotion()) {
       el.textContent = finalText;
       el.classList.remove("is-shuffling");
+      settle();
       done();
       return;
     }
+
+    if (fromFace) setShuffleFace(el, fromFace);
 
     var target = String(finalText);
     var len = target.length;
@@ -189,6 +215,7 @@
         el.textContent = target;
         el.classList.remove("is-shuffling");
         el.removeAttribute("aria-label");
+        settle();
         done();
       }
     }
@@ -204,14 +231,44 @@
     );
   }
 
+  function playEnterDysphoria(el, label) {
+    /* Force Geist for one beat, scramble, settle Clarendon via page CSS. */
+    scrambleBrand(el, label, {
+      duration: SHUFFLE_MS,
+      fromFace: "geist",
+    });
+  }
+
+  function playExitArrival(el, label) {
+    /* Force Clarendon for one beat, scramble, settle Geist via page CSS. */
+    scrambleBrand(el, label, {
+      duration: SHUFFLE_MS,
+      fromFace: "clarendon",
+    });
+  }
+
   function initBrandShuffle() {
     var el = brandEl();
     if (!el) return;
     var label = (el.textContent || "JY YEÜNG").trim() || "JY YEÜNG";
+    var enterPlayed = false;
 
     if (isDysphoriaPage()) {
-      /* Enter Dysphoria: scramble into Clarendon brand */
-      scrambleBrand(el, label, { duration: SHUFFLE_MS });
+      playEnterDysphoria(el, label);
+      enterPlayed = true;
+
+      /* bfcache / Back into Dysphoria: replay enter face flash */
+      window.addEventListener("pageshow", function (e) {
+        if (e.persisted || !enterPlayed) {
+          playEnterDysphoria(el, label);
+        }
+        enterPlayed = true;
+      });
+
+      /* Back / any leave: mark so destination can flash Clarendon→Geist */
+      window.addEventListener("pagehide", function () {
+        markShuffle("exit");
+      });
 
       document.addEventListener(
         "click",
@@ -225,8 +282,10 @@
           e.preventDefault();
           markShuffle("exit");
           var dest = link.href;
+          /* Exit: scramble while still Clarendon, then navigate */
           scrambleBrand(el, label, {
             duration: SHUFFLE_MS,
+            fromFace: "clarendon",
             onDone: function () {
               window.location.href = dest;
             },
@@ -237,10 +296,16 @@
       return;
     }
 
-    /* Arriving from Dysphoria: brief scramble back into Geist chrome */
-    if (takeShuffle() === "exit") {
-      scrambleBrand(el, label, { duration: SHUFFLE_MS });
+    function maybeExitArrival() {
+      if (takeShuffle() === "exit") {
+        playExitArrival(el, label);
+      }
     }
+
+    maybeExitArrival();
+    window.addEventListener("pageshow", function () {
+      maybeExitArrival();
+    });
   }
 
   document.querySelectorAll("[data-chrome-nav]").forEach(initNav);
