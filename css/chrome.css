@@ -2,6 +2,16 @@
    Linked from home, work, dysphoria, contact, privacy.
    Respects <base href="../"> on era/sub pages. */
 
+/* Geist Black 900 — shared brand mark (About hero + title bars) */
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../assets/fonts/Geist-Black.woff2") format("woff2"),
+       url("../assets/fonts/Geist.ttf") format("truetype");
+}
+
 :root {
   --footer-muted: #666;
   --nav-z-scrim: 300;
@@ -9,7 +19,63 @@
   --nav-z-toggle: 400;
   --nav-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-duration: 0.42s;
+  --top-h: 52px;
+  --site-name-tracking: 0; /* Geist Black snug (v3 winning cell) */
 }
+
+/* Shared brand mark: Geist Black 900 Snug ALL CAPS */
+.site-name {
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: var(--site-name-tracking);
+  text-transform: uppercase;
+  line-height: 1.05;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Site title bar (non-home shell pages) =====
+   Pattern: left JY YEÜNG → home; right hamburger.
+   Homepage keeps float hamburger only (no title bar). */
+.site-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: var(--top-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+  background: rgba(5, 5, 5, 0.9);
+  border-bottom: 1px solid #2a2a2a;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #f2f2f2;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.site-topbar .site-name {
+  justify-self: start;
+  color: inherit;
+  text-decoration: none;
+  font-size: 17px;
+  margin: 0;
+  padding: 0;
+}
+.site-topbar .site-topbar__right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: -4px; /* 20px pad → match home’s 16px hamburger inset */
+  position: relative;
+  z-index: var(--nav-z-toggle);
+}
+.site-topbar .site-nav {
+  position: static;
+}
+
 
 /* Base chrome type: Helvetica stack (non-Dysphoria + shared footer/nav).
    Dysphoria era titles/brand keep Clarendon in dysphoria.css. */
@@ -49,6 +115,23 @@
   margin-right: -4px; /* 20px topbar pad → match home’s 16px hamburger inset */
   position: relative;
   z-index: var(--nav-z-toggle);
+}
+
+/* Dysphoria topbar brand: Geist Black (era Clarendon titles stay in dysphoria.css) */
+.topbar .brand.site-name,
+.topbar a.site-name.brand {
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  letter-spacing: var(--site-name-tracking);
+  text-transform: uppercase;
+  font-size: 17px;
+  transform: none; /* drop Clarendon optical nudge */
+}
+@media (max-width: 800px) {
+  .topbar .brand.site-name,
+  .topbar a.site-name.brand {
+    transform: none;
+  }
 }
 .nav-toggle {
   -webkit-appearance: none;

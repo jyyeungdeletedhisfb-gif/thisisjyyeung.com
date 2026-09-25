@@ -1,4 +1,4 @@
-/* About — sticky hero + scrolling sheet. Franklin name. Studio-ground blend. */
+/* About — sticky hero + scrolling sheet. Geist Black name. Studio-ground blend. */
 
 /* Page ground is continuous: kill the UA body margin so the sheet is not a white-framed card. */
 html {
@@ -57,6 +57,32 @@ html:has(body.about-voice-he) {
   color: #f2f2f2;
 }
 .about-page.about-voice-i .site-nav.is-open .nav-burger span {
+  background: #f2f2f2 !important;
+}
+
+/* About title bar adapts to I / He grounds */
+.about-page .site-topbar {
+  background: rgba(190, 190, 190, 0.88);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+  color: #111;
+}
+.about-page.about-voice-he .site-topbar {
+  background: rgba(110, 110, 110, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  color: #f2f2f2;
+}
+.about-page.about-voice-i .site-topbar .nav-toggle,
+.about-page.about-voice-i .site-topbar .nav-burger {
+  color: #111;
+}
+.about-page.about-voice-i .site-topbar .nav-burger span {
+  background: #111 !important;
+}
+.about-page.about-voice-i .site-topbar .site-nav.is-open .nav-toggle,
+.about-page.about-voice-i .site-topbar .site-nav.is-open .nav-burger {
+  color: #f2f2f2;
+}
+.about-page.about-voice-i .site-topbar .site-nav.is-open .nav-burger span {
   background: #f2f2f2 !important;
 }
 
@@ -215,16 +241,24 @@ html:has(body.about-voice-he) {
 }
 .about-name {
   margin: 0 0 22px;
-  font-family: "ITC Franklin Gothic Std", "Franklin Gothic Medium", "Franklin Gothic", Helvetica, Arial, sans-serif;
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(2rem, 6vw, 3rem);
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-weight: 900;
+  letter-spacing: var(--site-name-tracking, 0);
   text-transform: uppercase;
   color: var(--about-ink);
   line-height: 1.05;
+  transition: opacity 0.18s ease;
+}
+.about-name.is-fading {
+  opacity: 0;
+}
+.about-name.is-ready {
+  opacity: 1;
+  transition: opacity 0.28s ease;
 }
 
-/* I / He toggle */
+/* I / He toggle — sliding circular thumb */
 .about-voice {
   display: flex;
   align-items: center;
@@ -238,15 +272,36 @@ html:has(body.about-voice-he) {
   color: var(--about-muted);
 }
 .about-voice__toggle {
-  display: inline-flex;
-  gap: 4px;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
   padding: 3px;
   border-radius: 999px;
   background: var(--about-chip);
+  isolation: isolate;
+}
+.about-voice__thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--about-chip-active);
+  z-index: 0;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+.about-page.about-voice-he .about-voice__thumb {
+  transform: translateX(100%);
 }
 .about-voice__btn {
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
+  z-index: 1;
   border: none;
   background: transparent;
   color: var(--about-muted);
@@ -258,11 +313,11 @@ html:has(body.about-voice-he) {
   padding: 8px 16px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease;
+  transition: color 0.22s ease;
 }
 .about-voice__btn.is-active,
 .about-voice__btn[aria-pressed="true"] {
-  background: var(--about-chip-active);
+  background: transparent;
   color: var(--about-chip-active-ink);
 }
 .about-voice__btn:focus-visible {
@@ -406,6 +461,8 @@ html:has(body.about-voice-he) {
   .about-hero__img,
   .about-sheet,
   .about-voice__btn,
+  .about-voice__thumb,
+  .about-name,
   .about-bio,
   .about-hero.float-up,
   .about-intro.float-up,

@@ -101,20 +101,36 @@
       if (bioEl) setBio(data.bio);
     }
 
-    if (instant || !bioEl) {
+    if (instant) {
       applyCopy();
       if (bioEl) {
         bioEl.classList.remove("is-fading");
         bioEl.classList.add("is-ready");
       }
+      if (nameEl) {
+        nameEl.classList.remove("is-fading");
+        nameEl.classList.add("is-ready");
+      }
     } else {
-      bioEl.classList.add("is-fading");
-      bioEl.classList.remove("is-ready");
+      if (bioEl) {
+        bioEl.classList.add("is-fading");
+        bioEl.classList.remove("is-ready");
+      }
+      if (nameEl) {
+        nameEl.classList.add("is-fading");
+        nameEl.classList.remove("is-ready");
+      }
       window.setTimeout(function () {
         applyCopy();
-        bioEl.classList.remove("is-fading");
-        bioEl.classList.add("is-ready");
-      }, 200);
+        if (bioEl) {
+          bioEl.classList.remove("is-fading");
+          bioEl.classList.add("is-ready");
+        }
+        if (nameEl) {
+          nameEl.classList.remove("is-fading");
+          nameEl.classList.add("is-ready");
+        }
+      }, 180);
     }
 
     persist(voice);

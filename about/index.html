@@ -17,38 +17,42 @@
   <meta property="og:url" content="https://thisisjyyeung.com/about/" />
   <meta property="og:image" content="assets/about/hero-i.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link href="https://fonts.cdnfonts.com/css/itc-franklin-gothic-std" rel="stylesheet" />
-  <link rel="stylesheet" href="css/chrome.css?v=about-taste-v4" />
-  <link rel="stylesheet" href="css/about.css?v=about-taste-v4" />
+  <link rel="stylesheet" href="css/chrome.css?v=chrome-geist-v1" />
+  <link rel="stylesheet" href="css/about.css?v=chrome-geist-v1" />
 </head>
 <body class="about-page about-voice-i" data-about-voice="i">
-  <nav class="site-nav site-nav--float" data-chrome-nav>
-    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
-      <span class="nav-burger" aria-hidden="true"><span></span><span></span><span></span></span>
-    </button>
-    <div class="nav-scrim" data-nav-close hidden aria-hidden="true"></div>
-    <div class="nav-panel" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden aria-hidden="true">
-      <a href="./" class="nav-item">Home</a>
-      <a href="work/" class="nav-item">Work</a>
-      <a href="contact/" class="nav-item">Contact</a>
-      <a href="about/" class="nav-item" aria-current="page">About</a>
-      <div class="nav-social nav-item" role="group" aria-label="Social">
-        <a class="nav-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
-          <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
-            <circle cx="12" cy="12" r="4"/>
-            <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
-          </svg>
-        </a>
-        <a class="nav-icon" href="contact/" aria-label="Contact">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
-            <path d="M4 7.5 L12 13 L20 7.5"/>
-          </svg>
-        </a>
-      </div>
+  <header class="site-topbar">
+    <a class="site-name" href="./">JY YEÜNG</a>
+    <div class="site-topbar__right">
+      <nav class="site-nav" data-chrome-nav>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+          <span class="nav-burger" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+        <div class="nav-scrim" data-nav-close hidden aria-hidden="true"></div>
+        <div class="nav-panel" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden aria-hidden="true">
+        <a href="./" class="nav-item">Home</a>
+        <a href="work/" class="nav-item">Work</a>
+        <a href="contact/" class="nav-item">Contact</a>
+        <a href="about/" class="nav-item" aria-current="page">About</a>
+        <div class="nav-social nav-item" role="group" aria-label="Social">
+          <a class="nav-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a class="nav-icon" href="contact/" aria-label="Contact">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
+              <path d="M4 7.5 L12 13 L20 7.5"/>
+            </svg>
+          </a>
+        </div>
+        </div>
+      </nav>
     </div>
-  </nav>
+  </header>
 
   <main class="about-main">
     <section class="about-hero float-up" aria-label="Portrait" data-about-hero>
@@ -81,11 +85,12 @@
 
       <section class="about-intro float-up">
         <div class="about-intro__inner">
-          <h1 class="about-name" data-about-name>JY YEÜNG</h1>
+          <h1 class="about-name site-name" data-about-name>JY YEÜNG</h1>
 
           <div class="about-voice" role="group" aria-label="Voice">
             <span class="about-voice__label" id="about-voice-label">Voice</span>
             <div class="about-voice__toggle" role="tablist" aria-labelledby="about-voice-label">
+              <span class="about-voice__thumb" aria-hidden="true"></span>
               <button type="button" class="about-voice__btn is-active" role="tab" id="voice-i" data-voice="i" aria-selected="true" aria-controls="about-bio" aria-pressed="true">I</button>
               <button type="button" class="about-voice__btn" role="tab" id="voice-he" data-voice="he" aria-selected="false" aria-controls="about-bio" aria-pressed="false">He</button>
             </div>
@@ -159,7 +164,7 @@
   }
   </script>
 
-  <script src="js/chrome.js?v=about-taste-v4" defer></script>
-  <script src="js/about.js?v=about-taste-v4" defer></script>
+  <script src="js/chrome.js?v=chrome-geist-v1" defer></script>
+  <script src="js/about.js?v=chrome-geist-v1" defer></script>
 </body>
 </html>
