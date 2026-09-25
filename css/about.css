@@ -75,13 +75,16 @@
   width: 100%;
 }
 
-/* ===== Hero — full-bleed first screen ===== */
+/* ===== Hero — full-bleed first screen (no card chrome) ===== */
 .about-hero {
   position: relative;
   min-height: 100dvh;
   width: 100%;
   overflow: hidden;
   background: #c4c4c4;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 .about-page.about-voice-he .about-hero {
   background: #2a2a2a;
@@ -89,6 +92,9 @@
 .about-hero__stage {
   position: absolute;
   inset: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 .about-hero__img {
   position: absolute;
@@ -100,6 +106,9 @@
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 .about-hero__img.is-active {
   opacity: 1;
@@ -133,18 +142,13 @@
 }
 .about-name {
   margin: 0 0 14px;
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-family: "ITC Franklin Gothic Std", "Franklin Gothic Medium", "Franklin Gothic", Helvetica, Arial, sans-serif;
   font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--about-ink);
   line-height: 1.05;
-}
-.about-page.about-voice-he .about-name {
-  text-transform: none;
-  letter-spacing: 0.02em;
-  font-weight: 600;
 }
 .about-handshake {
   margin: 0 0 22px;
@@ -320,12 +324,39 @@
   }
 }
 
+
+/* Soft float-up on About enter (match Work / Dysphoria) */
+.about-hero.float-up,
+.about-intro.float-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.about-intro.float-up {
+  transition-delay: 0.08s;
+}
+.about-hero.float-up.is-in,
+.about-intro.float-up.is-in {
+  opacity: 1;
+  transform: none;
+}
 @media (prefers-reduced-motion: reduce) {
   .about-page,
   .about-hero__img,
   .about-hero__fade,
   .about-voice__btn,
-  .about-bio {
+  .about-bio,
+  .about-hero.float-up,
+  .about-intro.float-up {
     transition: none !important;
+  }
+  .about-hero.float-up,
+  .about-intro.float-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition-delay: 0s !important;
   }
 }

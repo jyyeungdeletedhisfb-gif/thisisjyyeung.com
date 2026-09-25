@@ -405,7 +405,8 @@ html.nav-open {
 .site-footer .footer-credit {
   margin: 10px 0 0;
   font-size: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: var(--footer-muted);
 }
 
@@ -650,26 +651,38 @@ a.work-tile:focus-visible {
 }
 
 
-/* Home — quiet About door */
-.home-hero .home-about {
-  display: inline-block;
-  margin-top: 18px;
+/* Home — small About tile (hub-tile) */
+.home-hero .home-about-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  width: min(140px, 38vw);
+  text-decoration: none;
+  color: #aaa;
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-size: 12px;
+}
+.home-hero .home-about-tile img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: none;
+  box-shadow: none;
+}
+.home-hero .home-about-tile__label {
+  font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #888;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: color 0.2s ease, border-color 0.2s ease;
 }
 @media (hover: hover) and (pointer: fine) {
-  .home-hero .home-about:hover {
+  .home-hero .home-about-tile:hover .home-about-tile__label {
     color: #ccc;
-    border-bottom-color: #666;
   }
 }
-.home-hero .home-about:focus-visible {
+.home-hero .home-about-tile:focus-visible {
   outline: 1px solid #888;
   outline-offset: 4px;
 }

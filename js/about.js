@@ -148,4 +148,43 @@
 
   var initial = stored() || "i";
   setVoice(initial, { instant: true });
+
+  // Soft float-up on first enter (match Work / Dysphoria)
+  (function initAboutFloat() {
+    var targets = [];
+    var hero = document.querySelector(".about-hero");
+    var intro = document.querySelector(".about-intro");
+    if (hero) targets.push(hero);
+    if (intro) targets.push(intro);
+    if (!targets.length) return;
+
+    targets.forEach(function (el) {
+      el.classList.add("float-up");
+    });
+
+    if (reduce || !("IntersectionObserver" in window)) {
+      targets.forEach(function (el) {
+        el.classList.add("is-in");
+      });
+      return;
+    }
+
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          requestAnimationFrame(function () {
+            el.classList.add("is-in");
+          });
+          io.unobserve(el);
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -2% 0px" }
+    );
+
+    targets.forEach(function (el) {
+      io.observe(el);
+    });
+  })();
 })();
