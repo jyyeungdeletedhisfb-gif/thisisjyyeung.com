@@ -631,6 +631,7 @@ a.work-tile:focus-visible {
 .work-grid > li:nth-child(2) .work-tile.float-up { transition-delay: 0.1s; }
 .work-grid > li:nth-child(3) .work-tile.float-up { transition-delay: 0.16s; }
 .work-grid > li:nth-child(4) .work-tile.float-up { transition-delay: 0.22s; }
+.work-grid > li:nth-child(5) .work-tile.float-up { transition-delay: 0.28s; }
 @media (prefers-reduced-motion: reduce) {
   .work-tile.float-up {
     opacity: 1 !important;
@@ -646,4 +647,29 @@ a.work-tile:focus-visible {
   a.work-tile:hover .work-tile__frame {
     border-color: #fff;
   }
+}
+
+
+/* Home — quiet About door */
+.home-hero .home-about {
+  display: inline-block;
+  margin-top: 18px;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #888;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .home-hero .home-about:hover {
+    color: #ccc;
+    border-bottom-color: #666;
+  }
+}
+.home-hero .home-about:focus-visible {
+  outline: 1px solid #888;
+  outline-offset: 4px;
 }

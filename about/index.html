@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="../" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About — Jy Yeüng</title>
+  <meta name="description" content="Jy Yeüng — artist first, creator right next to it. Photography, self-portrait, graphic design." />
+  <meta name="theme-color" content="#f4f4f4" />
+  <link rel="canonical" href="https://thisisjyyeung.com/about/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="thisisjyyeung.com" />
+  <meta property="og:title" content="About — Jy Yeüng" />
+  <meta property="og:description" content="Jy Yeüng — artist first, creator right next to it. Photography, self-portrait, graphic design." />
+  <meta property="og:url" content="https://thisisjyyeung.com/about/" />
+  <meta property="og:image" content="assets/about/hero-i.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="css/chrome.css?v=about-v1" />
+  <link rel="stylesheet" href="css/about.css?v=about-v1" />
+</head>
+<body class="about-page about-voice-i" data-about-voice="i">
+  <nav class="site-nav site-nav--float" data-chrome-nav>
+    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
+      <span class="nav-burger" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <div class="nav-scrim" data-nav-close hidden aria-hidden="true"></div>
+    <div class="nav-panel" id="site-menu" role="dialog" aria-modal="true" aria-label="Site menu" hidden aria-hidden="true">
+      <a href="./" class="nav-item">Home</a>
+      <a href="work/" class="nav-item">Work</a>
+      <a href="contact/" class="nav-item">Contact</a>
+      <a href="about/" class="nav-item" aria-current="page">About</a>
+      <div class="nav-social nav-item" role="group" aria-label="Social">
+        <a class="nav-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+        <a class="nav-icon" href="contact/" aria-label="Contact">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
+            <path d="M4 7.5 L12 13 L20 7.5"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="about-main">
+    <section class="about-hero" aria-label="Portrait">
+      <div class="about-hero__stage">
+        <img
+          class="about-hero__img is-active"
+          data-voice="i"
+          src="assets/about/hero-i.jpg"
+          alt="Jy Yeüng"
+          width="1600"
+          height="2000"
+          decoding="async"
+          fetchpriority="high"
+        />
+        <img
+          class="about-hero__img"
+          data-voice="he"
+          src="assets/about/hero-he.jpg"
+          alt="Jy Yeüng"
+          width="1600"
+          height="2000"
+          decoding="async"
+          hidden
+        />
+      </div>
+      <div class="about-hero__fade" aria-hidden="true"></div>
+    </section>
+
+    <section class="about-intro">
+      <div class="about-intro__inner">
+        <h1 class="about-name" data-about-name>JY YEÜNG</h1>
+        <p class="about-handshake" data-about-handshake>Jy Yeüng is my brand, my creative persona, but you can just call me James.</p>
+
+        <div class="about-voice" role="group" aria-label="Voice">
+          <span class="about-voice__label" id="about-voice-label">Voice</span>
+          <div class="about-voice__toggle" role="tablist" aria-labelledby="about-voice-label">
+            <button type="button" class="about-voice__btn is-active" role="tab" id="voice-i" data-voice="i" aria-selected="true" aria-controls="about-bio" aria-pressed="true">I</button>
+            <button type="button" class="about-voice__btn" role="tab" id="voice-he" data-voice="he" aria-selected="false" aria-controls="about-bio" aria-pressed="false">He</button>
+          </div>
+        </div>
+
+        <div class="about-bio" id="about-bio" role="tabpanel" aria-labelledby="voice-i" data-about-bio>
+          <p>I'm Jy Yeüng, and you can call me James. Artist first, creator right next to it. I get excited by the whole process of making: photography, self-portrait, a self-taught practice in graphic design and building the website you're looking at right now.</p>
+          <p>A lot of that stems from a lifelong inspiration and admiration for popular culture, music and film. Concept matters a lot to me. I like working in eras and series, matching a feeling to a soundtrack and sweating the details until things move with a fluid, natural ease.</p>
+          <p>I'm always reinventing myself as an artist. I put myself in uncomfortable places on purpose, just enough to gain access to new tools, new perspectives and that open-minded excitement that keeps me in love with being creative.</p>
+        </div>
+
+        <ul class="about-truths" aria-label="Craft truths">
+          <li>eras</li>
+          <li>soundtrack-follows-feeling</li>
+          <li>reinvention</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-trail" aria-label="Work trail">
+      <h2 class="about-trail__heading">Work</h2>
+      <ul class="about-trail__list">
+        <li><a href="dysphoria/">Dysphoria</a></li>
+        <li><span class="is-muted" aria-disabled="true">Front<em>soon</em></span></li>
+        <li><span class="is-muted" aria-disabled="true">State<em>soon</em></span></li>
+        <li><span class="is-muted" aria-disabled="true">A+I<em>soon</em></span></li>
+      </ul>
+    </section>
+
+    <section class="about-close" aria-label="Connect">
+      <a class="about-close__link" href="contact/">Contact</a>
+      <a class="about-close__link" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener">Instagram</a>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="footer">
+    <a class="footer-home" href="./">Back home</a>
+    <div class="footer-icons">
+      <a class="footer-icon" href="https://www.instagram.com/thisisjyyeung/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>
+        </svg>
+      </a>
+      <a class="footer-icon" href="contact/" aria-label="Contact">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/>
+          <path d="M4 7.5 L12 13 L20 7.5"/>
+        </svg>
+      </a>
+    </div>
+    <p class="copy">© 2026 JY YEÜNG. ALL RIGHTS RESERVED</p>
+    <p class="footer-credit">Website by Jy Yeüng</p>
+    <p class="footer-links"><a href="privacy/">Privacy</a></p>
+  </footer>
+
+  <script type="application/json" id="about-copy">
+  {
+    "i": {
+      "name": "JY YEÜNG",
+      "handshake": "Jy Yeüng is my brand, my creative persona, but you can just call me James.",
+      "bio": [
+        "I'm Jy Yeüng, and you can call me James. Artist first, creator right next to it. I get excited by the whole process of making: photography, self-portrait, a self-taught practice in graphic design and building the website you're looking at right now.",
+        "A lot of that stems from a lifelong inspiration and admiration for popular culture, music and film. Concept matters a lot to me. I like working in eras and series, matching a feeling to a soundtrack and sweating the details until things move with a fluid, natural ease.",
+        "I'm always reinventing myself as an artist. I put myself in uncomfortable places on purpose, just enough to gain access to new tools, new perspectives and that open-minded excitement that keeps me in love with being creative."
+      ]
+    },
+    "he": {
+      "name": "Jy Yeüng",
+      "handshake": "Jy Yeüng is his brand, his creative persona, but you can just call him James.",
+      "bio": [
+        "Jy Yeüng (James) is an artist first and a creator close behind. He gets excited by the whole process of making: photography, self-portrait, a self-taught practice in graphic design and building the website you're on right now.",
+        "A lot of that stems from a lifelong inspiration and admiration for popular culture, music and film. Concept sits at the center of how he works. He builds in eras and series, matches a feeling to a soundtrack and sweats the details until motion feels fluid and natural.",
+        "He believes in artistic reinvention. He puts himself in uncomfortable places on purpose, just enough to gain access to new tools, new perspectives and an open-minded excitement that keeps him in love with being creative."
+      ]
+    }
+  }
+  </script>
+
+  <script src="js/chrome.js?v=about-v1" defer></script>
+  <script src="js/about.js?v=about-v1" defer></script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+/* About — Apple Music artist-page energy. Helvetica only (no Clarendon). */
+
+.about-page {
+  --about-ground: #f4f4f4;
+  --about-ink: #1a1a1a;
+  --about-muted: #666;
+  --about-fade-from: rgba(244, 244, 244, 0);
+  --about-fade-to: #f4f4f4;
+  --about-chip: rgba(0, 0, 0, 0.06);
+  --about-chip-active: #111;
+  --about-chip-active-ink: #f4f4f4;
+  --about-border: rgba(0, 0, 0, 0.12);
+  --about-trail-muted: #999;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--about-ground);
+  color: var(--about-ink);
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+
+.about-page.about-voice-he {
+  --about-ground: #0a0a0a;
+  --about-ink: #f0f0f0;
+  --about-muted: #9a9a9a;
+  --about-fade-from: rgba(10, 10, 10, 0);
+  --about-fade-to: #0a0a0a;
+  --about-chip: rgba(255, 255, 255, 0.08);
+  --about-chip-active: #f2f2f2;
+  --about-chip-active-ink: #111;
+  --about-border: rgba(255, 255, 255, 0.14);
+  --about-trail-muted: #666;
+}
+
+/* Light-mode hamburger: dark bars on light ground */
+.about-page.about-voice-i .nav-toggle,
+.about-page.about-voice-i .nav-burger {
+  color: #111;
+}
+.about-page.about-voice-i .nav-burger span {
+  background: #111 !important;
+}
+.about-page.about-voice-i .site-nav.is-open .nav-toggle,
+.about-page.about-voice-i .site-nav.is-open .nav-burger {
+  color: #f2f2f2;
+}
+.about-page.about-voice-i .site-nav.is-open .nav-burger span {
+  background: #f2f2f2 !important;
+}
+
+.about-page .site-footer {
+  --footer-muted: #888;
+  background: transparent;
+  border-top: 1px solid var(--about-border);
+  color: var(--about-muted);
+}
+.about-page.about-voice-i .site-footer .footer-home,
+.about-page.about-voice-i .site-footer .footer-links a,
+.about-page.about-voice-i .site-footer .copy,
+.about-page.about-voice-i .site-footer .footer-credit {
+  color: #777;
+}
+.about-page.about-voice-i .site-footer .footer-icon {
+  color: #555;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+.about-page.about-voice-he .site-footer {
+  --footer-muted: #666;
+}
+
+.about-main {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+/* ===== Hero — full-bleed first screen ===== */
+.about-hero {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #c4c4c4;
+}
+.about-page.about-voice-he .about-hero {
+  background: #2a2a2a;
+}
+.about-hero__stage {
+  position: absolute;
+  inset: 0;
+}
+.about-hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  opacity: 0;
+  transition: opacity 0.42s ease;
+  pointer-events: none;
+}
+.about-hero__img.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.about-hero__fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(42vh, 420px);
+  background: linear-gradient(
+    to bottom,
+    var(--about-fade-from) 0%,
+    var(--about-fade-to) 88%
+  );
+  pointer-events: none;
+  transition: background 0.45s ease;
+}
+
+/* ===== Intro band under gradient ===== */
+.about-intro {
+  position: relative;
+  margin-top: -18vh;
+  z-index: 1;
+  padding: 0 24px 48px;
+}
+.about-intro__inner {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+.about-name {
+  margin: 0 0 14px;
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--about-ink);
+  line-height: 1.05;
+}
+.about-page.about-voice-he .about-name {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-weight: 600;
+}
+.about-handshake {
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--about-muted);
+  max-width: 34rem;
+}
+
+/* I / He toggle */
+.about-voice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 28px;
+}
+.about-voice__label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--about-muted);
+}
+.about-voice__toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--about-chip);
+}
+.about-voice__btn {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--about-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.about-voice__btn.is-active,
+.about-voice__btn[aria-pressed="true"] {
+  background: var(--about-chip-active);
+  color: var(--about-chip-active-ink);
+}
+.about-voice__btn:focus-visible {
+  outline: 2px solid var(--about-ink);
+  outline-offset: 2px;
+}
+
+.about-bio {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1em;
+  margin: 0 0 32px;
+}
+.about-bio p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--about-ink);
+  opacity: 0.92;
+}
+.about-bio.is-fading {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.about-bio.is-ready {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+/* Craft truths — short labels */
+.about-truths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.about-truths li {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  color: var(--about-muted);
+  padding: 7px 12px;
+  border: 1px solid var(--about-border);
+  border-radius: 999px;
+}
+
+/* Work trail */
+.about-trail {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 8px 24px 40px;
+}
+.about-trail__heading {
+  margin: 0 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--about-muted);
+}
+.about-trail__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.about-trail__list a {
+  color: var(--about-ink);
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .about-trail__list a:hover {
+    border-bottom-color: currentColor;
+  }
+}
+.about-trail__list a:focus-visible {
+  outline: 1px solid var(--about-ink);
+  outline-offset: 3px;
+}
+.about-trail__list .is-muted {
+  color: var(--about-trail-muted);
+  font-size: 16px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55em;
+}
+.about-trail__list .is-muted em {
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/* Soft close — Contact + IG only */
+.about-close {
+  max-width: 40rem;
+  margin: 0 auto 24px;
+  padding: 8px 24px 48px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+}
+.about-close__link {
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--about-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .about-close__link:hover {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page,
+  .about-hero__img,
+  .about-hero__fade,
+  .about-voice__btn,
+  .about-bio {
+    transition: none !important;
+  }
+}
