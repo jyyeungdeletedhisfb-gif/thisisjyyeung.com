@@ -97,6 +97,7 @@
     });
 
     function applyCopy() {
+      /* Name is JY YEÜNG for both voices — set instantly, no fade. */
       if (nameEl) nameEl.textContent = data.name;
       if (bioEl) setBio(data.bio);
     }
@@ -107,28 +108,18 @@
         bioEl.classList.remove("is-fading");
         bioEl.classList.add("is-ready");
       }
-      if (nameEl) {
-        nameEl.classList.remove("is-fading");
-        nameEl.classList.add("is-ready");
-      }
     } else {
       if (bioEl) {
         bioEl.classList.add("is-fading");
         bioEl.classList.remove("is-ready");
       }
-      if (nameEl) {
-        nameEl.classList.add("is-fading");
-        nameEl.classList.remove("is-ready");
-      }
+      /* Name stays put (no is-fading); bio still cross-fades. */
+      if (nameEl) nameEl.textContent = data.name;
       window.setTimeout(function () {
-        applyCopy();
+        if (bioEl) setBio(data.bio);
         if (bioEl) {
           bioEl.classList.remove("is-fading");
           bioEl.classList.add("is-ready");
-        }
-        if (nameEl) {
-          nameEl.classList.remove("is-fading");
-          nameEl.classList.add("is-ready");
         }
       }, 180);
     }

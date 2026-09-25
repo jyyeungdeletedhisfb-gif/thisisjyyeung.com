@@ -60,15 +60,17 @@ html:has(body.about-voice-he) {
   background: #f2f2f2 !important;
 }
 
-/* About title bar adapts to I / He grounds */
+/* About title bar adapts to I / He grounds — ~25% more translucent frost */
 .about-page .site-topbar {
-  background: rgba(190, 190, 190, 0.88);
-  border-bottom-color: rgba(0, 0, 0, 0.1);
+  background: rgba(190, 190, 190, 0.66);
+  border-bottom-color: rgba(0, 0, 0, 0.08);
   color: #111;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .about-page.about-voice-he .site-topbar {
-  background: rgba(110, 110, 110, 0.92);
-  border-bottom-color: rgba(255, 255, 255, 0.14);
+  background: rgba(110, 110, 110, 0.69);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
   color: #f2f2f2;
 }
 .about-page.about-voice-i .site-topbar .nav-toggle,
@@ -149,7 +151,11 @@ html:has(body.about-voice-he) {
 }
 .about-hero__stage {
   position: absolute;
-  inset: 0;
+  /* Dex phone crop: leave crown below floating top bar (~52px + air) */
+  top: calc(var(--top-h, 52px) + 10px);
+  left: 0;
+  right: 0;
+  bottom: 0;
   border: none;
   outline: none;
   box-shadow: none;
@@ -161,9 +167,9 @@ html:has(body.about-voice-he) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* I full-body: 60% halves the empty studio above the head (15% left ~143px of crown).
-     He is already a tight headshot — keep 15% so the crop does not shave the hair. */
-  object-position: center 60%;
+  /* Stage already clears the top bar; keep a mid-tight crop so face fills the frame
+     without shoving crown under the frost (Dex red-circle phone crop). */
+  object-position: center 48%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
@@ -172,7 +178,7 @@ html:has(body.about-voice-he) {
   box-shadow: none;
 }
 .about-hero__img[data-voice="he"] {
-  object-position: center 15%;
+  object-position: center 12%;
 }
 .about-hero__img.is-active {
   opacity: 1;
@@ -248,14 +254,6 @@ html:has(body.about-voice-he) {
   text-transform: uppercase;
   color: var(--about-ink);
   line-height: 1.05;
-  transition: opacity 0.18s ease;
-}
-.about-name.is-fading {
-  opacity: 0;
-}
-.about-name.is-ready {
-  opacity: 1;
-  transition: opacity 0.28s ease;
 }
 
 /* I / He toggle — sliding circular thumb */
