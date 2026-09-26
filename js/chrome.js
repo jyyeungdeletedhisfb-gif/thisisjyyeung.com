@@ -308,6 +308,8 @@
         markShuffle("exit");
       });
 
+      /* Exit: mark only — scramble plays once on Geist arrival (mirrors enter).
+         Do not scramble here or About/Work/etc. will double-shuffle. */
       document.addEventListener(
         "click",
         function (e) {
@@ -317,17 +319,7 @@
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
           var href = link.getAttribute("href");
           if (!leavesDysphoria(href)) return;
-          e.preventDefault();
           markShuffle("exit");
-          var dest = link.href;
-          /* Exit: scramble while still Clarendon, then navigate */
-          scrambleBrand(el, label, {
-            duration: SHUFFLE_MS,
-            fromFace: "clarendon",
-            onDone: function () {
-              window.location.href = dest;
-            },
-          });
         },
         true
       );

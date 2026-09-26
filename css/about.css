@@ -152,8 +152,8 @@ html:has(body.about-voice-he) {
 }
 .about-hero__stage {
   position: absolute;
-  /* Dex phone crop: leave crown below floating top bar (~52px + air) */
-  top: calc(var(--top-h, 52px) + 10px);
+  /* Full bleed under translucent top bar — no soft-crown inset / page-ground gap. */
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
@@ -168,8 +168,8 @@ html:has(body.about-voice-he) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Soft crown park is on the stage; bias crop for studio headroom so frost never clips hair. */
-  object-position: center 36%;
+  /* Flush under frost: mid-tight Y lifts head / cuts studio crown; ~50px hair clearance below bar. */
+  object-position: center 48%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
