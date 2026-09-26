@@ -75,6 +75,7 @@
       align-items: center;
     }
     .brand,
+    .brand.site-name,
     .project-title,
     .topbar .site-page-tip {
       display: flex;
@@ -86,9 +87,10 @@
       padding: 0;
       box-sizing: border-box;
     }
-    /* Clarendon bold optical mid sits slightly high in the em box — settle it */
-    .brand {
-      transform: translateY(1px);
+    /* Clarendon title-case sat slightly low vs Geist — nudge up to middle-bar axis */
+    .brand,
+    .brand.site-name {
+      transform: translateY(-1px);
     }
     .project-title,
     .topbar .site-page-tip {

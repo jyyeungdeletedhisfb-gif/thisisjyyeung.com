@@ -178,7 +178,12 @@ html:has(body.about-voice-he) {
   box-shadow: none;
 }
 .about-hero__img[data-voice="he"] {
-  object-position: center 8%;
+  /* Was 8%: nudge + soft crown (stage top) so curls clear frost. */
+  object-position: center 12%;
+}
+/* He soft crown: hair clearance wins over flush under translucent bar. */
+.about-page.about-voice-he .about-hero__stage {
+  top: var(--top-h, 52px);
 }
 .about-hero__img.is-active {
   opacity: 1;
@@ -451,6 +456,105 @@ html:has(body.about-voice-he) {
 .about-intro.float-up.is-in {
   opacity: 1;
   transform: none;
+}
+
+
+
+/* ===== Landscape / iPad / web: image left, text right =====
+   Portrait mobile stays stacked (hero top, sheet below). */
+@media (min-width: 768px) and (orientation: landscape) {
+  .about-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    min-height: 100dvh;
+    padding-top: var(--top-h, 52px);
+    box-sizing: border-box;
+  }
+  .about-hero {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 0;
+    grid-column: 1;
+    grid-row: 1;
+    height: calc(100dvh - var(--top-h, 52px));
+    min-height: calc(100dvh - var(--top-h, 52px));
+    max-height: calc(100dvh - var(--top-h, 52px));
+    /* No scroll-park fade in split — image stays present */
+    opacity: 1;
+    filter: none;
+    pointer-events: none;
+  }
+  .about-page.about-voice-he .about-hero__stage {
+    /* Column already sits under the top bar */
+    top: 0;
+  }
+  .about-sheet {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: 0;
+    height: calc(100dvh - var(--top-h, 52px));
+    max-height: calc(100dvh - var(--top-h, 52px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .about-sheet__veil {
+    /* Side-by-side: soft left edge bleed into sheet ground instead of top veil */
+    position: absolute;
+    left: 0;
+    right: auto;
+    top: 0;
+    bottom: 0;
+    width: min(48px, 8vw);
+    height: auto;
+    --veil-h: 0;
+    background: var(--about-ground);
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 40%,
+      #000 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.35) 40%,
+      #000 100%
+    );
+  }
+  .about-intro {
+    padding: 28px 28px 32px;
+    flex: 0 0 auto;
+  }
+  .about-intro__inner {
+    margin: 0;
+    max-width: none;
+  }
+  .about-trail,
+  .about-close {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  .about-close {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+  }
+  /* Enter motion: hero already in-column — keep fade, skip travel */
+  .about-hero.float-up:not(.is-in) {
+    opacity: 0;
+  }
+  .about-hero.float-up.is-in {
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

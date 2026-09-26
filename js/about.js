@@ -154,14 +154,27 @@
   var initial = stored() || "i";
   setVoice(initial, { instant: true });
 
-  // Scroll: park hero under sheet — blur + fade (fade-only if reduced motion)
+  // Scroll: park hero under sheet — blur + fade (fade-only if reduced motion).
+  // Landscape split keeps the image column solid — skip park fade there.
   (function initHeroScroll() {
     if (!heroEl || !body.style) return;
 
     var ticking = false;
+    var splitMq =
+      window.matchMedia &&
+      window.matchMedia("(min-width: 768px) and (orientation: landscape)");
+
+    function isSplit() {
+      return splitMq && splitMq.matches;
+    }
 
     function apply() {
       ticking = false;
+      if (isSplit()) {
+        body.style.setProperty("--about-hero-fade", "1");
+        body.style.setProperty("--about-hero-blur", "0px");
+        return;
+      }
       var heroH =
         heroEl.getBoundingClientRect().height || window.innerHeight * 0.5;
       var y = window.scrollY || window.pageYOffset || 0;
@@ -185,6 +198,10 @@
     apply();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
+    if (splitMq) {
+      if (splitMq.addEventListener) splitMq.addEventListener("change", onScroll);
+      else if (splitMq.addListener) splitMq.addListener(onScroll);
+    }
   })();
 
   // Page enter. A fixed hero often never "enters" for IntersectionObserver,

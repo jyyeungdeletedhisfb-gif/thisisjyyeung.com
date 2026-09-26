@@ -8,8 +8,28 @@
   font-style: normal;
   font-weight: 900;
   font-display: swap;
-  src: url("../assets/fonts/Geist-Black.woff2") format("woff2"),
-       url("../assets/fonts/Geist.ttf") format("truetype");
+  src: url("../assets/fonts/Geist-Black.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/Geist.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/Geist.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/Geist.ttf") format("truetype");
 }
 
 :root {
@@ -155,11 +175,23 @@
   letter-spacing: 0.01em;
   text-transform: none; /* Jy Yeüng title case on Dysphoria */
   font-size: 17px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  height: 14px; /* same middle-bar axis as Geist .site-name + burger */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 @media (max-width: 800px) {
   .topbar .brand.site-name,
   .topbar a.site-name.brand {
-    transform: translateY(1px); /* Clarendon optical settle */
+    /* Match Geist .site-name middle-bar axis — Clarendon sat 1px low */
+    transform: translateY(-1px);
+    line-height: 1;
+    padding: 0;
+    margin: 0;
   }
 }
 .nav-toggle {
@@ -291,7 +323,7 @@ body:not(.on-dark) .topbar .site-nav.is-open .nav-burger span {
   flex-direction: column;
   justify-content: center;
   gap: 8px;
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
   transform: translateX(100%);
   opacity: 0;
   visibility: hidden;
@@ -312,6 +344,7 @@ body:not(.on-dark) .topbar .site-nav.is-open .nav-burger span {
 .nav-panel > .nav-soon {
   display: block;
   padding: 25px 8px;
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.65rem, 5.5vw, 2.35rem);
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -423,14 +456,15 @@ html.nav-open {
   min-width: 0.55ch;
   text-align: center;
 }
-/* Force Geist during enter scramble so Clarendon settle is visible */
+/* Force Geist during scramble (enter flash + exit arrival — never Clarendon on Geist pages) */
 .site-name.is-shuffling-from-geist {
   font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif !important;
   font-weight: 900 !important;
   letter-spacing: var(--site-name-tracking, 0) !important;
+  text-transform: uppercase !important;
   transform: none !important;
 }
-/* Force Clarendon during exit-arrival scramble so Geist settle is visible */
+/* Legacy Clarendon force (enter settles Clarendon via page CSS; exit uses Geist). */
 .site-name.is-shuffling-from-clarendon {
   font-family: "Clarendon", "Clarendon Text", Georgia, serif !important;
   font-weight: 700 !important;

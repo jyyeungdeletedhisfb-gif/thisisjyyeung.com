@@ -271,10 +271,11 @@
   }
 
   function playExitArrival(el, label) {
-    /* Force Clarendon for one beat, scramble, settle Geist via page CSS. */
+    /* Force Geist during arrival scramble — never flash Clarendon on Geist pages.
+       Glyphs decode already in Geist; page CSS keeps Geist after settle. */
     scrambleBrand(el, label, {
       duration: SHUFFLE_MS,
-      fromFace: "clarendon",
+      fromFace: "geist",
     });
   }
 
