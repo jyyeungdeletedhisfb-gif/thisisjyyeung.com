@@ -168,8 +168,8 @@ html:has(body.about-voice-he) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Flush under frost: mid-tight Y lifts head / cuts studio crown; ~50px hair clearance below bar. */
-  object-position: center 48%;
+  /* Flush under frost: tighter Y (v10) shrinks crown air; face fills more. Horizontally centered. */
+  object-position: center 60%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
@@ -462,10 +462,8 @@ html:has(body.about-voice-he) {
 
 /* ===== Landscape / iPad / web: sticky photo + page scroll =====
    Portrait mobile stays stacked (hero top + top veil + sheet).
-   Landscape: normal document scroll; left .about-hero pins under the
-   title bar; text column grows page height (no nested overflow);
-   sheet overlaps photo with a LEFT veil (portrait physics rotated);
-   full-width footer follows the split in normal flow. */
+   Landscape: sharp vertical column cut (no L→R dissolve / overlap).
+   Sticky hero + page scroll + full-width footer (v8 layout), solid sheet. */
 @media (min-width: 768px) and (orientation: landscape) {
   .about-main {
     display: grid;
@@ -476,8 +474,8 @@ html:has(body.about-voice-he) {
     padding-top: var(--top-h, 52px);
     box-sizing: border-box;
     /* Page scroll owns the axis — do not lock overflow here. */
-    /* Kill v8 seam stripe — dissolve is sheet overlap + left veil. */
   }
+  /* No seam stripe — hard column edge only. */
   .about-main::after {
     content: none;
     display: none;
@@ -505,14 +503,12 @@ html:has(body.about-voice-he) {
     height: 100%;
   }
   .about-sheet {
-    --dissolve-w: min(28vw, 220px);
     grid-column: 2;
     grid-row: 1;
     position: relative;
-    z-index: 2;
+    z-index: 1;
     margin-top: 0;
-    /* Pull left over the photo — same overlap idea as portrait’s top veil. */
-    margin-left: calc(-1 * var(--dissolve-w));
+    margin-left: 0;
     /* Natural height → page scroll. No nested overflow / max-height. */
     height: auto;
     max-height: none;
@@ -520,47 +516,18 @@ html:has(body.about-voice-he) {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    /* Solid ground like portrait — veil hanging off the left does the dissolve. */
+    /* Solid ground — sharp cut at column edge (no dissolve overlap). */
     background: var(--about-ground);
     -webkit-mask-image: none;
     mask-image: none;
   }
-  /* Landscape LEFT edge veil — portrait curve rotated to `to right`. */
+  /* Portrait top-veil off in split — landscape is a hard column edge. */
   .about-sheet__veil {
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(-1 * var(--dissolve-w));
-    right: auto;
-    width: calc(var(--dissolve-w) + 2px);
-    height: auto;
-    margin: 0;
-    background: var(--about-ground);
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(0, 0, 0, 0.06) 14%,
-      rgba(0, 0, 0, 0.22) 36%,
-      rgba(0, 0, 0, 0.55) 62%,
-      rgba(0, 0, 0, 0.86) 84%,
-      #000 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(0, 0, 0, 0.06) 14%,
-      rgba(0, 0, 0, 0.22) 36%,
-      rgba(0, 0, 0, 0.55) 62%,
-      rgba(0, 0, 0, 0.86) 84%,
-      #000 100%
-    );
-    pointer-events: none;
-    transition: background-color 0.45s ease;
+    display: none;
   }
   .about-intro {
-    /* Left pad clears the dissolve zone so type isn’t in the soft mask. */
-    padding: 28px 28px 32px calc(var(--dissolve-w) + 24px);
+    /* Normal split padding (pre-v9) — no dissolve seam-pad. */
+    padding: 28px;
     flex: 0 0 auto;
   }
   .about-intro__inner {
@@ -572,8 +539,7 @@ html:has(body.about-voice-he) {
     margin-left: 0;
     margin-right: 0;
     max-width: none;
-    padding-left: calc(var(--dissolve-w) + 24px);
-    padding-right: 28px;
+    padding: 8px 28px 40px;
   }
   .about-close {
     margin-bottom: 32px;

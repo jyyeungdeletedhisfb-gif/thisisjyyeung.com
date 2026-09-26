@@ -68,11 +68,11 @@ Living summary of brand, UX, visual, and process preferences for Dex, Rachel, an
 
 ---
 
-## Steve QA checkgates (chrome-geist-v9)
+## Steve QA checkgates (chrome-geist-v10)
 
 Phone / iPad smoke — blocker-only:
 
-- **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 48%`, He `center 12%` + soft crown on the He layer).
+- **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 60%`, He `center 12%` + soft crown on the He layer). I crop tightened in v10 (was `center 48%`) — less crown air, face fills more; still horizontally centered. He crop / soft-crown unchanged.
 - **Dysphoria exit:** Leave Dysphoria to Work / About / Home / Contact — brand shuffle lands Geist-only (`fromFace: "geist"`). **No Clarendon flash** on arrival. Refresh while on Dysphoria = no shuffle (keep).
 - **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`).
-- **iPad landscape About dissolve:** Same beauty as phone portrait, rotated. Sheet **overlaps** the photo (`margin-left: calc(-1 * var(--dissolve-w))`, `--dissolve-w: min(28vw, 220px)`), `z-index` above sticky hero. Left `.about-sheet__veil` hangs off the sheet with solid `--about-ground` soft-masked `transparent → solid` (same opacity stops as portrait’s `to bottom` veil). Sheet body stays solid ground — **not** a thin `.about-main::after` seam stripe. Intro/trail left padding clears the dissolve zone. Sticky photo + one page scroll + full-width footer from v8 kept. Portrait mobile stack + top veil unchanged.
+- **iPad landscape About = sharp column cut:** No L→R dissolve. No `--dissolve-w`, no sheet `margin-left` overlap, no left hanging `.about-sheet__veil`, no dissolve-based intro/trail padding, no `.about-main::after` seam stripe. Sheet solid `background: var(--about-ground)`; `.about-sheet__veil { display: none }` in landscape (portrait top veil stays). Text column padding normal split (`28px` / pre-v9). Grid 1fr 1fr, sticky hero, page scroll, full-width footer from v8 kept.
