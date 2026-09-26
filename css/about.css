@@ -21,7 +21,8 @@ html:has(body.about-voice-he) {
   --about-chip-active-ink: #f4f4f4;
   --about-border: rgba(0, 0, 0, 0.14);
   --about-trail-muted: #666;
-  --about-hero-h: 50dvh;
+  /* Grow stage by one top-bar so sheet/text drop the same amount (Dex phone). */
+  --about-hero-h: calc(50dvh + var(--top-h, 52px));
   --about-hero-blur: 0px;
   --about-hero-fade: 1;
   min-height: 100dvh;
@@ -167,9 +168,8 @@ html:has(body.about-voice-he) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Stage already clears the top bar; keep a mid-tight crop so face fills the frame
-     without shoving crown under the frost (Dex red-circle phone crop). */
-  object-position: center 48%;
+  /* Soft crown park is on the stage; bias crop for studio headroom so frost never clips hair. */
+  object-position: center 36%;
   opacity: 0;
   transition: opacity 0.42s ease;
   pointer-events: none;
@@ -178,7 +178,7 @@ html:has(body.about-voice-he) {
   box-shadow: none;
 }
 .about-hero__img[data-voice="he"] {
-  object-position: center 12%;
+  object-position: center 8%;
 }
 .about-hero__img.is-active {
   opacity: 1;

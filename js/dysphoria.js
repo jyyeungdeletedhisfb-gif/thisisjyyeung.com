@@ -353,7 +353,10 @@
     const brand = document.querySelector(".brand");
     const project = document.querySelector(".project-title");
     if (brand && data.chrome) {
-      brand.textContent = data.chrome.brand || "Jy Yeüng";
+      /* Don't clobber an in-flight enter scramble from chrome.js */
+      if (!brand.classList.contains("is-shuffling")) {
+        brand.textContent = data.chrome.brand || "Jy Yeüng";
+      }
       brand.setAttribute("href", data.chrome.brandHref || "./");
     }
     if (project && data.chrome) {

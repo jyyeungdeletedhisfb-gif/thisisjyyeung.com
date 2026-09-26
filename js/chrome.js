@@ -127,7 +127,11 @@
   }
 
   function isDysphoriaPage() {
-    var path = (window.location.pathname || "").replace(/\/+$/, "");
+    return pathIsDysphoria(window.location.pathname || "");
+  }
+
+  function pathIsDysphoria(pathname) {
+    var path = String(pathname || "").replace(/\/+$/, "");
     return /\/dysphoria$/i.test(path);
   }
 
@@ -136,11 +140,38 @@
     try {
       var url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin) return false;
-      var path = url.pathname.replace(/\/+$/, "");
-      return !/\/dysphoria$/i.test(path);
+      return !pathIsDysphoria(url.pathname);
     } catch (e) {
       return false;
     }
+  }
+
+  function entersDysphoria(href) {
+    if (!href || href.charAt(0) === "#") return false;
+    try {
+      var url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return false;
+      return pathIsDysphoria(url.pathname);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function navigationType() {
+    try {
+      var n =
+        performance.getEntriesByType &&
+        performance.getEntriesByType("navigation")[0];
+      return n && n.type ? n.type : "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function clearShuffleFlag() {
+    try {
+      sessionStorage.removeItem(SHUFFLE_KEY);
+    } catch (e) {}
   }
 
   var FACE_GEIST = "is-shuffling-from-geist";
@@ -250,22 +281,29 @@
   function initBrandShuffle() {
     var el = brandEl();
     if (!el) return;
-    var label = (el.textContent || "JY YEÜNG").trim() || "JY YEÜNG";
-    var enterPlayed = false;
+    /* Dysphoria Clarendon is title case; Geist chrome stays ALL CAPS. */
+    var label = isDysphoriaPage()
+      ? (el.textContent || "Jy Yeüng").trim() || "Jy Yeüng"
+      : (el.textContent || "JY YEÜNG").trim() || "JY YEÜNG";
+
+    /* Hard refresh / same-URL reload: never scramble; drop any stale flag
+       left by pagehide from the previous document. */
+    if (navigationType() === "reload") {
+      clearShuffleFlag();
+      el.textContent = label;
+      return;
+    }
 
     if (isDysphoriaPage()) {
-      playEnterDysphoria(el, label);
-      enterPlayed = true;
+      /* Only scramble when a Geist-chrome page marked enter (font change). */
+      if (takeShuffle() === "enter") {
+        playEnterDysphoria(el, label);
+      } else {
+        el.textContent = label;
+      }
 
-      /* bfcache / Back into Dysphoria: replay enter face flash */
-      window.addEventListener("pageshow", function (e) {
-        if (e.persisted || !enterPlayed) {
-          playEnterDysphoria(el, label);
-        }
-        enterPlayed = true;
-      });
-
-      /* Back / any leave: mark so destination can flash Clarendon→Geist */
+      /* Back / tab discard: mark exit so Geist destination can flash.
+         Reload path clears this flag above on the next document. */
       window.addEventListener("pagehide", function () {
         markShuffle("exit");
       });
@@ -296,6 +334,21 @@
       return;
     }
 
+    /* Geist chrome: mark enter when navigating into Dysphoria (font change). */
+    document.addEventListener(
+      "click",
+      function (e) {
+        var link = e.target.closest("a[href]");
+        if (!link) return;
+        if (link.getAttribute("target") === "_blank") return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        var href = link.getAttribute("href");
+        if (!entersDysphoria(href)) return;
+        markShuffle("enter");
+      },
+      true
+    );
+
     function maybeExitArrival() {
       if (takeShuffle() === "exit") {
         playExitArrival(el, label);
@@ -303,8 +356,9 @@
     }
 
     maybeExitArrival();
-    window.addEventListener("pageshow", function () {
-      maybeExitArrival();
+    window.addEventListener("pageshow", function (e) {
+      /* bfcache Back from Dysphoria: flag set on pagehide */
+      if (e.persisted) maybeExitArrival();
     });
   }
 
