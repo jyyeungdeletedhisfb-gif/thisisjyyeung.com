@@ -223,6 +223,18 @@
     el.classList.add("is-shuffling");
     el.setAttribute("aria-label", target);
 
+    /* Seed first scramble glyphs synchronously so the first paint is already
+       mid-scramble on fromFace — never a settled previous-face frame. */
+    (function seed() {
+      var out = "";
+      for (var i = 0; i < len; i++) {
+        var ch = target.charAt(i);
+        if (ch === " ") out += " ";
+        else out += GLYPHS.charAt((Math.random() * GLYPHS.length) | 0);
+      }
+      el.textContent = out;
+    })();
+
     function frame(now) {
       var t = Math.min(1, (now - start) / duration);
       var reveal = Math.floor(t * len);
@@ -263,10 +275,12 @@
   }
 
   function playEnterDysphoria(el, label) {
-    /* Force Geist for one beat, scramble, settle Clarendon via page CSS. */
+    /* Scramble already on Clarendon — never paint a Geist frame on enter.
+       Glyphs decode into title-case Clarendon; page CSS keeps Clarendon after settle.
+       Exit arrival stays Geist-only (playExitArrival). */
     scrambleBrand(el, label, {
       duration: SHUFFLE_MS,
-      fromFace: "geist",
+      fromFace: "clarendon",
     });
   }
 

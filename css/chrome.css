@@ -458,7 +458,7 @@ html.nav-open {
   min-width: 0.55ch;
   text-align: center;
 }
-/* Force Geist during scramble (enter flash + exit arrival — never Clarendon on Geist pages) */
+/* Exit arrival scramble: force Geist — never Clarendon flash on Geist pages. */
 .site-name.is-shuffling-from-geist {
   font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif !important;
   font-weight: 900 !important;
@@ -466,11 +466,13 @@ html.nav-open {
   text-transform: uppercase !important;
   transform: none !important;
 }
-/* Legacy Clarendon force (enter settles Clarendon via page CSS; exit uses Geist). */
+/* Enter Dysphoria scramble: force Clarendon — never Geist flash on era enter.
+   Future eras: fromFace must be the DESTINATION face for the whole scramble. */
 .site-name.is-shuffling-from-clarendon {
   font-family: "Clarendon", "Clarendon Text", Georgia, serif !important;
   font-weight: 700 !important;
   letter-spacing: 0.01em !important;
+  text-transform: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

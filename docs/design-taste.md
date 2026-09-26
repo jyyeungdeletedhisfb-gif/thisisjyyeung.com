@@ -68,11 +68,13 @@ Living summary of brand, UX, visual, and process preferences for Dex, Rachel, an
 
 ---
 
-## Steve QA checkgates (chrome-geist-v10)
+## Steve QA checkgates (chrome-geist-v11)
 
 Phone / iPad smoke — blocker-only:
 
 - **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 60%`, He `center 12%` + soft crown on the He layer). I crop tightened in v10 (was `center 48%`) — less crown air, face fills more; still horizontally centered. He crop / soft-crown unchanged.
-- **Dysphoria exit:** Leave Dysphoria to Work / About / Home / Contact — brand shuffle lands Geist-only (`fromFace: "geist"`). **No Clarendon flash** on arrival. Refresh while on Dysphoria = no shuffle (keep).
+- **Dysphoria enter:** Enter Dysphoria from Geist chrome — brand scramble starts on Clarendon (`fromFace: "clarendon"`). **No Geist flash** on enter. Exit to Geist pages stays Geist-only (`fromFace: "geist"`). Refresh while on Dysphoria = no shuffle (keep).
+- **Era brand shuffle (future eras):** Enter/exit must never flash the previous face. `fromFace` = destination face for the whole scramble; seed first scramble glyphs before paint. Gate for every new era font.
 - **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`).
-- **iPad landscape About = sharp column cut:** No L→R dissolve. No `--dissolve-w`, no sheet `margin-left` overlap, no left hanging `.about-sheet__veil`, no dissolve-based intro/trail padding, no `.about-main::after` seam stripe. Sheet solid `background: var(--about-ground)`; `.about-sheet__veil { display: none }` in landscape (portrait top veil stays). Text column padding normal split (`28px` / pre-v9). Grid 1fr 1fr, sticky hero, page scroll, full-width footer from v8 kept.
+- **iPad landscape About = sharp column cut + 50/50:** No L→R dissolve. Grid `1fr 1fr` / true 50% columns; image `object-fit: cover` (never fill-stretch) inside the 50% column. Portrait top veil stays (landscape veil off). Sticky hero, page scroll, full-width footer. Text column: top pad above “JY YEÜNG” matches bottom pad below Instagram/Contact (~80px).
+- **Portrait About — no hero leak between sheet and footer:** Once scrolled past, sheet fully covers hero (deeper overlap, fade→0, `.is-parked` hides blur bleed). Opaque ground through close → footer; no dark blurry strip between Instagram/Contact and BACK HOME. Portrait top veil stays.

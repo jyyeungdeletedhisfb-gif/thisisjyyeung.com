@@ -126,6 +126,8 @@ html:has(body.about-voice-he) {
   min-height: 0;
   width: 100%;
   position: relative;
+  /* Opaque ground under sheet/footer seam so fixed hero cannot leak through. */
+  background: var(--about-ground);
 }
 
 /* ===== Hero — fixed/parked full-bleed, shorter stage ===== */
@@ -149,6 +151,12 @@ html:has(body.about-voice-he) {
   transform: translateZ(0);
   will-change: opacity, filter;
   pointer-events: none;
+}
+/* Fully parked: hide so blur filter cannot bleed through sheet/footer seam. */
+.about-hero.is-parked {
+  opacity: 0 !important;
+  filter: none !important;
+  visibility: hidden;
 }
 .about-hero__stage {
   position: absolute;
@@ -195,7 +203,8 @@ html:has(body.about-voice-he) {
   z-index: 1;
   width: 100%;
   max-width: none;
-  margin-top: calc(var(--about-hero-h) - 6vh);
+  /* v11: deeper overlap so sheet fully covers hero once scrolled past (no leak strip). */
+  margin-top: calc(var(--about-hero-h) - 14vh);
   margin-left: 0;
   margin-right: 0;
   background: var(--about-ground);
@@ -408,7 +417,7 @@ html:has(body.about-voice-he) {
 /* Soft close — Contact + IG only */
 .about-close {
   max-width: 40rem;
-  margin: 0 auto 24px;
+  margin: 0 auto;
   padding: 8px 24px 48px;
   display: flex;
   flex-wrap: wrap;
@@ -467,6 +476,7 @@ html:has(body.about-voice-he) {
 @media (min-width: 768px) and (orientation: landscape) {
   .about-main {
     display: grid;
+    /* True 50/50 — each column half screen; minmax(0,…) prevents overflow blowout. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: start;
     flex: 1 1 auto;
@@ -489,13 +499,31 @@ html:has(body.about-voice-he) {
     grid-column: 1;
     grid-row: 1;
     align-self: start;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     height: calc(100dvh - var(--top-h, 52px));
     min-height: calc(100dvh - var(--top-h, 52px));
     max-height: calc(100dvh - var(--top-h, 52px));
     /* No scroll-park fade in split — sticky image stays present */
     opacity: 1;
     filter: none;
+    visibility: visible;
     pointer-events: none;
+    /* Contain image in 50% column; never stretch column or distort photo. */
+    overflow: hidden;
+  }
+  .about-hero.is-parked {
+    /* Landscape keeps photo visible — park class is portrait-only. */
+    opacity: 1 !important;
+    filter: none !important;
+    visibility: visible;
+  }
+  .about-hero__img {
+    /* Keep cover inside 50% column — crop as needed, never fill-stretch. */
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
   }
   /* Column already sits under the top bar — no He soft-crown inset. */
   .about-hero__img[data-voice="he"] {
@@ -526,8 +554,8 @@ html:has(body.about-voice-he) {
     display: none;
   }
   .about-intro {
-    /* Normal split padding (pre-v9) — no dissolve seam-pad. */
-    padding: 28px;
+    /* v11: top breathing matches space below Instagram/Contact before footer. */
+    padding: 80px 28px 28px;
     flex: 0 0 auto;
   }
   .about-intro__inner {
@@ -542,8 +570,9 @@ html:has(body.about-voice-he) {
     padding: 8px 28px 40px;
   }
   .about-close {
-    margin-bottom: 32px;
-    padding-bottom: 48px;
+    /* Bottom breathing ≈ intro top pad (80px) — symmetric text-column air. */
+    margin-bottom: 0;
+    padding-bottom: 80px;
   }
   /* Work list must stay fully opaque end-to-end (no leftover bottom fade). */
   .about-trail,

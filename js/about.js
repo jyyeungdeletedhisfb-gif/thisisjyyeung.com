@@ -174,13 +174,16 @@
         /* Landscape: sticky photo + page scroll — keep image solid, no park fade. */
         body.style.setProperty("--about-hero-fade", "1");
         body.style.setProperty("--about-hero-blur", "0px");
+        heroEl.classList.remove("is-parked");
         return;
       }
       var heroH =
         heroEl.getBoundingClientRect().height || window.innerHeight * 0.5;
       var y = window.scrollY || window.pageYOffset || 0;
-      var progress = Math.min(1, Math.max(0, y / (heroH * 0.85)));
-      var fade = (1 - progress * 0.72).toFixed(3);
+      /* Reach full cover sooner so sheet fully occludes hero before footer. */
+      var progress = Math.min(1, Math.max(0, y / (heroH * 0.7)));
+      /* Fade all the way to 0 — never leave a residual dark blur strip. */
+      var fade = (1 - progress).toFixed(3);
       body.style.setProperty("--about-hero-fade", fade);
       if (reduce) {
         body.style.setProperty("--about-hero-blur", "0px");
@@ -188,6 +191,9 @@
         var blur = (progress * 14).toFixed(2);
         body.style.setProperty("--about-hero-blur", blur + "px");
       }
+      /* Hide when fully covered so filter blur cannot bleed at sheet/footer seam. */
+      if (progress >= 0.98) heroEl.classList.add("is-parked");
+      else heroEl.classList.remove("is-parked");
     }
 
     function onScroll() {
