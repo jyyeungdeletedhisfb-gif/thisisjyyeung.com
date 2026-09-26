@@ -178,12 +178,12 @@ html:has(body.about-voice-he) {
   box-shadow: none;
 }
 .about-hero__img[data-voice="he"] {
-  /* Was 8%: nudge + soft crown (stage top) so curls clear frost. */
+  /* Was 8%: nudge + soft crown so curls clear frost.
+     Soft crown lives on THIS layer (not body-class stage) so He→I / I→He
+     crossfade never mutates the outgoing image’s crop mid-fade. */
   object-position: center 12%;
-}
-/* He soft crown: hair clearance wins over flush under translucent bar. */
-.about-page.about-voice-he .about-hero__stage {
   top: var(--top-h, 52px);
+  height: calc(100% - var(--top-h, 52px));
 }
 .about-hero__img.is-active {
   opacity: 1;
@@ -487,9 +487,10 @@ html:has(body.about-voice-he) {
     filter: none;
     pointer-events: none;
   }
-  .about-page.about-voice-he .about-hero__stage {
-    /* Column already sits under the top bar */
+  /* Column already sits under the top bar — no He soft-crown inset. */
+  .about-hero__img[data-voice="he"] {
     top: 0;
+    height: 100%;
   }
   .about-sheet {
     grid-column: 2;
@@ -505,26 +506,32 @@ html:has(body.about-voice-he) {
     justify-content: flex-start;
   }
   .about-sheet__veil {
-    /* Side-by-side: soft left edge bleed into sheet ground instead of top veil */
+    /* Side-by-side: soft image→text bleed (wider / gentler than hard column cut) */
     position: absolute;
     left: 0;
     right: auto;
     top: 0;
     bottom: 0;
-    width: min(48px, 8vw);
+    width: min(112px, 16vw);
     height: auto;
     --veil-h: 0;
     background: var(--about-ground);
     -webkit-mask-image: linear-gradient(
       to right,
       transparent 0%,
-      rgba(0, 0, 0, 0.35) 40%,
+      rgba(0, 0, 0, 0.08) 18%,
+      rgba(0, 0, 0, 0.28) 42%,
+      rgba(0, 0, 0, 0.62) 72%,
+      rgba(0, 0, 0, 0.9) 90%,
       #000 100%
     );
     mask-image: linear-gradient(
       to right,
       transparent 0%,
-      rgba(0, 0, 0, 0.35) 40%,
+      rgba(0, 0, 0, 0.08) 18%,
+      rgba(0, 0, 0, 0.28) 42%,
+      rgba(0, 0, 0, 0.62) 72%,
+      rgba(0, 0, 0, 0.9) 90%,
       #000 100%
     );
   }

@@ -346,14 +346,16 @@ body:not(.on-dark) .topbar .site-nav.is-open .nav-burger span {
   padding: 25px 8px;
   font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
   font-size: clamp(1.65rem, 5.5vw, 2.35rem);
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  font-weight: 900;
+  letter-spacing: var(--site-name-tracking, 0); /* match JY YEÜNG snug */
+  text-transform: uppercase;
   line-height: 1.15;
   text-decoration: none;
   color: #eee;
   text-align: center;
   border-bottom: 1px solid #222;
   transition: color 0.2s ease, background 0.2s ease;
+  -webkit-font-smoothing: antialiased;
 }
 .nav-panel > a:hover {
   color: #fff;
@@ -361,7 +363,7 @@ body:not(.on-dark) .topbar .site-nav.is-open .nav-burger span {
 }
 .nav-panel > a[aria-current="page"] {
   color: #fff;
-  font-weight: 700;
+  font-weight: 900;
 }
 .nav-panel > .nav-soon {
   color: #666;
