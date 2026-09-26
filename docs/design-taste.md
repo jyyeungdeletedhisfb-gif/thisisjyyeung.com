@@ -68,11 +68,11 @@ Living summary of brand, UX, visual, and process preferences for Dex, Rachel, an
 
 ---
 
-## Steve QA checkgates (chrome-geist-v6)
+## Steve QA checkgates (chrome-geist-v7)
 
 Phone / iPad smoke — blocker-only:
 
 - **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 48%`, He `center 12%` + soft crown on the He layer).
 - **Dysphoria exit:** Leave Dysphoria to Work / About / Home / Contact — brand shuffle lands Geist-only (`fromFace: "geist"`). **No Clarendon flash** on arrival. Refresh while on Dysphoria = no shuffle (keep).
 - **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`).
-- **iPad landscape About:** Soft gradient from image column into text sheet (not a hard cut).
+- **iPad landscape About:** Soft L→R seam gradient on the sheet left edge (hangs onto the photo; sticky so it stays glued to the image|sheet edge). No bottom text fade — Work list / Dysphoria stay fully opaque. Photo scroll-locked; only the text column scrolls.

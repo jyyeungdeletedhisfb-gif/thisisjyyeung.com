@@ -461,24 +461,42 @@ html:has(body.about-voice-he) {
 
 
 /* ===== Landscape / iPad / web: image left, text right =====
-   Portrait mobile stays stacked (hero top, sheet below). */
+   Portrait mobile stays stacked (hero top, sheet below).
+   Split locks the photo; only .about-sheet scrolls. Seam veil hangs
+   onto the image and stays sticky so gradient physics stay glued. */
 @media (min-width: 768px) and (orientation: landscape) {
+  /* Page = viewport; kill window scroll so the hero column cannot travel. */
+  html:has(body.about-page) {
+    height: 100%;
+    overflow: hidden;
+  }
+  .about-page {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
   .about-main {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: stretch;
-    min-height: 100dvh;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
     padding-top: var(--top-h, 52px);
     box-sizing: border-box;
+    overflow: hidden;
   }
   .about-hero {
-    position: relative;
-    top: auto;
+    position: sticky;
+    top: var(--top-h, 52px);
     left: auto;
     right: auto;
     z-index: 0;
     grid-column: 1;
     grid-row: 1;
+    align-self: start;
     height: calc(100dvh - var(--top-h, 52px));
     min-height: calc(100dvh - var(--top-h, 52px));
     max-height: calc(100dvh - var(--top-h, 52px));
@@ -501,39 +519,52 @@ html:has(body.about-voice-he) {
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    /* No bottom fade / mask on the scroll column — Work stays fully opaque. */
+    -webkit-mask-image: none;
+    mask-image: none;
   }
+  /* Portrait top-veil off in split — seam gradient lives on .about-main. */
   .about-sheet__veil {
-    /* Side-by-side: soft image→text bleed (wider / gentler than hard column cut) */
+    display: none;
+  }
+  /* Seam gradient: glued to image|sheet edge (not inside the scroller),
+     so it never moves with Work copy and is not clipped by sheet overflow.
+     Transparent over photo → solid sheet ground. ~8–14% / 48–72px. */
+  .about-main::after {
+    content: "";
+    --seam-w: clamp(48px, 11%, 72px);
     position: absolute;
-    left: 0;
-    right: auto;
-    top: 0;
+    top: var(--top-h, 52px);
     bottom: 0;
-    width: min(112px, 16vw);
-    height: auto;
-    --veil-h: 0;
+    left: 50%;
+    width: var(--seam-w);
+    /* Bias onto the photo so the soft stop dissolves the cut, not the face. */
+    transform: translateX(-58%);
+    z-index: 3;
     background: var(--about-ground);
     -webkit-mask-image: linear-gradient(
       to right,
       transparent 0%,
-      rgba(0, 0, 0, 0.08) 18%,
-      rgba(0, 0, 0, 0.28) 42%,
-      rgba(0, 0, 0, 0.62) 72%,
-      rgba(0, 0, 0, 0.9) 90%,
+      rgba(0, 0, 0, 0.12) 28%,
+      rgba(0, 0, 0, 0.4) 52%,
+      rgba(0, 0, 0, 0.78) 78%,
+      rgba(0, 0, 0, 0.96) 92%,
       #000 100%
     );
     mask-image: linear-gradient(
       to right,
       transparent 0%,
-      rgba(0, 0, 0, 0.08) 18%,
-      rgba(0, 0, 0, 0.28) 42%,
-      rgba(0, 0, 0, 0.62) 72%,
-      rgba(0, 0, 0, 0.9) 90%,
+      rgba(0, 0, 0, 0.12) 28%,
+      rgba(0, 0, 0, 0.4) 52%,
+      rgba(0, 0, 0, 0.78) 78%,
+      rgba(0, 0, 0, 0.96) 92%,
       #000 100%
     );
+    pointer-events: none;
   }
   .about-intro {
     padding: 28px 28px 32px;
@@ -554,6 +585,19 @@ html:has(body.about-voice-he) {
   .about-close {
     margin-bottom: 32px;
     padding-bottom: 32px;
+  }
+  /* Work list must stay fully opaque end-to-end (no leftover bottom fade). */
+  .about-trail,
+  .about-trail__heading,
+  .about-trail__list,
+  .about-trail__list a {
+    opacity: 1;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  /* Footer lives outside the split; hide so it cannot extend page height. */
+  .about-page > .site-footer {
+    display: none;
   }
   /* Enter motion: hero already in-column — keep fade, skip travel */
   .about-hero.float-up:not(.is-in) {
