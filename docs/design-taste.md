@@ -68,11 +68,11 @@ Living summary of brand, UX, visual, and process preferences for Dex, Rachel, an
 
 ---
 
-## Steve QA checkgates (chrome-geist-v8)
+## Steve QA checkgates (chrome-geist-v9)
 
 Phone / iPad smoke — blocker-only:
 
 - **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 48%`, He `center 12%` + soft crown on the He layer).
 - **Dysphoria exit:** Leave Dysphoria to Work / About / Home / Contact — brand shuffle lands Geist-only (`fromFace: "geist"`). **No Clarendon flash** on arrival. Refresh while on Dysphoria = no shuffle (keep).
 - **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`).
-- **iPad landscape About:** Sticky photo + one page scroll (no nested unlock). Left `.about-hero` pins under the title bar; text column is normal document flow (no independent overflow). Stronger L→R seam veil (`~clamp(72px, 14%, 140px)`) sticky with the photo — fades `--about-ground` over the photo edge. Full-width `.site-footer` below the split, reachable by scrolling to the bottom. No bottom text fade — Work list stays fully opaque. Portrait stacked (hero + top veil + sheet) unchanged.
+- **iPad landscape About dissolve:** Same beauty as phone portrait, rotated. Sheet **overlaps** the photo (`margin-left: calc(-1 * var(--dissolve-w))`, `--dissolve-w: min(28vw, 220px)`), `z-index` above sticky hero. Left `.about-sheet__veil` hangs off the sheet with solid `--about-ground` soft-masked `transparent → solid` (same opacity stops as portrait’s `to bottom` veil). Sheet body stays solid ground — **not** a thin `.about-main::after` seam stripe. Intro/trail left padding clears the dissolve zone. Sticky photo + one page scroll + full-width footer from v8 kept. Portrait mobile stack + top veil unchanged.
