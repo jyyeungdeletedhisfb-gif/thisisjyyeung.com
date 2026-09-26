@@ -168,29 +168,14 @@
       return splitMq && splitMq.matches;
     }
 
-    function lockSplitScroll(on) {
-      /* Belt + CSS: landscape About must not window-scroll the hero. */
-      var root = document.documentElement;
-      if (on) {
-        body.classList.add("about-split");
-        root.style.overflow = "hidden";
-        body.style.overflow = "hidden";
-      } else {
-        body.classList.remove("about-split");
-        root.style.overflow = "";
-        body.style.overflow = "";
-      }
-    }
-
     function apply() {
       ticking = false;
       if (isSplit()) {
-        lockSplitScroll(true);
+        /* Landscape: sticky photo + page scroll — keep image solid, no park fade. */
         body.style.setProperty("--about-hero-fade", "1");
         body.style.setProperty("--about-hero-blur", "0px");
         return;
       }
-      lockSplitScroll(false);
       var heroH =
         heroEl.getBoundingClientRect().height || window.innerHeight * 0.5;
       var y = window.scrollY || window.pageYOffset || 0;
