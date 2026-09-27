@@ -113,6 +113,8 @@ Matches Work page order:
 3. Authenticity + Imitation  
 4. State (last)
 
+**Work hub covers (work-covers-v1):** A+I tile now has cover art (2480); State upgraded to 1500; Front stays intentional 1080 brat low-res.
+
 ### Landscape / iPad (`min-width: 768px` + `orientation: landscape`)
 
 - Sharp **50/50** columns: image left / text right (`1fr 1fr` / true 50%). Pinch / resize bounce-back to 50/50 is **intentional** (locked ratio).
