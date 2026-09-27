@@ -1,6 +1,6 @@
 # Design taste — Jy Yeüng / thisisjyyeung.com
 
-**Locked as of chrome-geist-v12** (mirror SHA `7a5a840` / primary `c6981fe`). Phone taste gate still Jy. Chrome reopened at v12 for Jy phone notes (hamburger current-page left-dot; About opener `(aka James)`). Don’t reopen again unless Jy sends new phone notes.
+**Locked as of chrome-geist-v13** (mirror SHA `MIRROR_SHA` / primary `PRIMARY_SHA`). Phone taste gate still Jy. v13: footer text lines unified to 11px; favicon = Geist Black capital Ü on #050505 tile (path outlines). Don’t reopen again unless Jy sends new phone notes.
 
 Living handbook of brand, UX, visual, chrome, and process preferences for Dex, Rachel, and future bots. Prefer this over re-deriving taste from chat history.
 
@@ -19,7 +19,7 @@ Living handbook of brand, UX, visual, chrome, and process preferences for Dex, R
 
 ---
 
-## Locked chrome / type (chrome-geist-v12)
+## Locked chrome / type (chrome-geist-v13)
 
 ### Universal Geist brand mark
 
@@ -41,6 +41,11 @@ Living handbook of brand, UX, visual, chrome, and process preferences for Dex, R
 ### Interactive text
 
 - Text links that act as buttons (e.g. Privacy prose links): **always underline** (`text-underline-offset` ~0.18em, 1px thickness).
+
+### Favicon + footer type
+
+- **Favicon:** Geist Black capital **Ü** (U+00DC) in white on `#050505` tile; SVG path outlines (no live webfont). Not “JY”, not Clarendon.
+- **Footer text lines** (`.footer-credit`, `.footer-links`, `.copy`) share **11px**; `.footer-home` stays 12px (bordered button).
 
 ---
 
@@ -192,7 +197,7 @@ Matches Work page order:
 
 ---
 
-## Steve QA checkgates (chrome-geist-v12)
+## Steve QA checkgates (chrome-geist-v13)
 
 Phone / iPad smoke — blocker-only:
 
