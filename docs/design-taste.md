@@ -1,6 +1,6 @@
 # Design taste — Jy Yeüng / thisisjyyeung.com
 
-**Locked as of chrome-geist-v11** (mirror SHA `bbcc75f` / primary `862b95b`). Phone taste gate still Jy. Don’t reopen chrome unless Jy sends new phone notes.
+**Locked as of chrome-geist-v12** (mirror SHA `7a5a840` / primary `828eddb`). Phone taste gate still Jy. Chrome reopened at v12 for Jy phone notes (hamburger current-page left-dot; About opener `(aka James)`). Don’t reopen again unless Jy sends new phone notes.
 
 Living handbook of brand, UX, visual, chrome, and process preferences for Dex, Rachel, and future bots. Prefer this over re-deriving taste from chat history.
 
@@ -19,7 +19,7 @@ Living handbook of brand, UX, visual, chrome, and process preferences for Dex, R
 
 ---
 
-## Locked chrome / type (chrome-geist-v11)
+## Locked chrome / type (chrome-geist-v12)
 
 ### Universal Geist brand mark
 
@@ -28,6 +28,7 @@ Living handbook of brand, UX, visual, chrome, and process preferences for Dex, R
   - Non-home title bars (left brand)
   - Work / Contact / Privacy page titles
   - Hamburger drawer labels
+- **Hamburger current-page:** small filled circle **to the LEFT** of the active drawer label (`a[aria-current="page"]::before`). ALL CAPS + Geist tracking unchanged; don’t break item fade-in / spacing.
 - **Homepage:** no title bar — float hamburger only.
 - Helvetica (or quiet system sans) for non-brand UI chrome; keep Geist reserved for the brand mark.
 
@@ -109,11 +110,15 @@ Matches Work page order:
 
 ### Landscape / iPad (`min-width: 768px` + `orientation: landscape`)
 
-- Sharp **50/50** columns: image left / text right (`1fr 1fr` / true 50%).
+- Sharp **50/50** columns: image left / text right (`1fr 1fr` / true 50%). Pinch / resize bounce-back to 50/50 is **intentional** (locked ratio).
 - Image: `object-fit: cover` — **never** stretch/fill; crop inside the 50% column.
 - Sticky photo + **one page scroll**; **full-width footer**.
 - **NO L→R dissolve** (tried v7–v9 and rejected — clips subject). Landscape veil off; hard column edge.
 - Text column: top pad above “JY YEÜNG” ≈ bottom pad below IG/Contact (**~80px**).
+
+### About copy
+
+- Bio openers include **(aka James)** after the name: I — `I'm Jy Yeüng (aka James). …`; He — `Jy Yeüng (aka James) is …`. No “Hello!” unless Jy asks.
 
 ### About grounds
 
@@ -187,13 +192,13 @@ Matches Work page order:
 
 ---
 
-## Steve QA checkgates (chrome-geist-v11)
+## Steve QA checkgates (chrome-geist-v12)
 
 Phone / iPad smoke — blocker-only:
 
 - **About He ↔ I:** Toggle voice; crop / `object-position` must never flash the outgoing voice’s framing (no ~1ms jump). Dual-layer opacity only; each img keeps its own crop (I `center 60%`, He `center 12%` + soft crown on the He layer). I crop tightened in v10 (was `center 48%`) — less crown air, face fills more; still horizontally centered. He crop / soft-crown unchanged.
 - **Dysphoria enter:** Enter Dysphoria from Geist chrome — brand scramble starts on Clarendon (`fromFace: "clarendon"`). **No Geist flash** on enter. Exit to Geist pages stays Geist-only (`fromFace: "geist"`). Refresh while on Dysphoria = no shuffle (keep).
 - **Era brand shuffle (future eras):** Enter/exit must never flash the previous face. `fromFace` = destination face for the whole scramble; seed first scramble glyphs before paint. Gate for every new era font.
-- **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`).
+- **Hamburger drawer:** Labels ALL CAPS; tracking matches hero “JY YEÜNG” Geist Black 900 Snug (`letter-spacing: 0`). Current page shows a small filled circle **left** of the label (`aria-current="page"`).
 - **iPad landscape About = sharp column cut + 50/50:** No L→R dissolve. Grid `1fr 1fr` / true 50% columns; image `object-fit: cover` (never fill-stretch) inside the 50% column. Portrait top veil stays (landscape veil off). Sticky hero, page scroll, full-width footer. Text column: top pad above “JY YEÜNG” matches bottom pad below Instagram/Contact (~80px).
 - **Portrait About — no hero leak between sheet and footer:** Once scrolled past, sheet fully covers hero (deeper overlap, fade→0, `.is-parked` hides blur bleed). Opaque ground through close → footer; no dark blurry strip between Instagram/Contact and BACK HOME. Portrait top veil stays.

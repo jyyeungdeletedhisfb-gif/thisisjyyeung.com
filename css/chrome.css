@@ -364,6 +364,19 @@ body:not(.on-dark) .topbar .site-nav.is-open .nav-burger span {
 .nav-panel > a[aria-current="page"] {
   color: #fff;
   font-weight: 900;
+  /* Current-page indicator: small filled circle LEFT of the ALL-CAPS label */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42em;
+}
+.nav-panel > a[aria-current="page"]::before {
+  content: "";
+  flex-shrink: 0;
+  width: 0.22em;
+  height: 0.22em;
+  border-radius: 50%;
+  background: currentColor;
 }
 .nav-panel > .nav-soon {
   color: #666;
