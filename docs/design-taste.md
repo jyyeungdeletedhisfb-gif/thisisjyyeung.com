@@ -1,6 +1,6 @@
 # Design taste — Jy Yeüng / thisisjyyeung.com
 
-**Locked as of chrome-geist-v12** (mirror SHA `7a5a840` / primary `828eddb`). Phone taste gate still Jy. Chrome reopened at v12 for Jy phone notes (hamburger current-page left-dot; About opener `(aka James)`). Don’t reopen again unless Jy sends new phone notes.
+**Locked as of chrome-geist-v12** (mirror SHA `7a5a840` / primary `c6981fe`). Phone taste gate still Jy. Chrome reopened at v12 for Jy phone notes (hamburger current-page left-dot; About opener `(aka James)`). Don’t reopen again unless Jy sends new phone notes.
 
 Living handbook of brand, UX, visual, chrome, and process preferences for Dex, Rachel, and future bots. Prefer this over re-deriving taste from chat history.
 
