@@ -1,6 +1,6 @@
 # Design taste — Jy Yeüng / thisisjyyeung.com
 
-**Locked as of chrome-geist-v13** (mirror SHA `MIRROR_SHA` / primary `PRIMARY_SHA`). Phone taste gate still Jy. v13: footer text lines unified to 11px; favicon = Geist Black capital Ü on #050505 tile (path outlines). Don’t reopen again unless Jy sends new phone notes.
+**Locked as of chrome-geist-v13** (mirror SHA `eee65dd` / primary `49d4f7b`). Phone taste gate still Jy. v13: footer text lines unified to 11px; favicon = Geist Black capital Ü on #050505 tile (path outlines). Don’t reopen again unless Jy sends new phone notes.
 
 Living handbook of brand, UX, visual, chrome, and process preferences for Dex, Rachel, and future bots. Prefer this over re-deriving taste from chat history.
 
