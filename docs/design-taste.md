@@ -155,6 +155,7 @@ Matches Work page order:
 
 ## Visual / Dysphoria era
 
+- **HQ masters (dysphoria-hq-v1):** Cover **2400×2400** on Dysphoria intro + Work tile; gates **3000×3000** (enter = soundtrack-promo; exit separate); Host soft master **1800×2400** (`ar: 0.75`); Charlatan soft master **1800×1800** (`ar: 1`). Durable stash: `/home/box/masters/dysphoria/` (not in git).
 - Monochrome **high-contrast B&W**; Clarendon / serif for section titles; clean sans for UI.
 - Seamless gate blacks **edge-sampled** (`#030303` enter / `#000` exit); no grey outline on gate circles.
 - **Tight spacing:** cut awkward gaps (para→chevron, soundtrack→sheets).

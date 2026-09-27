@@ -2,10 +2,14 @@
   "use strict";
 
   const CONTENT_URL = new URL("content/dysphoria.json", document.baseURI).href;
+  const ASSET_V = "dysphoria-hq-v1";
   function assetUrl(path) {
     if (!path) return "";
     if (/^https?:/i.test(path)) return path;
-    return new URL(path.replace(/^\//, ""), document.baseURI).href;
+    const clean = path.replace(/^\//, "");
+    const url = new URL(clean, document.baseURI);
+    if (!url.searchParams.has("v")) url.searchParams.set("v", ASSET_V);
+    return url.href;
   }
   const ZOOM = 2.2;
 

@@ -211,8 +211,8 @@
     /* no outline — circle must blend into backdrop blacks */
     clip-path: circle(38% at 50% 50%);
   }
-  .gate-img.enter { background-image: url("../assets/dysphoria/gate-enter.jpg"); }
-  .gate-img.exit { background-image: url("../assets/dysphoria/gate-exit.jpg"); }
+  .gate-img.enter { background-image: url("../assets/dysphoria/gate-enter.jpg?v=dysphoria-hq-v1"); }
+  .gate-img.exit { background-image: url("../assets/dysphoria/gate-exit.jpg?v=dysphoria-hq-v1"); }
 
   .soundtrack-layer {
     position: absolute; inset: 0;
