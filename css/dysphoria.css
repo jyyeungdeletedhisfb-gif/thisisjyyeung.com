@@ -101,7 +101,8 @@
   /* ===== 1. INTRO (white) — static, no cover-slide ===== */
   .intro {
     position: relative;
-    min-height: 100vh;
+    /* natural content height — no forced full-viewport empty band below cue */
+    min-height: 0;
     background: #fff;
     padding-top: var(--top-h);
     display: flex;
@@ -150,7 +151,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    /* lower cue ~1.5 description lines (half of prior 3-line gap) */
+    /* top: ~1.5 description lines under copy; bottom: modest pad before enter-gate */
     padding: calc(1.5 * 16px * 1.55) 0 32px;
     color: #777;
   }
@@ -207,7 +208,7 @@
     border-radius: 50%;
     transform: scale(0.35);
     opacity: 0;
-    will-change: transform, opacity, clip-path;
+    will-change: transform, opacity, clip-path, filter;
     /* no outline — circle must blend into backdrop blacks */
     clip-path: circle(38% at 50% 50%);
   }

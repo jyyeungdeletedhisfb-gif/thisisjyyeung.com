@@ -16,7 +16,7 @@ Prefer `jy-site` URLs with `?v=…` after a ship. Custom domain unreliable.
 
 - [ ] Home → Work → Dysphoria → About (I/He) → Contact → Privacy
 - [ ] Hamburger: open/close, current-page left-dot, IG/Contact icons
-- [ ] Dysphoria: enter gate expand sharpness, soundtrack embed (no empty bordered gap), one Flip plate, exit gate contract
+- [ ] Dysphoria: intro cue sits close under copy (no tall white void); enter gate→soundtrack scale/blur handoff continuous; plate Prev/Next ends; soundtrack embed (no empty bordered gap); one Flip plate; exit gate contract
 - [ ] About: portrait sticky sheet / no hero leak to footer; on iPad landscape: sharp 50/50 (pinch bounce-back is intentional)
 - [ ] Work grid: Dysphoria live tile + soon covers (Front/A+I/State)
 - [ ] Footer: Back home (non-home), WEBSITE BY + Privacy same size (11px), links underlined

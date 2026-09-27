@@ -15,7 +15,7 @@
 
   let sheets = [];
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
-  let plate, plateStage, peekLeft, peekRight, flipBtn, loupeBtn, replaceBtn, loupe;
+  let plate, plateStage, peekLeft, peekRight, prevBtn, nextBtn, flipBtn, loupeBtn, replaceBtn, loupe;
   let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop;
   let playlistBg, soundtrackLayer, soundtrackDarken, soundtrackInner;
   let enterGate, exitGate, enterBg, enterGateImg, exitGateImg;
@@ -173,6 +173,8 @@
     flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
     loupeBtn.classList.toggle("on", loupeOn);
     loupeBtn.setAttribute("aria-pressed", loupeOn ? "true" : "false");
+    if (prevBtn) prevBtn.disabled = i <= 0;
+    if (nextBtn) nextBtn.disabled = i >= sheets.length - 1;
   }
 
   function commitTo(next, dir) {
@@ -254,26 +256,34 @@
     if (enterBg) enterBg.style.opacity = "1";
 
     // 0.00–0.10 gate fades in small on black
-    // 0.06–0.58 scale up / circle expand until engulf
-    // 0.48–0.72 soundtrack fades in; gate softens after ~0.62
-    // No exit fade / darken wipe — keep soundtrack fully visible once present
+    // 0.06–0.72 scale up / circle expand — still rising through soundtrack crossfade
+    // 0.48–0.72 soundtrack fades in; gate blurs+darkens toward soundtrack filter
+    // Late opacity soft-out once blur-matched; no darken wipe — soundtrack stays visible
     const gateIn = smoothstep((t - 0.0) / 0.10);
-    const scaleT = smoothstep((t - 0.06) / 0.52);
-    const scale = lerp(0.32, 4.6, scaleT);
-    const clipR = lerp(32, 78, scaleT);
+    const scaleT = smoothstep((t - 0.06) / 0.66);
+    // base .gate-img = min(42vmin, 320px); ~6.4 covers sticky viewport on typical desktop
+    const scale = lerp(0.32, 6.4, scaleT);
+    const clipR = lerp(32, 82, scaleT);
+
+    const snd = smoothstep((t - 0.48) / 0.24);
+    const blurPx = lerp(0, 18, snd);
+    const bright = lerp(1, 0.45, snd);
+    const sat = lerp(1, 0.85, snd);
 
     enterGateImg.style.opacity = String(gateIn);
     enterGateImg.style.transform = `scale(${scale})`;
     enterGateImg.style.clipPath = `circle(${clipR}% at 50% 50%)`;
+    enterGateImg.style.filter = `blur(${blurPx}px) saturate(${sat}) brightness(${bright})`;
 
-    const snd = smoothstep((t - 0.48) / 0.24);
     if (soundtrackLayer) {
       soundtrackLayer.style.opacity = String(snd);
       soundtrackLayer.classList.toggle("is-live", snd > 0.4);
     }
-    if (t > 0.62) {
-      const fadeGate = 1 - smoothstep((t - 0.62) / 0.16);
+    if (t > 0.68) {
+      const fadeGate = 1 - smoothstep((t - 0.68) / 0.14);
       enterGateImg.style.opacity = String(gateIn * fadeGate);
+    } else {
+      enterGateImg.style.opacity = String(gateIn);
     }
 
     // Never fade soundtrack out; darken wipe stays off
@@ -652,6 +662,8 @@
 
     peekLeft.onclick = () => go(-1);
     peekRight.onclick = () => go(1);
+    if (prevBtn) prevBtn.onclick = () => go(-1);
+    if (nextBtn) nextBtn.onclick = () => go(1);
     flipBtn.onclick = () => {
       flipped = !flipped;
       plate.classList.toggle("flipped", flipped);
@@ -805,6 +817,8 @@
     plateStage = document.getElementById("plateStage");
     peekLeft = document.getElementById("peekLeft");
     peekRight = document.getElementById("peekRight");
+    prevBtn = document.getElementById("prevBtn");
+    nextBtn = document.getElementById("nextBtn");
     flipBtn = document.getElementById("flipBtn");
     loupeBtn = document.getElementById("loupeBtn");
     replaceBtn = document.getElementById("replaceBtn");

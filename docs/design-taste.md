@@ -163,6 +163,7 @@ Matches Work page order:
 - **Tight spacing:** cut awkward gaps (para→chevron, soundtrack→sheets).
 - Cover art: subtle drop shadow (~135°).
 - Soundtrack stays in the enter-gate with fade-in; **no exit darken wipe** over text/widget.
+- **dysphoria-ux-v1 (MacBook Chrome notes):** Intro uses natural height (no `min-height: 100vh` void under scroll cue). Enter gate max scale ~6.4 with expand through soundtrack crossfade; gate blurs/darkens toward soundtrack filter during handoff. Plate toolbar: Prev | Loupe | Flip | Replace | Next.
 - Section labels (“Soundtrack” / “The Images”) share **alignment and hierarchy**.
 - Topbar: Clarendon title-case **Jy Yeüng** + era title; back-to-top.
 
