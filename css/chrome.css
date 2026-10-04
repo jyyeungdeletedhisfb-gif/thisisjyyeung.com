@@ -597,7 +597,9 @@ html.nav-open {
   color: var(--footer-muted);
 }
 
-/* Home layout: hero + footer */
+/* Home layout: hero + footer.
+   .home-shell stays dark for Work / Contact / Privacy.
+   Dummy home opts into white via body.home-dummy only. */
 .home-shell {
   min-height: 100vh;
   display: flex;
@@ -609,11 +611,83 @@ html.nav-open {
   min-height: 0;
 }
 
-/* Home brand mark: Helvetica caps (Clarendon reserved for Dysphoria era) */
-.home-hero h1 {
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+/* Dummy home: white ground, Geist Black 900 Snug (same as .site-name / About .about-name). */
+body.home-dummy.home-shell {
+  background: #fff;
+  color: #111;
+}
+body.home-dummy .home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: clamp(18px, 3.2vh, 36px);
+  min-height: 0;
+  box-sizing: border-box;
+  background: #fff;
+  color: #111;
+  text-align: left;
+  /* Clear the fixed hamburger bar; footer sits in normal flow below. */
+  padding: calc(var(--top-h, 52px) + 8px) 16px 28px;
+}
+body.home-dummy .home-hero h1.home-dummy__line {
+  margin: 0;
+  max-width: 100%;
+  font-family: "Geist", Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: clamp(2.35rem, 4.6vw + 4.5vh, 8.75rem);
+  letter-spacing: var(--site-name-tracking, 0);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  line-height: 1.05;
+  text-wrap: balance;
+  color: #111;
+  -webkit-font-smoothing: antialiased;
+}
+/* Light bars on the white dummy; open drawer keeps the light X. */
+body.home-dummy .site-nav--float .nav-toggle,
+body.home-dummy .site-nav--float .nav-burger {
+  color: #111;
+}
+body.home-dummy .site-nav--float .nav-burger span {
+  background: #111 !important;
+}
+body.home-dummy .site-nav--float.is-open .nav-toggle,
+body.home-dummy .site-nav--float.is-open .nav-burger {
+  color: #f2f2f2;
+}
+body.home-dummy .site-nav--float.is-open .nav-burger span {
+  background: #f2f2f2 !important;
+}
+body.home-dummy .home-dummy__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 28px;
+  margin: 0;
+  padding: 0;
+}
+body.home-dummy .home-dummy__links a {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  padding: 14px 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  body.home-dummy .home-dummy__links a:hover {
+    opacity: 0.7;
+  }
+}
+body.home-dummy .home-dummy__links a:focus-visible {
+  outline: 1px solid #111;
+  outline-offset: 4px;
 }
 
 /* Privacy + prose links: interactive text always underlined */
@@ -844,39 +918,3 @@ a.work-tile:focus-visible {
   }
 }
 
-
-/* Home — small About tile (hub-tile) */
-.home-hero .home-about-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 8px;
-  width: min(140px, 38vw);
-  text-decoration: none;
-  color: #aaa;
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-}
-.home-hero .home-about-tile img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border: none;
-  box-shadow: none;
-}
-.home-hero .home-about-tile__label {
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: #888;
-}
-@media (hover: hover) and (pointer: fine) {
-  .home-hero .home-about-tile:hover .home-about-tile__label {
-    color: #ccc;
-  }
-}
-.home-hero .home-about-tile:focus-visible {
-  outline: 1px solid #888;
-  outline-offset: 4px;
-}
