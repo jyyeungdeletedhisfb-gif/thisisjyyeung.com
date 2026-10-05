@@ -24,8 +24,8 @@
   <meta name="twitter:image" content="assets/dysphoria/00-cover.jpg?v=dysphoria-hq-v1" />
 
   <link href="https://fonts.cdnfonts.com/css/clarendon-2" rel="stylesheet" />
-  <link rel="stylesheet" href="css/dysphoria.css?v=dysphoria-ux-v1" />
-  <link rel="stylesheet" href="css/chrome.css?v=dysphoria-hq-v1" />
+  <link rel="stylesheet" href="css/dysphoria.css?v=placeholder-cleanse-v1" />
+  <link rel="stylesheet" href="css/chrome.css?v=placeholder-cleanse-v1" />
 </head>
 <body>
   <div class="load-gate" id="loadGate" role="status" aria-live="polite" aria-busy="true">
@@ -110,7 +110,6 @@
         <div class="soundtrack-darken" id="soundtrackDarken"></div>
         <div class="soundtrack-inner" id="soundtrackInner">
           <h2>Soundtrack</h2>
-          <p class="sub">An accompanying playlist for Dysphoria — listen while you move through the sheets. Apple Music first; Spotify when the mirror is ready.</p>
           <div class="listen-row">
             <span>Listen on</span>
             <a data-listen="apple" href="https://music.apple.com/us/playlist/pl.u-jV890pjsd12y6xr" target="_blank" rel="noopener">Apple Music</a>
@@ -145,12 +144,15 @@
         <div class="plate-stage" id="plateStage">
           <button class="peek left empty" id="peekLeft" type="button" aria-label="Previous"></button>
           <button class="peek right empty" id="peekRight" type="button" aria-label="Next"></button>
+          <button type="button" class="plate-nav plate-nav--prev" id="prevBtn" title="Previous" aria-label="Previous">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 L9 12 l5.5 6"/></svg>
+          </button>
+          <button type="button" class="plate-nav plate-nav--next" id="nextBtn" title="Next" aria-label="Next">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6 L15 12 l-5.5 6"/></svg>
+          </button>
           <div class="plate-wrap">
             <div class="plate" id="plate"></div>
             <div class="plate-controls" role="toolbar" aria-label="Plate tools">
-              <button type="button" class="icon-btn" id="prevBtn" title="Previous" aria-label="Previous">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 6 L9 12 l5.5 6"/></svg>
-              </button>
               <button type="button" class="icon-btn" id="loupeBtn" title="Loupe" aria-label="Loupe" aria-pressed="false">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.2"/><path d="M15.8 15.8 L20.2 20.2"/></svg>
               </button>
@@ -169,9 +171,6 @@
                   <path d="M4 12 a8 8 0 0 0 14.2 5.1"/>
                   <path d="M20 20 v-5 h-5"/>
                 </svg>
-              </button>
-              <button type="button" class="icon-btn" id="nextBtn" title="Next" aria-label="Next">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6 L15 12 l-5.5 6"/></svg>
               </button>
             </div>
           </div>
@@ -218,7 +217,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19 V7"/><path d="M6 11 l6 -6 l6 6"/></svg>
   </button>
 
-  <script src="js/chrome.js?v=dysphoria-hq-v1" defer></script>
-  <script src="js/dysphoria.js?v=dysphoria-ux-v1" defer></script>
+  <script src="js/chrome.js?v=placeholder-cleanse-v1" defer></script>
+  <script src="js/dysphoria.js?v=placeholder-cleanse-v1" defer></script>
 </body>
 </html>

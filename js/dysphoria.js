@@ -526,7 +526,7 @@
       titleBtn.style.opacity = "";
     }
     function shouldIgnoreTarget(t) {
-      return !!(t && t.closest && t.closest(".icon-btn,.peek,.plate-controls"));
+      return !!(t && t.closest && t.closest(".icon-btn,.peek,.plate-controls,.plate-nav"));
     }
     function startDrag(id, x, y, pointerType) {
       if (animating || loupeOn) return;
