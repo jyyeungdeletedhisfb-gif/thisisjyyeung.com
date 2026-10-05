@@ -481,8 +481,9 @@
   .plate-stage {
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
-    /* pan-y until x-lock: vertical page scroll works on plates; L/R via JS + preventDefault */
-    touch-action: pan-y;
+    /* pan-y until x-lock: vertical page scroll works on plates; L/R via JS + preventDefault.
+       pinch-zoom: two-finger zoom must not be blocked on the plate (a11y); swipe JS is single-touch only. */
+    touch-action: pan-y pinch-zoom;
     -webkit-user-select: none;
     user-select: none;
   }

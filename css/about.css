@@ -268,6 +268,8 @@ html:has(body.about-voice-he) {
   text-transform: uppercase;
   color: var(--about-ink);
   line-height: 1.05;
+  /* Long unbroken strings wrap instead of widening the page. */
+  overflow-wrap: anywhere;
 }
 
 /* I / He toggle — sliding circular thumb */
@@ -349,6 +351,8 @@ html:has(body.about-voice-he) {
   line-height: 1.65;
   color: var(--about-ink);
   opacity: 0.94;
+  /* `anywhere` (not break-word) so flex min-content shrinks too. */
+  overflow-wrap: anywhere;
 }
 .about-bio.is-fading {
   opacity: 0;
@@ -587,6 +591,8 @@ html:has(body.about-voice-he) {
   .about-page > .site-footer {
     display: block;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     flex-shrink: 0;
   }
   /* Enter motion: hero already in-column — keep fade, skip travel */

@@ -507,6 +507,9 @@ html.nav-open {
 
 /* ===== Site footer ===== */
 .site-footer {
+  /* Padding stays inside the box: `width: 100%` (About split) must not add 48px of side padding. */
+  box-sizing: border-box;
+  max-width: 100%;
   background: #050505;
   color: #aaa;
   text-align: center;
