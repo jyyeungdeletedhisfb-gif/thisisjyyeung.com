@@ -792,6 +792,10 @@ body.home-dummy .home-dummy__links a:focus-visible {
 .page-shell .page-main--work {
   max-width: 56rem;
 }
+/* One line of space under WORK after the lede was removed */
+.page-shell .page-main--work > h1.page-title {
+  margin-bottom: 2.5rem;
+}
 .work-grid {
   display: grid;
   grid-template-columns: 1fr;
