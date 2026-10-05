@@ -17,7 +17,7 @@ Prefer `jy-site` URLs with `?v=…` after a ship. Custom domain unreliable.
 - [ ] Home → Work → Dysphoria → About (I/He) → Contact → Privacy
 - [ ] Hamburger: open/close, current-page left-dot, IG/Contact icons
 - [ ] Dysphoria: intro cue sits close under copy (no tall white void); enter gate→soundtrack scale/blur handoff continuous; plate Prev/Next ends; soundtrack embed (no empty bordered gap); one Flip plate; exit gate contract
-- [ ] About: portrait sticky sheet / no hero leak to footer; on iPad landscape: sharp 50/50 (pinch bounce-back is intentional, but zoom itself must not be blocked; see pinch-zoom below)
+- [ ] About: portrait sticky sheet / no hero leak to footer; on iPad landscape: locked sharp 50/50 (browser pinch-zoom must still work — see pinch-zoom below)
 - [ ] Work grid: Dysphoria live tile + soon covers (Front/A+I/State)
 - [ ] Footer: Back home (non-home), WEBSITE BY + Privacy same size (11px), links underlined
 - [ ] Pinch-zoom not blocked: every page's viewport meta is `width=device-width, initial-scale=1` with no `maximum-scale` or `user-scalable=no`. Check with `rg -n 'name="viewport"' --glob '*.html' .`, then pinch on Android Chrome on each page, including on a Dysphoria plate.
