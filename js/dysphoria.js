@@ -2,7 +2,8 @@
   "use strict";
 
   const CONTENT_URL = new URL("content/dysphoria.json", document.baseURI).href;
-  const ASSET_V = "dysphoria-hq-v1";
+  const VARIANTS_URL = new URL("content/image-variants.json", document.baseURI).href;
+  const ASSET_V = "img-srcset-v1";
   function assetUrl(path) {
     if (!path) return "";
     if (/^https?:/i.test(path)) return path;
@@ -10,6 +11,64 @@
     const url = new URL(clean, document.baseURI);
     if (!url.searchParams.has("v")) url.searchParams.set("v", ASSET_V);
     return url.href;
+  }
+  /** @type {Record<string, {width:number, height:number, variants:number[]}>} */
+  let variantMap = {};
+  function pickVariantWidth(path, needPx, maxCap) {
+    const meta = variantMap[path];
+    if (!meta || !meta.variants || !meta.variants.length) return null;
+    let vars = meta.variants.slice();
+    if (maxCap) {
+      const capped = vars.filter((w) => w <= maxCap);
+      if (capped.length) vars = capped;
+    }
+    let chosen = vars[vars.length - 1];
+    for (let n = 0; n < vars.length; n++) {
+      if (vars[n] >= needPx) {
+        chosen = vars[n];
+        break;
+      }
+    }
+    return chosen;
+  }
+  function variantFile(path, width) {
+    const meta = variantMap[path];
+    if (!meta || width == null || width >= meta.width) return path;
+    return path.replace(/\.jpg$/i, "-" + width + "w.jpg");
+  }
+  /**
+   * Responsive asset URL for background-image consumers.
+   * opts.largest → always native/base file (loupe).
+   * opts.maxCap → max variant width (phone gates).
+   */
+  function responsiveAsset(path, needCssPx, opts) {
+    opts = opts || {};
+    if (!path) return "";
+    if (opts.largest) return assetUrl(path);
+    const meta = variantMap[path];
+    if (!meta) return assetUrl(path);
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const need = Math.ceil((needCssPx || meta.width) * dpr);
+    const width = pickVariantWidth(path, need, opts.maxCap || null);
+    return assetUrl(variantFile(path, width));
+  }
+  function gateDisplayUrl(path) {
+    const vmin = Math.min(window.innerWidth, window.innerHeight);
+    const base = Math.min(0.42 * vmin, 320);
+    const maxCss = base * 6.4;
+    // Phone: cap at 1600w so mid-expand stays under ~500KB transferred.
+    // Desktop: full master so MacBook expand stays sharp.
+    const maxCap = window.innerWidth < 900 ? 1600 : null;
+    return responsiveAsset(path, maxCss, { maxCap: maxCap });
+  }
+  function coverDisplayUrl(path) {
+    // Intro cover max-width 520px; never need the 2400 master for display.
+    const css = Math.min(520, window.innerWidth * 0.92);
+    return responsiveAsset(path, css, { maxCap: 1600 });
+  }
+  function backdropDisplayUrl(path) {
+    // Blurred playlist backdrop — 1600w is enough at any viewport.
+    return responsiveAsset(path, Math.min(window.innerWidth, 1600), { maxCap: 1600 });
   }
   const ZOOM = 2.2;
 
@@ -22,9 +81,18 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function displayTitle(s) { return s.titleDisplay || s.title; }
-  function currentSrc() {
+  function currentPath() {
     const s = sheets[i];
-    return assetUrl((usingAlt && s.alt) ? s.alt : s.src);
+    return (usingAlt && s.alt) ? s.alt : s.src;
+  }
+  function currentSrc() {
+    // Display plate / peek-sized: plate box width * dpr
+    const s = sheets[i];
+    const { w } = plateBox(s.ar);
+    return responsiveAsset(currentPath(), w);
+  }
+  function currentLoupeSrc() {
+    return responsiveAsset(currentPath(), 0, { largest: true });
   }
   function plateBox(ar) {
     const maxH = Math.min(window.innerHeight * 0.65, 720);
@@ -85,7 +153,7 @@
     const { w, h } = peekBox(sheet.ar);
     el.style.width = w + "px";
     el.style.height = h + "px";
-    el.style.backgroundImage = `url("${assetUrl(sheet.src)}")`;
+    el.style.backgroundImage = `url("${responsiveAsset(sheet.src, w)}")`;
     el.style.setProperty("--peek-x", "0px");
     el.style.transition = "";
   }
@@ -154,7 +222,7 @@
     tracklist.querySelectorAll("button").forEach((b) =>
       b.classList.toggle("active", +b.dataset.i === i)
     );
-    loupe.style.backgroundImage = `url("${currentSrc()}")`;
+    loupe.style.backgroundImage = `url("${currentLoupeSrc()}")`;
     loupe.style.backgroundSize = `${w * ZOOM}px ${h * ZOOM}px`;
     // Reserve tallest sheet height so title + tools stay fixed while plate varies.
     const reserveH = syncStageReserve() || h;
@@ -381,7 +449,7 @@
   function applyIntro(data) {
     const introData = data.intro || {};
     if (introCover && introData.cover) {
-      introCover.style.backgroundImage = `url('${assetUrl(introData.cover)}')`;
+      introCover.style.backgroundImage = `url('${coverDisplayUrl(introData.cover)}')`;
     }
     const h1 = introCopy && introCopy.querySelector("h1");
     const p = introCopy && introCopy.querySelector("p");
@@ -405,7 +473,7 @@
     if (apple && st.appleMusicUrl) apple.href = st.appleMusicUrl;
     if (iframe && st.appleMusicEmbed) iframe.src = st.appleMusicEmbed;
     if (bg && st.backdrop) {
-      bg.style.backgroundImage = `url("${assetUrl(st.backdrop)}")`;
+      bg.style.backgroundImage = `url("${backdropDisplayUrl(st.backdrop)}")`;
     }
   }
 
@@ -695,7 +763,7 @@
         usingAlt = !usingAlt;
         const shot = plate.querySelector(".shot");
         if (shot) shot.style.backgroundImage = `url("${currentSrc()}")`;
-        loupe.style.backgroundImage = `url("${currentSrc()}")`;
+        loupe.style.backgroundImage = `url("${currentLoupeSrc()}")`;
         replaceBtn.classList.toggle("on", usingAlt);
         setTimeout(() => {
           plate.classList.remove("swapping");
@@ -754,14 +822,16 @@
   function collectImageUrls(data) {
     const urls = [];
     const cover = data.intro && data.intro.cover;
-    if (cover) urls.push(assetUrl(cover));
+    if (cover) urls.push(coverDisplayUrl(cover));
     const backdrop = data.soundtrack && data.soundtrack.backdrop;
-    if (backdrop) urls.push(assetUrl(backdrop));
-    urls.push(assetUrl("assets/dysphoria/gate-enter.jpg"));
-    urls.push(assetUrl("assets/dysphoria/gate-exit.jpg"));
+    if (backdrop) urls.push(backdropDisplayUrl(backdrop));
+    urls.push(gateDisplayUrl("assets/dysphoria/gate-enter.jpg"));
+    urls.push(gateDisplayUrl("assets/dysphoria/gate-exit.jpg"));
     (data.tracks || []).forEach((t) => {
-      if (t.src) urls.push(assetUrl(t.src));
-      if (t.alt) urls.push(assetUrl(t.alt));
+      // Preload display-sized plates (not loupe masters) for the load gate.
+      const { w } = plateBox(t.ar || 1);
+      if (t.src) urls.push(responsiveAsset(t.src, w));
+      if (t.alt) urls.push(responsiveAsset(t.alt, w));
     });
     return [...new Set(urls.filter(Boolean))];
   }
@@ -842,16 +912,26 @@
     toTop = document.getElementById("toTop");
 
     // Gate backgrounds via assetUrl so <base href> resolves correctly
-    if (enterGateImg) {
-      enterGateImg.style.backgroundImage = `url("${assetUrl("assets/dysphoria/gate-enter.jpg")}")`;
-    }
-    if (exitGateImg) {
-      exitGateImg.style.backgroundImage = `url("${assetUrl("assets/dysphoria/gate-exit.jpg")}")`;
-    }
-
-    const res = await fetch(CONTENT_URL);
+    const [res, variantsRes] = await Promise.all([
+      fetch(CONTENT_URL),
+      fetch(VARIANTS_URL).catch(() => null),
+    ]);
     if (!res.ok) throw new Error("Failed to load content/dysphoria.json");
     const data = await res.json();
+    if (variantsRes && variantsRes.ok) {
+      try {
+        variantMap = await variantsRes.json();
+      } catch (_) {
+        variantMap = {};
+      }
+    }
+
+    if (enterGateImg) {
+      enterGateImg.style.backgroundImage = `url("${gateDisplayUrl("assets/dysphoria/gate-enter.jpg")}")`;
+    }
+    if (exitGateImg) {
+      exitGateImg.style.backgroundImage = `url("${gateDisplayUrl("assets/dysphoria/gate-exit.jpg")}")`;
+    }
     sheets = data.tracks || [];
     applyMeta(data);
     applyChrome(data);

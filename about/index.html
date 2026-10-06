@@ -15,10 +15,10 @@
   <meta property="og:title" content="About — Jy Yeüng" />
   <meta property="og:description" content="Jy Yeüng — artist first, creator right next to it. Photography, self-portrait, graphic design." />
   <meta property="og:url" content="https://thisisjyyeung.com/about/" />
-  <meta property="og:image" content="assets/about/hero-i.jpg" />
+  <meta property="og:image" content="assets/about/hero-i.jpg?v=img-srcset-v1" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="css/chrome.css?v=p1-responsive-v1" />
-  <link rel="stylesheet" href="css/about.css?v=p1-responsive-v1" />
+  <link rel="stylesheet" href="css/chrome.css?v=img-srcset-v1" />
+  <link rel="stylesheet" href="css/about.css?v=img-srcset-v1" />
 </head>
 <body class="about-page about-voice-i" data-about-voice="i">
   <header class="site-topbar">
@@ -61,7 +61,12 @@
         <img
           class="about-hero__img is-active"
           data-voice="i"
-          src="assets/about/hero-i.jpg"
+          src="assets/about/hero-i.jpg?v=img-srcset-v1"
+          srcset="assets/about/hero-i-640w.jpg?v=img-srcset-v1 640w,
+              assets/about/hero-i-1080w.jpg?v=img-srcset-v1 1080w,
+              assets/about/hero-i-1280w.jpg?v=img-srcset-v1 1280w,
+              assets/about/hero-i.jpg?v=img-srcset-v1 1600w"
+          sizes="(min-width: 768px) and (orientation: landscape) 50vw, 100vw"
           alt="Jy Yeüng"
           width="1600"
           height="2400"
@@ -71,7 +76,12 @@
         <img
           class="about-hero__img"
           data-voice="he"
-          src="assets/about/hero-he.jpg"
+          src="assets/about/hero-he.jpg?v=img-srcset-v1"
+          srcset="assets/about/hero-he-640w.jpg?v=img-srcset-v1 640w,
+              assets/about/hero-he-1080w.jpg?v=img-srcset-v1 1080w,
+              assets/about/hero-he-1280w.jpg?v=img-srcset-v1 1280w,
+              assets/about/hero-he.jpg?v=img-srcset-v1 1600w"
+          sizes="(min-width: 768px) and (orientation: landscape) 50vw, 100vw"
           alt="Jy Yeüng"
           width="1600"
           height="2400"
@@ -165,7 +175,7 @@
   }
   </script>
 
-  <script src="js/chrome.js?v=chrome-geist-v13" defer></script>
-  <script src="js/about.js?v=chrome-geist-v13" defer></script>
+  <script src="js/chrome.js?v=img-srcset-v1" defer></script>
+  <script src="js/about.js?v=img-srcset-v1" defer></script>
 </body>
 </html>

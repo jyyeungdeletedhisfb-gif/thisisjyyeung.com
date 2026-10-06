@@ -1,0 +1,257 @@
+{
+  "assets/about/hero-he.jpg": {
+    "height": 2400,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600
+    ],
+    "width": 1600
+  },
+  "assets/about/hero-i.jpg": {
+    "height": 2400,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600
+    ],
+    "width": 1600
+  },
+  "assets/dysphoria/00-cover.jpg": {
+    "height": 2400,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400
+    ],
+    "width": 2400
+  },
+  "assets/dysphoria/01-the-host.jpg": {
+    "height": 2400,
+    "variants": [
+      640,
+      1080,
+      1600,
+      1800
+    ],
+    "width": 1800
+  },
+  "assets/dysphoria/02-grinding-grit-onto-grief-alt.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/02-grinding-grit-onto-grief.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/03-a-charlatans-curse.jpg": {
+    "height": 1800,
+    "variants": [
+      640,
+      1080,
+      1600,
+      1800
+    ],
+    "width": 1800
+  },
+  "assets/dysphoria/04-funnel.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/05-x-over-alt.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/05-x-over.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/06-pin.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/07-trance.jpg": {
+    "height": 1380,
+    "variants": [
+      640,
+      1035
+    ],
+    "width": 1035
+  },
+  "assets/dysphoria/08-sinister-dexter.jpg": {
+    "height": 1350,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/09-grooving-grunge-in-grudges.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/10-unquenchable-thirst.jpg": {
+    "height": 720,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/11-one-day.jpg": {
+    "height": 755,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/12-placebo.jpg": {
+    "height": 1350,
+    "variants": [
+      640,
+      1013
+    ],
+    "width": 1013
+  },
+  "assets/dysphoria/13-where-does-the-line-end.jpg": {
+    "height": 1440,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/14-sad-people-big-ambitions-alt.jpg": {
+    "height": 1024,
+    "variants": [
+      640,
+      1024
+    ],
+    "width": 1024
+  },
+  "assets/dysphoria/14-sad-people-big-ambitions.jpg": {
+    "height": 1024,
+    "variants": [
+      640,
+      1024
+    ],
+    "width": 1024
+  },
+  "assets/dysphoria/15-the-divided-line.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/dysphoria/gate-enter.jpg": {
+    "height": 3000,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400,
+      3000
+    ],
+    "width": 3000
+  },
+  "assets/dysphoria/gate-exit.jpg": {
+    "height": 3000,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400,
+      3000
+    ],
+    "width": 3000
+  },
+  "assets/dysphoria/soundtrack-promo.jpg": {
+    "height": 3000,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400,
+      3000
+    ],
+    "width": 3000
+  },
+  "assets/work/authenticity-imitation.jpg": {
+    "height": 2480,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400,
+      2480
+    ],
+    "width": 2480
+  },
+  "assets/work/dysphoria.jpg": {
+    "height": 2400,
+    "variants": [
+      640,
+      1080,
+      1280,
+      1600,
+      2400
+    ],
+    "width": 2400
+  },
+  "assets/work/front.jpg": {
+    "height": 1080,
+    "variants": [
+      640,
+      1080
+    ],
+    "width": 1080
+  },
+  "assets/work/state.jpg": {
+    "height": 1500,
+    "variants": [
+      640,
+      1080,
+      1500
+    ],
+    "width": 1500
+  }
+}
