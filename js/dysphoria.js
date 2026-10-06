@@ -3,7 +3,7 @@
 
   const CONTENT_URL = new URL("content/dysphoria.json", document.baseURI).href;
   const VARIANTS_URL = new URL("content/image-variants.json", document.baseURI).href;
-  const ASSET_V = "img-srcset-v1";
+  const ASSET_V = "img-srcset-v2";
   function assetUrl(path) {
     if (!path) return "";
     if (/^https?:/i.test(path)) return path;
@@ -62,8 +62,13 @@
     return responsiveAsset(path, maxCss, { maxCap: maxCap });
   }
   function coverDisplayUrl(path) {
-    // Intro cover max-width 520px; never need the 2400 master for display.
-    const css = Math.min(520, window.innerWidth * 0.92);
+    // Size from the cover's laid-out CSS width (520px desktop, 280px phone via
+    // the max-width:800px rule) so the pick matches what is actually painted.
+    // Fallback estimate only if the element isn't laid out yet.
+    // Never need the 2400 master for display.
+    const el = introCover || document.getElementById("introCover");
+    const laidOut = el ? el.offsetWidth : 0;
+    const css = laidOut > 0 ? laidOut : Math.min(520, window.innerWidth * 0.92);
     return responsiveAsset(path, css, { maxCap: 1600 });
   }
   function backdropDisplayUrl(path) {
