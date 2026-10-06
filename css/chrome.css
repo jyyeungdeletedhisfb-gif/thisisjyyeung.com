@@ -890,30 +890,24 @@ a.work-tile:focus-visible {
   text-transform: uppercase;
   color: #666;
 }
-/* Soft float-up on Work tiles (match Dysphoria language) */
+/* Soft float-up on Work tiles — short fade after each tile’s own decode */
 .work-tile.float-up {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(12px);
   transition:
-    opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 .work-tile.float-up.is-in {
   opacity: 1;
   transform: none;
 }
-.work-grid > li:nth-child(1) .work-tile.float-up { transition-delay: 0.04s; }
-.work-grid > li:nth-child(2) .work-tile.float-up { transition-delay: 0.1s; }
-.work-grid > li:nth-child(3) .work-tile.float-up { transition-delay: 0.16s; }
-.work-grid > li:nth-child(4) .work-tile.float-up { transition-delay: 0.22s; }
-.work-grid > li:nth-child(5) .work-tile.float-up { transition-delay: 0.28s; }
 @media (prefers-reduced-motion: reduce) {
   .work-tile.float-up {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
-    transition-delay: 0s !important;
   }
 }
 @media (hover: hover) and (pointer: fine) {

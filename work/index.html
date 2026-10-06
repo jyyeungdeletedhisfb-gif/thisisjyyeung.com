@@ -18,7 +18,7 @@
   <meta name="twitter:card" content="summary" />
   <link href="https://fonts.cdnfonts.com/css/clarendon-2" rel="stylesheet" />
   <link rel="stylesheet" href="css/dysphoria.css?v=img-srcset-v2" />
-  <link rel="stylesheet" href="css/chrome.css?v=img-srcset-v2" />
+  <link rel="stylesheet" href="css/chrome.css?v=work-tile-load-v1" />
 </head>
 <body class="home-shell page-shell">
   <header class="site-topbar">
@@ -68,7 +68,7 @@
               assets/work/dysphoria-1600w.jpg?v=img-srcset-v2 1600w,
               assets/work/dysphoria.jpg?v=img-srcset-v2 2400w"
               sizes="(min-width: 720px) 50vw, 100vw"
-              alt="Dysphoria cover" width="2400" height="2400" loading="lazy" />
+              alt="Dysphoria cover" width="2400" height="2400" loading="eager" fetchpriority="high" />
           </div>
           <div class="work-tile__meta">
             <span class="work-tile__title">Dysphoria</span>
@@ -82,7 +82,7 @@
               srcset="assets/work/front-640w.jpg?v=img-srcset-v2 640w,
               assets/work/front.jpg?v=img-srcset-v2 1080w"
               sizes="(min-width: 720px) 50vw, 100vw"
-              alt="" width="1080" height="1080" loading="lazy" />
+              alt="" width="1080" height="1080" loading="eager" />
           </div>
           <div class="work-tile__meta">
             <span class="work-tile__title">Front</span>
@@ -101,7 +101,7 @@
               assets/work/authenticity-imitation-2400w.jpg?v=img-srcset-v2 2400w,
               assets/work/authenticity-imitation.jpg?v=img-srcset-v2 2480w"
               sizes="(min-width: 720px) 50vw, 100vw"
-              alt="Authenticity + Imitation cover" width="2480" height="2480" loading="lazy" />
+              alt="Authenticity + Imitation cover" width="2480" height="2480" loading="eager" />
           </div>
           <div class="work-tile__meta">
             <span class="work-tile__title">Authenticity + Imitation</span>
@@ -117,7 +117,7 @@
               assets/work/state-1080w.jpg?v=img-srcset-v2 1080w,
               assets/work/state.jpg?v=img-srcset-v2 1500w"
               sizes="(min-width: 720px) 50vw, 100vw"
-              alt="" width="1500" height="1500" loading="lazy" />
+              alt="" width="1500" height="1500" loading="eager" />
           </div>
           <div class="work-tile__meta">
             <span class="work-tile__title">State</span>
@@ -150,6 +150,6 @@
     <p class="footer-links"><a href="privacy/">Privacy</a></p>
   </footer>
 
-  <script src="js/chrome.js?v=img-srcset-v2" defer></script>
+  <script src="js/chrome.js?v=work-tile-load-v1" defer></script>
 </body>
 </html>

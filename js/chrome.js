@@ -80,33 +80,93 @@
 
     var reduce = prefersReducedMotion();
 
-    tiles.forEach(function (tile) {
-      tile.classList.add("float-up");
-    });
-
-    if (reduce || !("IntersectionObserver" in window)) {
+    if (reduce) {
       tiles.forEach(function (tile) {
         tile.classList.add("is-in");
       });
       return;
     }
 
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var el = entry.target;
-          requestAnimationFrame(function () {
-            el.classList.add("is-in");
-          });
-          io.unobserve(el);
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -4% 0px" }
-    );
-
     tiles.forEach(function (tile) {
-      io.observe(tile);
+      var img = tile.querySelector(".work-tile__frame img");
+      var done = false;
+
+      function reveal() {
+        if (done) return;
+        done = true;
+        /* Double rAF so opacity:0 from .float-up paints before .is-in. */
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            tile.classList.add("is-in");
+          });
+        });
+      }
+
+      tile.classList.add("float-up");
+
+      if (!img) {
+        reveal();
+        return;
+      }
+
+      function afterDecode() {
+        if (typeof img.decode === "function") {
+          img.decode().then(reveal).catch(reveal);
+        } else {
+          reveal();
+        }
+      }
+
+      if (img.complete && img.naturalWidth > 0) {
+        afterDecode();
+      } else {
+        img.addEventListener("load", afterDecode, { once: true });
+        img.addEventListener("error", reveal, { once: true });
+        /* Never leave a tile stuck at opacity 0. */
+        window.setTimeout(reveal, 2200);
+      }
+    });
+  }
+
+  /* Warm Work cover URLs on intent toward /work/ (skip Save-Data). */
+  function initWorkTileWarm() {
+    var links = document.querySelectorAll(
+      'a[href="work/"], a[href="./work/"], a[href="/work/"], a[href="/work"]'
+    );
+    if (!links.length) return;
+    if (document.querySelector(".work-grid")) return;
+
+    var warmed = false;
+    var CACHE = "v=img-srcset-v2";
+    var URLS = [
+      "assets/work/dysphoria-1080w.jpg?" + CACHE,
+      "assets/work/front.jpg?" + CACHE,
+      "assets/work/authenticity-imitation-1080w.jpg?" + CACHE,
+      "assets/work/state-1080w.jpg?" + CACHE
+    ];
+
+    function saveDataOn() {
+      try {
+        return !!(navigator.connection && navigator.connection.saveData);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function warm() {
+      if (warmed || saveDataOn()) return;
+      warmed = true;
+      URLS.forEach(function (src) {
+        var img = new Image();
+        img.decoding = "async";
+        img.src = src;
+      });
+    }
+
+    links.forEach(function (link) {
+      link.addEventListener("pointerenter", warm, { passive: true });
+      link.addEventListener("focus", warm);
+      link.addEventListener("touchstart", warm, { passive: true });
     });
   }
 
@@ -371,5 +431,6 @@
 
   document.querySelectorAll("[data-chrome-nav]").forEach(initNav);
   initWorkFloat();
+  initWorkTileWarm();
   initBrandShuffle();
 })();
