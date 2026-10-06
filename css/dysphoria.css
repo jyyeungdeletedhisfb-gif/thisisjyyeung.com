@@ -10,13 +10,18 @@
     --ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+    /* iPadOS edge back-swipe must not steal plate L/R (Dex A) */
+    overscroll-behavior-x: none;
+  }
   body {
     margin: 0;
     background: #fff;
     color: var(--ink);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-x: none;
   }
   .topbar {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
@@ -481,12 +486,18 @@
   .plate-stage {
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
-    /* pan-y until x-lock: vertical page scroll works on plates; L/R via JS + preventDefault.
-       pinch-zoom: two-finger zoom must not be blocked on the plate (a11y); swipe JS is single-touch only. */
-    touch-action: pan-y pinch-zoom;
+    /* Jy: pinch disabled on plate-stage only (pan-y, no pinch-zoom). Page/viewport pinch
+       elsewhere unchanged — no maximum-scale / user-scalable=no.
+       Dex C: .is-gesture → none at gesture start (not after 6px); WebKit ignores mid-gesture
+       touch-action changes and often ignores late preventDefault under nested pan-y.
+       Vertical pan forwarded via scrollBy when axis locks to y.
+       overscroll-behavior-x: none — block iPadOS history back-swipe (Dex A). */
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
     -webkit-user-select: none;
     user-select: none;
   }
+  .plate-stage.is-gesture,
   .plate-stage.is-axis-x,
   .plate-stage.is-loupe {
     touch-action: none;

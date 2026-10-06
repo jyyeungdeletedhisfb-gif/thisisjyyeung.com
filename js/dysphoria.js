@@ -572,12 +572,16 @@
   }
 
   function bindInteractions() {
-    // Nested two-direction scroll: pan-y default; lock to x with preventDefault so Android
-    // Chrome still delivers L/R swipe. Bias adx>=ady; do not re-zero dx; lower commit th.
+    // Nested two-direction scroll on the plate stage (Dex A/B/C iPad fix):
+    // - Touch owns mobile (single id); pointer owns mouse/pen only (no dual-path race).
+    // - Claim touch-action:none at gesture start (.is-gesture), not after 6px — WebKit
+    //   ignores mid-gesture touch-action changes and often ignores late preventDefault.
+    // - If axis locks to y, forward vertical via window.scrollBy so page still scrolls.
+    // - overscroll-behavior-x:none (CSS) blocks iPadOS history back-swipe.
     const AXIS_LOCK_PX = 6;
-    let drag = null; // { id, x0, y0, dx, dy, axis, captured, pointerType }
-    function clearAxisLock() {
-      if (plateStage) plateStage.classList.remove("is-axis-x");
+    let drag = null; // { id, x0, y0, lastY, dx, dy, axis, captured, pointerType }
+    function clearGesture() {
+      if (plateStage) plateStage.classList.remove("is-gesture", "is-axis-x");
     }
     function applyPlateDrag(dx) {
       const w = plate.offsetWidth || 300;
@@ -607,17 +611,20 @@
         id,
         x0: x,
         y0: y,
+        lastY: y,
         dx: 0,
         dy: 0,
         axis: null,
         captured: false,
         pointerType: pointerType || "touch",
       };
-      clearAxisLock();
+      // Claim before axis lock (Dex C). Class must land in the starting handler.
+      if (plateStage) plateStage.classList.add("is-gesture");
     }
     function moveDrag(id, x, y, e) {
       if (loupeOn) {
         moveLoupe(x, y);
+        if (e && e.cancelable) e.preventDefault();
         return;
       }
       if (!drag || id !== drag.id) return;
@@ -626,14 +633,19 @@
       if (!drag.axis) {
         const adx = Math.abs(drag.dx);
         const ady = Math.abs(drag.dy);
-        if (adx < AXIS_LOCK_PX && ady < AXIS_LOCK_PX) return;
+        if (adx < AXIS_LOCK_PX && ady < AXIS_LOCK_PX) {
+          // Already claimed .is-gesture; block browser so WebKit does not take the gesture.
+          if (e && e.cancelable) e.preventDefault();
+          drag.lastY = y;
+          return;
+        }
         // Bias to horizontal: equal travel counts as x (carousel intent on stage)
         if (adx >= ady) {
           drag.axis = "x";
           plateStage.classList.add("is-axis-x");
           plate.style.transition = "none";
           setPeekShift(0, false);
-          if (e && e.pointerId != null) {
+          if (e && e.pointerId != null && drag.pointerType !== "touch") {
             try {
               plateStage.setPointerCapture(e.pointerId);
               drag.captured = true;
@@ -642,11 +654,24 @@
           if (e && e.cancelable) e.preventDefault();
         } else {
           drag.axis = "y";
+          // Forward first vertical delta now that pan is JS-owned
+          const deltaY = y - drag.lastY;
+          drag.lastY = y;
+          if (e && e.cancelable) e.preventDefault();
+          if (deltaY) window.scrollBy(0, -deltaY);
           return;
         }
       }
+      if (drag.axis === "y") {
+        const deltaY = y - drag.lastY;
+        drag.lastY = y;
+        if (e && e.cancelable) e.preventDefault();
+        if (deltaY) window.scrollBy(0, -deltaY);
+        return;
+      }
       if (drag.axis !== "x") return;
       if (e && e.cancelable) e.preventDefault();
+      drag.lastY = y;
       applyPlateDrag(drag.dx);
     }
     function finishDrag(id) {
@@ -656,7 +681,7 @@
       const wasCaptured = drag.captured;
       const pid = drag.id;
       drag = null;
-      clearAxisLock();
+      clearGesture();
       if (wasCaptured) {
         try { plateStage.releasePointerCapture(pid); } catch (_) { /* ignore */ }
       }
@@ -674,30 +699,62 @@
         clearPeekShift(true);
       }
     }
+    function abortDrag() {
+      if (!drag) {
+        clearGesture();
+        return;
+      }
+      const wasCaptured = drag.captured;
+      const pid = drag.id;
+      const axis = drag.axis;
+      drag = null;
+      clearGesture();
+      if (wasCaptured) {
+        try { plateStage.releasePointerCapture(pid); } catch (_) { /* ignore */ }
+      }
+      resetTitleDragChrome();
+      if (axis === "x") {
+        plate.style.transition =
+          "transform 0.4s var(--ease), opacity 0.35s var(--ease), filter 0.35s var(--ease)";
+        plate.style.transform = "translateX(0)";
+        plate.style.opacity = "1";
+        plate.style.filter = "none";
+        clearPeekShift(true);
+      }
+    }
 
-    // Pointer path (mouse + some Android)
+    // Pointer path — mouse/pen only (Dex B). Touch pointer* events are ignored so
+    // touch.identifier stays the sole mobile drag id (no overwrite / early cancel race).
     plateStage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "touch") return;
       if (shouldIgnoreTarget(e.target)) return;
       startDrag(e.pointerId, e.clientX, e.clientY, e.pointerType);
     });
     plateStage.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "touch") return;
       moveDrag(e.pointerId, e.clientX, e.clientY, e);
     }, { passive: false });
     function endPointer(e) {
+      if (e.pointerType === "touch") return;
       finishDrag(e.pointerId);
     }
     plateStage.addEventListener("pointerup", endPointer);
     plateStage.addEventListener("pointercancel", endPointer);
     plateStage.addEventListener("lostpointercapture", (e) => {
+      if (e.pointerType === "touch") return;
       if (drag && e.pointerId === drag.id) finishDrag(e.pointerId);
     });
 
-    // Touch path — primary on Android Chrome (more reliable than pointer+pan-y)
+    // Touch path — owns all mobile fingers (Android + iPad). Single id through start→move→end.
     plateStage.addEventListener(
       "touchstart",
       (e) => {
         if (shouldIgnoreTarget(e.target)) return;
-        if (e.touches.length !== 1) return;
+        // Second finger: abort swipe + release .is-gesture (stage is pan-y only; no plate pinch)
+        if (e.touches.length !== 1) {
+          abortDrag();
+          return;
+        }
         const t = e.touches[0];
         startDrag(t.identifier, t.clientX, t.clientY, "touch");
       },
@@ -706,7 +763,18 @@
     plateStage.addEventListener(
       "touchmove",
       (e) => {
-        if (!drag || e.touches.length !== 1) return;
+        // Loupe tracks without a drag session (startDrag no-ops while loupeOn)
+        if (loupeOn) {
+          if (e.touches.length !== 1) return;
+          const t = e.touches[0];
+          moveDrag(t.identifier, t.clientX, t.clientY, e);
+          return;
+        }
+        if (e.touches.length !== 1) {
+          abortDrag();
+          return;
+        }
+        if (!drag) return;
         const t = e.touches[0];
         if (t.identifier !== drag.id) return;
         moveDrag(t.identifier, t.clientX, t.clientY, e);
@@ -717,7 +785,6 @@
       "touchend",
       (e) => {
         if (!drag) return;
-        // Changed touches may hold the ended id
         const ended = e.changedTouches[0];
         if (ended) finishDrag(ended.identifier);
       },
