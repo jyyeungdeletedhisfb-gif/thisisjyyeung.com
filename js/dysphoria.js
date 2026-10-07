@@ -602,8 +602,11 @@
       titleBtn.style.transform = "";
       titleBtn.style.opacity = "";
     }
+    // Peeks sit in the side gutters and must allow L/R swipe start (Jy iPad).
+    // Keep Prev/Next (.plate-nav) and Loupe/Flip/Replace (.icon-btn / .plate-controls)
+    // exclusive so taps still hit those controls.
     function shouldIgnoreTarget(t) {
-      return !!(t && t.closest && t.closest(".icon-btn,.peek,.plate-controls,.plate-nav"));
+      return !!(t && t.closest && t.closest(".icon-btn,.plate-controls,.plate-nav"));
     }
     function startDrag(id, x, y, pointerType) {
       if (animating || loupeOn) return;

@@ -7,8 +7,9 @@ A ladder that catches real failure modes. Not every device. Jy owns taste on his
 ## Device ladder
 
 1. Android Chrome (major)
-2. iPad Chrome or Safari (landscape About matters)
-3. MacBook Chrome
+2. iPhone Safari **(emulated)** — preferred rung for phone Safari; Steve covers box emulation (real iPhone unavailable)
+3. iPad Chrome or Safari (landscape About matters)
+4. MacBook Chrome
 
 Prefer `jy-site` URLs with `?v=…` after a ship. Custom domain unreliable.
 
@@ -31,7 +32,9 @@ Fixed sizes for MacBook device mode and for every check above that says "each wi
 | Width | Stands in for |
 |---|---|
 | 375 × 812 | Small phone |
-| 390 × 844, 430 × 932 | Common phones (Android Chrome is rung 1) |
+| 390 × 844 | iPhone Safari 14/15-class (emulated preferred rung) |
+| 412 × 915 | Android phone (Steve daily smoke) |
+| 430 × 932 | Large phone |
 | 768 × 1024 | iPad portrait |
 | 1024 × 768 | iPad landscape (About soft park lives here) |
 | 1280 × 800 | MacBook Chrome |
@@ -60,6 +63,8 @@ Not part of the 10–15 min pass. Run after a ship that touches layout, type or 
 ## Steve morning smoke
 
 Fold latest tip SHA + mirror URL from group ping. Report pass/fail with URL + device. Soft parks ok; material blockers to Dex+Rachel.
+
+Always smoke at **1280 + 412 + 390** (MacBook Chrome, Android phone, iPhone Safari emulated).
 
 ## Related
 
