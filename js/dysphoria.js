@@ -79,6 +79,10 @@
 
   let sheets = [];
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
+  // Explicit Prev/Next (and ←/→) while commitTo is in flight — queue, do not drop.
+  // Peek ghost-clicks after a horizontal swipe stay suppressed via suppressPeekClickUntil.
+  let pendingDir = 0;
+  let suppressPeekClickUntil = 0;
   let plate, plateStage, peekLeft, peekRight, prevBtn, nextBtn, flipBtn, loupeBtn, replaceBtn, loupe;
   let titleBtn, titleJump, tracklist, intro, introCover, introCopy, introSticky, toTop;
   let playlistBg, soundtrackLayer, soundtrackDarken, soundtrackInner;
@@ -288,15 +292,26 @@
           setTimeout(() => {
             plate.style.transition = "";
             clearPeekShift(false);
-            animating = false;
+            endAnimate();
           }, 620);
         })
       );
     }, 280);
   }
 
-  function go(d) {
-    if (animating) return;
+  function endAnimate() {
+    animating = false;
+    if (!pendingDir) return;
+    const d = pendingDir;
+    pendingDir = 0;
+    go(d, true);
+  }
+  function go(d, fromNav) {
+    if (animating) {
+      // Nav / keyboard: keep the latest intent. Peek/plate ghost clicks omit fromNav.
+      if (fromNav) pendingDir = d;
+      return;
+    }
     const n = i + d;
     if (n < 0 || n >= sheets.length) return;
     commitTo(n, d);
@@ -304,6 +319,7 @@
   function jumpTo(idx) {
     closeTracklist();
     if (animating || idx === i) return;
+    pendingDir = 0;
     commitTo(idx, idx > i ? 1 : -1);
   }
 
@@ -690,6 +706,9 @@
       }
       resetTitleDragChrome();
       if (axis !== "x") return;
+      // Block peek ghost-click (pointerup→click) from double-advancing after a swipe.
+      // Prev/Next (.plate-nav) never consult this — they use go(..., true) / pendingDir.
+      suppressPeekClickUntil = performance.now() + 450;
       const th = Math.min(44, (plate.offsetWidth || 300) * 0.12);
       if (dx < -th && i < sheets.length - 1) commitTo(i + 1, 1);
       else if (dx > th && i > 0) commitTo(i - 1, -1);
@@ -803,10 +822,14 @@
       { passive: true }
     );
 
-    peekLeft.onclick = () => go(-1);
-    peekRight.onclick = () => go(1);
-    if (prevBtn) prevBtn.onclick = () => go(-1);
-    if (nextBtn) nextBtn.onclick = () => go(1);
+    function peekClick(dir) {
+      if (performance.now() < suppressPeekClickUntil) return;
+      go(dir);
+    }
+    peekLeft.onclick = () => peekClick(-1);
+    peekRight.onclick = () => peekClick(1);
+    if (prevBtn) prevBtn.onclick = () => go(-1, true);
+    if (nextBtn) nextBtn.onclick = () => go(1, true);
     flipBtn.onclick = () => {
       flipped = !flipped;
       plate.classList.toggle("flipped", flipped);
@@ -842,7 +865,7 @@
         replaceBtn.classList.toggle("on", usingAlt);
         setTimeout(() => {
           plate.classList.remove("swapping");
-          setTimeout(() => (animating = false), 550);
+          setTimeout(() => endAnimate(), 550);
         }, 40);
       }, 520);
     };
@@ -874,8 +897,8 @@
     }
 
     window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") go(1);
-      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1, true);
+      if (e.key === "ArrowLeft") go(-1, true);
       if (e.key === "f" || e.key === "F") flipBtn.click();
     });
     window.addEventListener("scroll", scrub, { passive: true });
