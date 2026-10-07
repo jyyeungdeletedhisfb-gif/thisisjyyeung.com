@@ -1,6 +1,6 @@
 # Motion and interaction — thisisjyyeung.com
 
-Version: **1.0**  
+Version: **1.1**  
 Last updated: **2026-10-07** (HKT)
 
 Living handbook of how the site moves and responds. Seed from **live CSS/JS/HTML**, not aspiration. Rachel owns the doc; Steve flags gaps in smoke notes; Jy taste-locks anything that reads on glass.
@@ -152,8 +152,8 @@ Brand / layout locks (I/He crops, landscape 50/50, hero park) live in [`design-t
 | **Timings** | Commit exit 0.55s / 0.45s opacity; enter 0.6s / 0.5s; settle clear 620ms. Snap-back 0.4s / 0.35s. Title exit class 160ms then enter keyframes 0.55s. Flip 0.65s; replace swap ~520ms + 550ms unlock. Loupe zoom **2.2×**. |
 | **Triggers** | Touch owns mobile (single `touch.identifier`); pointer owns mouse/pen only (`ipad-swipe-v1`). `.is-gesture` at **gesture start**; axis lock at **6px**; equal travel biases **x**. Commit threshold `min(44, plateW * 0.12)`. Gutter / peek swipe allowed; ignore `.icon-btn` / `.plate-controls` / `.plate-nav` (`plate-gutter-swipe-v1`). Second finger aborts (no plate pinch). Keyboard ←/→ and `f` flip. |
 | **Reduced motion** | Plate CSS transitions none where media-query’d; commit path still swaps content (functional). |
-| **Quirks** | `touch-action: pan-y` default; `.is-gesture` / `.is-axis-x` / `.is-loupe` → `none`. `overscroll-behavior-x: none` on html/body/stage blocks iPadOS history back-swipe. Vertical lock forwards via `window.scrollBy`. See [`design-handbook-scroll.md`](./design-handbook-scroll.md). |
-| **Lessons** | WebKit ignores mid-gesture `touch-action` changes and late `preventDefault` — claim `.is-gesture` in the starting handler. Dual pointer+touch paths race on iPad; touch-only id on mobile fixed A→B→C swipes. |
+| **Quirks** | `touch-action: pan-y` default; `.is-gesture` / `.is-axis-x` / `.is-loupe` → `none`. `overscroll-behavior-x: none` on html/body/stage blocks iPadOS history back-swipe. Vertical lock forwards via `window.scrollBy`. After a swipe commit, `animating` holds ~900ms; Prev/Next and ←/→ with `fromNav` **queue** the next plate and flush in `endAnimate` (`plate-nav-after-swipe-v1`) — bare `go(d)` (peek/plate ghost) still drops during that window. Peek intentional tap within ~450ms of an axis-x swipe is suppressed. See [`design-handbook-scroll.md`](./design-handbook-scroll.md). |
+| **Lessons** | WebKit ignores mid-gesture `touch-action` changes and late `preventDefault` — claim `.is-gesture` in the starting handler. Dual pointer+touch paths race on iPad; touch-only id on mobile fixed A→B→C swipes. A “swallowed” first Next after swipe was `animating` blocking `go()`, not leftover click-suppress — queue nav intent instead of lengthening suppress windows. |
 
 ### Dysphoria — exit (page leave)
 
@@ -220,6 +220,11 @@ Refresh that file whenever plate input or gate scrub geometry changes in the sam
 ---
 
 ## Changelog
+
+### 1.1 — 2026-10-07
+
+- Plate Prev/Next after swipe: queue `fromNav` while `animating` (~900ms commit); peek ghost still dropped (`plate-nav-after-swipe-v1`). Primary `119718d` · mirror `f7314fb`.
+- Lesson: first tap after swipe was blocked by the commit lock, not click-suppress.
 
 ### 1.0 — 2026-10-07
 
