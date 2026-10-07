@@ -68,4 +68,4 @@ Always smoke at **1280 + 412 + 390** (MacBook Chrome, Android phone, iPhone Safa
 
 ## Related
 
-[`design-taste.md`](./design-taste.md) · [`design-handbook-scroll.md`](./design-handbook-scroll.md)
+[`design-taste.md`](./design-taste.md) · [`motion-and-interaction.md`](./motion-and-interaction.md) · [`design-handbook-scroll.md`](./design-handbook-scroll.md)

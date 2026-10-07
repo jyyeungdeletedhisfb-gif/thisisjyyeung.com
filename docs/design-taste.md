@@ -4,7 +4,7 @@
 
 Living handbook of brand, UX, visual, chrome, and process preferences for Dex, Rachel, and future bots. Prefer this over re-deriving taste from chat history.
 
-**Related:** scroll / nested-carousel language → [`design-handbook-scroll.md`](./design-handbook-scroll.md) · UAT → [`uat-checklist.md`](./uat-checklist.md).
+**Related:** motion / interaction → [`motion-and-interaction.md`](./motion-and-interaction.md) · scroll / nested-carousel language → [`design-handbook-scroll.md`](./design-handbook-scroll.md) · UAT → [`uat-checklist.md`](./uat-checklist.md).
 
 ---
 
