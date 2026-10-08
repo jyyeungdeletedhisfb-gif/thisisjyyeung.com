@@ -231,3 +231,7 @@ Refresh that file whenever plate input or gate scrub geometry changes in the sam
 - First publish from live behavior (primary tip at ship; mirror [jy-site](https://jyyeungdeletedhisfb-gif.github.io/jy-site/)).
 - Captures `work-tile-load-v1`, `ipad-swipe-v1`, `plate-gutter-swipe-v1`, `img-srcset-v2`, `dysphoria-ux-v1`, dummy home, gate scrub bands and reduced-motion fail-safes.
 - Cadence: same-ship updates; weekly drift skim after Monday standup.
+
+
+## Plate liner caption (v1.2)
+On a flipped plate, a vertical drag on a long caption scrolls the caption inside the plate. Once it hits the end, the page scrolls as before. A sideways swipe that starts on the caption still changes plates. The IG link does not start a swipe.

@@ -90,6 +90,58 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function displayTitle(s) { return s.titleDisplay || s.title; }
+  function escapeHtml(str) {
+    return String(str == null ? "" : str).replace(/[&<>"']/g, (c) => (
+      { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+    ));
+  }
+  /** Slide counter: "01/15" (no spaces) — title bar + liner footer share this. */
+  function slideLabel(index) {
+    return `${String(index + 1).padStart(2, "0")}/${String(sheets.length).padStart(2, "0")}`;
+  }
+  /** Only http(s) post URLs are linked; anything else renders no IG button. */
+  function igHref(s) {
+    const raw = (s && typeof s.ig === "string") ? s.ig.trim() : "";
+    return /^https?:\/\//i.test(raw) ? raw : "";
+  }
+  const IG_GLYPH =
+    '<svg class="ig-icon" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/>' +
+    '<circle cx="12" cy="12" r="4"/>' +
+    '<circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" stroke="none"/>' +
+    "</svg>";
+  function linerMarkup(s, index) {
+    // Caption (ported IG text, may hold line breaks) wins over the short liner.
+    // Escaped as plain text; CSS white-space: pre-line keeps the breaks.
+    const text = (typeof s.caption === "string" && s.caption.trim()) ? s.caption.trim() : (s.liner || "");
+    const href = igHref(s);
+    const title = displayTitle(s);
+    const ig = href
+      ? `<a class="liner-ig" href="${escapeHtml(href)}" target="_blank" rel="noopener" aria-label="View ${escapeHtml(title)} on Instagram">` +
+        `${IG_GLYPH}<span>View on Instagram</span></a>`
+      : "";
+    return (
+      `<div class="liner"><h2>${title}</h2>` +
+      `<div class="liner-scroll"><p class="liner-text">${escapeHtml(text)}</p></div>` +
+      `<div class="liner-foot">${ig}<span class="liner-no">${slideLabel(index)}</span></div></div>`
+    );
+  }
+  /** Back face only takes taps / focus while flipped (link must not fire from the front). */
+  function syncLinerInteractive() {
+    const liner = plate && plate.querySelector(".liner");
+    if (!liner) return;
+    liner.inert = !flipped;
+    if (flipped) liner.removeAttribute("aria-hidden");
+    else liner.setAttribute("aria-hidden", "true");
+  }
+  /** Soft bottom fade on the caption only while more text sits below the fold. */
+  function syncLinerFade() {
+    const sc = plate && plate.querySelector(".liner-scroll");
+    if (!sc) return;
+    const more = sc.scrollHeight - sc.clientHeight - sc.scrollTop > 1;
+    sc.classList.toggle("has-more", more);
+    sc.classList.toggle("is-scrolled", sc.scrollTop > 1);
+  }
   function currentPath() {
     const s = sheets[i];
     return (usingAlt && s.alt) ? s.alt : s.src;
@@ -194,7 +246,7 @@
 
   function setTitle(dir, index = i) {
     const s = sheets[index];
-    const label = `${String(index + 1).padStart(2, "0")} / ${String(sheets.length).padStart(2, "0")}`;
+    const label = slideLabel(index);
     const name = displayTitle(s);
     if (!dir) {
       titleBtn.className = "title-btn";
@@ -223,8 +275,11 @@
     plate.className = "plate" + (flipped ? " flipped" : "");
     plate.innerHTML =
       `<div class="shot-wrap"><div class="shot" style="background-image:url('${currentSrc()}')" role="img" aria-label="${displayTitle(s)}"></div></div>` +
-      `<div class="liner"><div><h2>${displayTitle(s)}</h2><p>${s.liner}</p></div>` +
-      `<div class="hint">liner · editable</div></div>`;
+      linerMarkup(s, i);
+    const linerScroll = plate.querySelector(".liner-scroll");
+    if (linerScroll) linerScroll.addEventListener("scroll", syncLinerFade, { passive: true });
+    syncLinerInteractive();
+    syncLinerFade();
     if (!keepTitle) setTitle(0);
     setPeek(peekLeft, i > 0 ? sheets[i - 1] : null);
     setPeek(peekRight, i < sheets.length - 1 ? sheets[i + 1] : null);
@@ -622,11 +677,26 @@
     // Keep Prev/Next (.plate-nav) and Loupe/Flip/Replace (.icon-btn / .plate-controls)
     // exclusive so taps still hit those controls.
     function shouldIgnoreTarget(t) {
-      return !!(t && t.closest && t.closest(".icon-btn,.plate-controls,.plate-nav"));
+      return !!(t && t.closest && t.closest(".icon-btn,.plate-controls,.plate-nav,.liner-ig"));
     }
-    function startDrag(id, x, y, pointerType) {
+    /** Flipped liner caption that can scroll — vertical pans scroll it instead of the page. */
+    function captionScroller(t) {
+      if (!flipped || !t || !t.closest) return null;
+      const sc = t.closest(".liner-scroll");
+      return sc && sc.scrollHeight - sc.clientHeight > 1 ? sc : null;
+    }
+    // Vertical pan: caption (latched at axis lock) or page. Latch only if the caption
+    // can move in the first pan direction, so a caption at its end still lets the page scroll.
+    function panY(deltaY) {
+      if (!deltaY) return;
+      if (drag && drag.scrollLatch) drag.scrollLatch.scrollTop -= deltaY;
+      else window.scrollBy(0, -deltaY);
+    }
+    function startDrag(id, x, y, pointerType, target) {
       if (animating || loupeOn) return;
       drag = {
+        scrollEl: captionScroller(target),
+        scrollLatch: null,
         id,
         x0: x,
         y0: y,
@@ -673,11 +743,17 @@
           if (e && e.cancelable) e.preventDefault();
         } else {
           drag.axis = "y";
+          const sc = drag.scrollEl;
+          if (sc) {
+            const canDown = sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1;
+            const canUp = sc.scrollTop > 0;
+            if ((drag.dy < 0 && canDown) || (drag.dy > 0 && canUp)) drag.scrollLatch = sc;
+          }
           // Forward first vertical delta now that pan is JS-owned
           const deltaY = y - drag.lastY;
           drag.lastY = y;
           if (e && e.cancelable) e.preventDefault();
-          if (deltaY) window.scrollBy(0, -deltaY);
+          panY(deltaY);
           return;
         }
       }
@@ -685,7 +761,7 @@
         const deltaY = y - drag.lastY;
         drag.lastY = y;
         if (e && e.cancelable) e.preventDefault();
-        if (deltaY) window.scrollBy(0, -deltaY);
+        panY(deltaY);
         return;
       }
       if (drag.axis !== "x") return;
@@ -750,7 +826,7 @@
     plateStage.addEventListener("pointerdown", (e) => {
       if (e.pointerType === "touch") return;
       if (shouldIgnoreTarget(e.target)) return;
-      startDrag(e.pointerId, e.clientX, e.clientY, e.pointerType);
+      startDrag(e.pointerId, e.clientX, e.clientY, e.pointerType, e.target);
     });
     plateStage.addEventListener("pointermove", (e) => {
       if (e.pointerType === "touch") return;
@@ -778,7 +854,7 @@
           return;
         }
         const t = e.touches[0];
-        startDrag(t.identifier, t.clientX, t.clientY, "touch");
+        startDrag(t.identifier, t.clientX, t.clientY, "touch", e.target);
       },
       { passive: true }
     );
@@ -833,6 +909,8 @@
     flipBtn.onclick = () => {
       flipped = !flipped;
       plate.classList.toggle("flipped", flipped);
+      syncLinerInteractive();
+      syncLinerFade();
       flipBtn.classList.toggle("on", flipped);
       flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
     };

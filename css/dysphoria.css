@@ -46,7 +46,7 @@
     justify-self: start;
     color: inherit; text-decoration: none;
     font-family: "Clarendon", "Clarendon Text", Georgia, serif;
-    font-size: 17px; font-weight: 700; letter-spacing: 0.01em;
+    font-size: 15.5px; font-weight: 700; letter-spacing: 0.01em;
     text-transform: none; /* title case Jy Yeüng — Clarendon era only */
     line-height: 1;
     display: inline-flex;
@@ -534,15 +534,77 @@
   }
   .plate .liner {
     background: var(--card-back);
-    padding: 28px 24px;
+    padding: 16px 10px;
     display: flex; flex-direction: column; justify-content: space-between;
     transform: rotateY(180deg);
   }
   .plate.flipped .shot-wrap { transform: rotateY(180deg); }
   .plate.flipped .liner { transform: rotateY(0); }
-  .plate .liner h2 { margin: 0 0 12px; font-size: 20px; font-weight: 400; }
-  .plate .liner p { margin: 0; font-size: 14px; line-height: 1.5; color: #d0d0d0; max-width: 28ch; }
-  .plate .liner .hint { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  /* Back face: title + caption scroll + pinned footer (IG link left, 01/15 right) */
+  .plate .liner { justify-content: flex-start; }
+  .plate:not(.flipped) .liner { pointer-events: none; }
+  .plate .liner h2 { flex: none; margin: 0 0 10px; font-size: 15.5px; font-weight: 700; }
+  .plate .liner .liner-scroll {
+    flex: 1 1 auto; min-height: 0;
+    overflow-y: auto; overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* no inner scrollbar; .has-more fade signals overflow */
+  }
+  .plate .liner .liner-scroll::-webkit-scrollbar { display: none; }
+  .plate .liner .liner-scroll.has-more {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+  }
+  .plate .liner .liner-scroll.has-more.is-scrolled {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16px, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 16px, #000 calc(100% - 28px), transparent);
+  }
+  .plate .liner .liner-scroll.is-scrolled:not(.has-more) {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16px);
+    mask-image: linear-gradient(to bottom, transparent, #000 16px);
+  }
+  .plate .liner p { margin: 0; font-size: 12.5px; line-height: 1.45; color: #d0d0d0; max-width: none; white-space: pre-line; overflow-wrap: anywhere; }
+  /* Desktop: caption uses the full plate width (28ch felt cramped on web) */
+  @media (min-width: 801px) {
+    .plate .liner { padding: 22px 20px; }
+    .plate .liner p { max-width: none; font-size: 14px; line-height: 1.55; }
+    .plate .liner h2 { font-size: 18px; }
+  }
+  .plate .liner .liner-foot {
+    flex: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-top: 16px; /* > the 14px hit-area overhang so taps never land on the caption */
+    min-height: 16px;
+  }
+  .plate .liner .liner-ig {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 8px;
+    color: #fff; text-decoration: none;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    line-height: 1.2;
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* 44px-tall tap target without changing the visual size */
+  .plate .liner .liner-ig::after {
+    content: ""; position: absolute;
+    left: -8px; right: -8px; top: 50%;
+    height: 44px; transform: translateY(-50%);
+  }
+  .plate .liner .liner-ig svg {
+    flex: none; width: 16px; height: 16px;
+    stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .plate .liner .liner-ig span { border-bottom: 1px solid #777; padding-bottom: 1px; }
+  @media (hover: hover) and (pointer: fine) {
+    .plate .liner .liner-ig:hover span { border-bottom-color: #fff; }
+  }
+  .plate .liner .liner-ig:focus-visible { outline: 1px solid #fff; outline-offset: 4px; }
+  .plate .liner .liner-no {
+    margin-left: auto;
+    font-size: 10px; letter-spacing: 0.16em; color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
   .plate.swapping .shot { filter: blur(14px) brightness(1.08); }
 
   .plate-controls {
@@ -665,7 +727,7 @@
     text-decoration: none;
     border: none;
   }
-  .title-btn .num { letter-spacing: 0.08em; }
+  .title-btn .num { letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
   /* Spaces live in the text node so the border runs through the em dash */
   .title-btn .title-caret {
     display: inline-block;
