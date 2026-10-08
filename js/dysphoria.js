@@ -79,6 +79,7 @@
 
   let sheets = [];
   let i = 0, flipped = false, animating = false, loupeOn = false, usingAlt = false;
+  let flipLockTimer = null;
   // Explicit Prev/Next (and ←/→) while commitTo is in flight — queue, do not drop.
   // Peek ghost-clicks after a horizontal swipe stay suppressed via suppressPeekClickUntil.
   let pendingDir = 0;
@@ -274,8 +275,10 @@
     plate.style.transition = "";
     plate.className = "plate" + (flipped ? " flipped" : "");
     plate.innerHTML =
+      `<div class="plate-card">` +
       `<div class="shot-wrap"><div class="shot" style="background-image:url('${currentSrc()}')" role="img" aria-label="${displayTitle(s)}"></div></div>` +
-      linerMarkup(s, i);
+      linerMarkup(s, i) +
+      `</div>`;
     const linerScroll = plate.querySelector(".liner-scroll");
     if (linerScroll) linerScroll.addEventListener("scroll", syncLinerFade, { passive: true });
     syncLinerInteractive();
@@ -908,15 +911,29 @@
     if (nextBtn) nextBtn.onclick = () => go(1, true);
     flipBtn.onclick = () => {
       flipped = !flipped;
+      /* Drop a leftover translateX(0) from swipe — parent transforms flatten 3D faces */
+      if (plate.style.transform === "translateX(0px)" || plate.style.transform === "translateX(0)") {
+        plate.style.transform = "";
+      }
+      const card = plate.querySelector(".plate-card");
+      if (flipLockTimer) { clearTimeout(flipLockTimer); flipLockTimer = null; }
+      plate.classList.add("is-flipping");
       plate.classList.toggle("flipped", flipped);
       syncLinerInteractive();
       syncLinerFade();
       flipBtn.classList.toggle("on", flipped);
       flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
-      /* Drop a leftover translateX(0) from swipe — parent transforms flatten 3D faces */
-      if (plate.style.transform === "translateX(0px)" || plate.style.transform === "translateX(0)") {
-        plate.style.transform = "";
-      }
+      const endFlip = (e) => {
+        if (e && e.target !== card) return;
+        if (card) card.removeEventListener("transitionend", endFlip);
+        if (flipLockTimer) { clearTimeout(flipLockTimer); flipLockTimer = null; }
+        plate.classList.remove("is-flipping");
+        syncLinerFade();
+      };
+      if (card) card.addEventListener("transitionend", endFlip);
+      else endFlip();
+      /* safety if transitionend is skipped (tab background, reduced motion) */
+      flipLockTimer = setTimeout(endFlip, 800);
     };
     loupeBtn.onclick = () => {
       loupeOn = !loupeOn;

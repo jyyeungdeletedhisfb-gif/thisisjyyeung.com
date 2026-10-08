@@ -149,7 +149,7 @@ Brand / layout locks (I/He crops, landscape 50/50, hero park) live in [`design-t
 | | |
 | --- | --- |
 | **Intent** | Axis-locked nested horizontal carousel inside vertical page scroll. Toolbar: Prev \| Loupe \| Flip \| Replace \| Next. Peeks in side gutters. |
-| **Timings** | Commit exit 0.55s / 0.45s opacity; enter 0.6s / 0.5s; settle clear 620ms. Snap-back 0.4s / 0.35s. Title exit class 160ms then enter keyframes 0.55s. Flip 0.65s; replace swap ~520ms + 550ms unlock. Loupe zoom **2.2×**. |
+| **Timings** | Commit exit 0.55s / 0.45s opacity; enter 0.6s / 0.5s; settle clear 620ms. Snap-back 0.4s / 0.35s. Title exit class 160ms then enter keyframes 0.55s. Flip 0.65s on `.plate-card` (border + faces rotate together; faces static 0°/180°). Soft scroll lock via `.is-flipping` so WebKit backface holds. Replace swap ~520ms + 550ms unlock. Loupe zoom **2.2×**. |
 | **Triggers** | Touch owns mobile (single `touch.identifier`); pointer owns mouse/pen only (`ipad-swipe-v1`). `.is-gesture` at **gesture start**; axis lock at **6px**; equal travel biases **x**. Commit threshold `min(44, plateW * 0.12)`. Gutter / peek swipe allowed; ignore `.icon-btn` / `.plate-controls` / `.plate-nav` (`plate-gutter-swipe-v1`). Second finger aborts (no plate pinch). Keyboard ←/→ and `f` flip. |
 | **Reduced motion** | Plate CSS transitions none where media-query’d; commit path still swaps content (functional). |
 | **Quirks** | `touch-action: pan-y` default; `.is-gesture` / `.is-axis-x` / `.is-loupe` → `none`. `overscroll-behavior-x: none` on html/body/stage blocks iPadOS history back-swipe. Vertical lock forwards via `window.scrollBy`. After a swipe commit, `animating` holds ~900ms; Prev/Next and ←/→ with `fromNav` **queue** the next plate and flush in `endAnimate` (`plate-nav-after-swipe-v1`) — bare `go(d)` (peek/plate ghost) still drops during that window. Peek intentional tap within ~450ms of an axis-x swipe is suppressed. See [`design-handbook-scroll.md`](./design-handbook-scroll.md). |
@@ -233,5 +233,7 @@ Refresh that file whenever plate input or gate scrub geometry changes in the sam
 - Cadence: same-ship updates; weekly drift skim after Monday standup.
 
 
-## Plate liner caption (v1.2)
+## Plate liner caption (v1.3)
+Plate flip is a whole-card `rotateY` on `.plate-card` (rim travels with the faces). Caption scroll stays overflow-locked for the 0.65s turn (`.is-flipping`) so WebKit does not drop backface mid-spin.
+
 On a flipped plate, a vertical drag on a long caption scrolls the caption inside the plate. Once it hits the end, the page scrolls as before. A sideways swipe that starts on the caption still changes plates. The IG link does not start a swipe.

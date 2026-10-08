@@ -513,25 +513,35 @@
     height: var(--plate-reserve-h, auto);
     /* room for absolutely positioned plate-controls below reserve */
     margin-bottom: calc(20px + 48px);
+    perspective: 1000px;
+    perspective-origin: 50% 50%;
   }
   .plate {
     position: relative;
-    border: 1px solid var(--line);
-    background: #000;
-    /* overflow on faces, not here: overflow+preserve-3d breaks backface hiding */
+    background: transparent;
+    /* swipe translate lives here; rotate lives on .plate-card so the rim flips with the plate */
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     will-change: transform, opacity, filter;
   }
+  .plate-card {
+    position: absolute; inset: 0;
+    border: 1px solid var(--line);
+    background: #000;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform 0.65s var(--ease);
+    will-change: transform;
+  }
+  .plate.flipped .plate-card { transform: rotateY(180deg); }
   .plate .shot-wrap, .plate .liner {
     position: absolute; inset: 0;
     overflow: hidden;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    /* opacity flips at mid-turn so a mirrored liner never paints over the photo
-       (WebKit often ignores backface-visibility when a descendant scrolls) */
-    transition: transform 0.65s var(--ease), opacity 0s linear 0.32s;
+    /* tiny Z offset reduces face z-fighting at mid-turn */
+    transform: translateZ(0.5px);
   }
-  .plate .shot-wrap { opacity: 1; }
   .plate .shot {
     width: 100%; height: 100%;
     background: #000 center/cover no-repeat;
@@ -540,14 +550,14 @@
   .plate .liner {
     background: var(--card-back);
     padding: 16px 10px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    transform: rotateY(180deg);
-    opacity: 0;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    /* static back face — whole card turns; translateZ keeps faces apart */
+    transform: rotateY(180deg) translateZ(0.5px);
   }
-  .plate.flipped .shot-wrap { transform: rotateY(180deg); opacity: 0; }
-  .plate.flipped .liner { transform: rotateY(0); opacity: 1; }
-  /* Back face: title + caption scroll + pinned footer (IG link left, 01/15 right) */
-  .plate .liner { justify-content: flex-start; }
+  .plate.is-flipping .liner .liner-scroll {
+    /* overflow:auto breaks WebKit backface mid-flip — lock until turn ends */
+    overflow: hidden !important;
+  }
   .plate:not(.flipped) .liner { pointer-events: none; }
   .plate .liner h2 { flex: none; margin: 0 0 10px; font-size: 15.5px; font-weight: 700; }
   .plate .liner .liner-scroll {
