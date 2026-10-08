@@ -890,20 +890,31 @@ a.work-tile:focus-visible {
   text-transform: uppercase;
   color: #666;
 }
-/* Soft float-up on Work tiles — short fade after each tile’s own decode */
-.work-tile.float-up {
+/* Soft float-up on Work tiles — hidden on first paint, then fade after decode */
+.work-grid .work-tile {
   opacity: 0;
   transform: translateY(12px);
   transition:
-    opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
+.work-grid > li:nth-child(1) .work-tile { transition-delay: 0s; }
+.work-grid > li:nth-child(2) .work-tile { transition-delay: 0.07s; }
+.work-grid > li:nth-child(3) .work-tile { transition-delay: 0.14s; }
+.work-grid > li:nth-child(4) .work-tile { transition-delay: 0.21s; }
+.work-grid .work-tile.is-in,
 .work-tile.float-up.is-in {
   opacity: 1;
   transform: none;
 }
+/* legacy class kept so JS arming still matches */
+.work-tile.float-up {
+  opacity: 0;
+  transform: translateY(12px);
+}
 @media (prefers-reduced-motion: reduce) {
+  .work-grid .work-tile,
   .work-tile.float-up {
     opacity: 1 !important;
     transform: none !important;

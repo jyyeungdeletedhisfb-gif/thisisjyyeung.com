@@ -91,15 +91,20 @@
       var img = tile.querySelector(".work-tile__frame img");
       var done = false;
 
+      var armedAt = performance.now();
+
       function reveal() {
         if (done) return;
         done = true;
-        /* Double rAF so opacity:0 from .float-up paints before .is-in. */
-        requestAnimationFrame(function () {
+        /* Keep a short floor so cached covers still read as a fade, not an instant pop. */
+        var wait = Math.max(0, 90 - (performance.now() - armedAt));
+        window.setTimeout(function () {
           requestAnimationFrame(function () {
-            tile.classList.add("is-in");
+            requestAnimationFrame(function () {
+              tile.classList.add("is-in");
+            });
           });
-        });
+        }, wait);
       }
 
       tile.classList.add("float-up");
