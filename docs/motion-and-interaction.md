@@ -221,6 +221,11 @@ Refresh that file whenever plate input or gate scrub geometry changes in the sam
 
 ## Changelog
 
+### 1.4 — 2026-10-08
+- **Lesson (UI language):** whole-card plate flip — rim + faces share one `rotateY` node; no mid opacity snap; overflow-lock scrollable liner during flip. Locked in [`design-taste.md`](./design-taste.md) under Flip / 3D cards. Live `?v=ig-liner-v7` (`e0415d4` / `6ca2692`).
+
+
+
 ### 1.1 — 2026-10-07
 
 - Plate Prev/Next after swipe: queue `fromNav` while `animating` (~900ms commit); peek ghost still dropped (`plate-nav-after-swipe-v1`). Primary `119718d` · mirror `f7314fb`.
@@ -233,7 +238,9 @@ Refresh that file whenever plate input or gate scrub geometry changes in the sam
 - Cadence: same-ship updates; weekly drift skim after Monday standup.
 
 
-## Plate liner caption (v1.3)
-Plate flip is a whole-card `rotateY` on `.plate-card` (rim travels with the faces). Caption scroll stays overflow-locked for the 0.65s turn (`.is-flipping`) so WebKit does not drop backface mid-spin.
+## Plate liner caption (v1.4)
+
+Plate flip is a whole-card `rotateY` on `.plate-card` (rim travels with the faces). Caption scroll stays overflow-locked for the 0.65s turn (`.is-flipping`) so WebKit does not drop backface mid-spin. See design-taste **Flip / 3D cards** — do not regress to rim-on-shell + mid opacity swap.
 
 On a flipped plate, a vertical drag on a long caption scrolls the caption inside the plate. Once it hits the end, the page scrolls as before. A sideways swipe that starts on the caption still changes plates. The IG link does not start a swipe.
+

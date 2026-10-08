@@ -153,6 +153,18 @@ Matches Work page order:
 - **QA order:** Android Chrome (primary) → iPad Chrome → MacBook Chrome.
 - Plates need **two-direction nested scroll** — don’t force the user to step outside the stage to scroll the page.
 
+### Flip / 3D cards (lesson locked — ig-liner-v7)
+
+Treat a flipping plate as **one physical card**, not a photo spinning inside a fixed frame.
+
+- **One transforming node.** Border (the rim), both faces, and any chrome that should turn with the object live on the same element (`.plate-card`). Never leave the rim on an outer shell while only the faces `rotateY` — that reads as a sticker flip, not a plate.
+- **Continuous turn.** Drive the flip with `transform: rotateY` + `preserve-3d` + `backface-visibility`. Do **not** use a hard mid-turn opacity cut to swap faces; a zero-duration opacity snap feels like a missed frame into the caption side.
+- **Scrollable faces.** If a face has `overflow: auto` (caption scroll), lock overflow for the flip duration (`.is-flipping`). WebKit often drops `backface-visibility` on scrolling descendants mid-animation.
+- **Parent transforms.** Clear leftover `translateX(0)` (and avoid flat parent transforms) on the plate while flipping — they flatten 3D faces.
+- **Perspective** sits on the wrap (`.plate-wrap`), not on a non-preserving ancestor.
+
+Motion timings / implementation notes: [`motion-and-interaction.md`](./motion-and-interaction.md) (plates + plate liner caption).
+
 ---
 
 ## Visual / Dysphoria era
