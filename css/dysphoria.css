@@ -518,15 +518,20 @@
     position: relative;
     border: 1px solid var(--line);
     background: #000;
-    overflow: hidden;
+    /* overflow on faces, not here: overflow+preserve-3d breaks backface hiding */
     transform-style: preserve-3d;
     will-change: transform, opacity, filter;
   }
   .plate .shot-wrap, .plate .liner {
     position: absolute; inset: 0;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    transition: transform 0.65s var(--ease);
+    /* opacity flips at mid-turn so a mirrored liner never paints over the photo
+       (WebKit often ignores backface-visibility when a descendant scrolls) */
+    transition: transform 0.65s var(--ease), opacity 0s linear 0.32s;
   }
+  .plate .shot-wrap { opacity: 1; }
   .plate .shot {
     width: 100%; height: 100%;
     background: #000 center/cover no-repeat;
@@ -537,9 +542,10 @@
     padding: 16px 10px;
     display: flex; flex-direction: column; justify-content: space-between;
     transform: rotateY(180deg);
+    opacity: 0;
   }
-  .plate.flipped .shot-wrap { transform: rotateY(180deg); }
-  .plate.flipped .liner { transform: rotateY(0); }
+  .plate.flipped .shot-wrap { transform: rotateY(180deg); opacity: 0; }
+  .plate.flipped .liner { transform: rotateY(0); opacity: 1; }
   /* Back face: title + caption scroll + pinned footer (IG link left, 01/15 right) */
   .plate .liner { justify-content: flex-start; }
   .plate:not(.flipped) .liner { pointer-events: none; }

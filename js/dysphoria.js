@@ -913,6 +913,10 @@
       syncLinerFade();
       flipBtn.classList.toggle("on", flipped);
       flipBtn.setAttribute("aria-pressed", flipped ? "true" : "false");
+      /* Drop a leftover translateX(0) from swipe — parent transforms flatten 3D faces */
+      if (plate.style.transform === "translateX(0px)" || plate.style.transform === "translateX(0)") {
+        plate.style.transform = "";
+      }
     };
     loupeBtn.onclick = () => {
       loupeOn = !loupeOn;
