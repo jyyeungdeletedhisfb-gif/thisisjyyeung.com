@@ -1,7 +1,11 @@
 (function () {
   "use strict";
 
-  const CONTENT_URL = new URL("content/dysphoria.json", document.baseURI).href;
+  const CONTENT_URL = (() => {
+    const u = new URL("content/dysphoria.json", document.baseURI);
+    u.searchParams.set("v", "caption-dash-v1");
+    return u.href;
+  })();
   const VARIANTS_URL = new URL("content/image-variants.json", document.baseURI).href;
   const ASSET_V = "img-srcset-v2";
   function assetUrl(path) {
