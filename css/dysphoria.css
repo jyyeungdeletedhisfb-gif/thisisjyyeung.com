@@ -298,6 +298,10 @@
   /* Phone: hug white embed card — never leave taller bordered chrome than the card */
   @media (max-width: 800px) {
     .soundtrack-inner iframe {
+      /* 450 painted card + 1px border each side: keep the embed's own viewport at 450
+         so Apple's player never overflows into an inner scrollbar */
+      box-sizing: content-box;
+      width: calc(100% - 2px);
       height: 450px;
       overflow: hidden;
     }
