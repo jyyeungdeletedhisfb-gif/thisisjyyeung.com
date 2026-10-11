@@ -142,10 +142,10 @@
     if (document.querySelector(".work-grid")) return;
 
     var warmed = false;
-    var CACHE = "v=img-srcset-v2";
+    var CACHE = "v=img-even-v1";
     var URLS = [
       "assets/work/dysphoria-1080w.jpg?" + CACHE,
-      "assets/work/front.jpg?" + CACHE,
+      "assets/work/front-1080w.jpg?" + CACHE,
       "assets/work/authenticity-imitation-1080w.jpg?" + CACHE,
       "assets/work/state-1080w.jpg?" + CACHE
     ];
