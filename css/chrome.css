@@ -41,6 +41,11 @@
   --nav-duration: 0.42s;
   --top-h: 52px;
   --site-name-tracking: 0; /* Geist Black snug (v3 winning cell) */
+  /* Shared type scale (type-scale-v2): 11 meta / 13 small / 16 body / 20 heading */
+  --fs-meta: 11px;
+  --fs-small: 13px;
+  --fs-body: 16px;
+  --fs-heading: 20px;
 }
 
 /* Shared brand mark: Geist Black 900 Snug ALL CAPS */
@@ -672,7 +677,7 @@ body.home-dummy .home-dummy__links {
 }
 body.home-dummy .home-dummy__links a {
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(15px, 1.6vw, 18px);
+  font-size: var(--fs-body);
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -745,14 +750,14 @@ body.home-dummy .home-dummy__links a:focus-visible {
 }
 .page-shell .page-lede {
   margin: 0 0 28px;
-  font-size: 15px;
+  font-size: var(--fs-body);
   line-height: 1.55;
   color: #999;
 }
 .page-shell .contact-disclaimer {
   margin: 0;
   padding: 18px 20px;
-  font-size: 14px;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: #bbb;
   border: 1px solid #2a2a2a;
@@ -763,7 +768,7 @@ body.home-dummy .home-dummy__links a:focus-visible {
 }
 .page-shell .page-main--prose h2 {
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: var(--fs-small);
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -771,8 +776,8 @@ body.home-dummy .home-dummy__links a:focus-visible {
 }
 .page-shell .page-main--prose p {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: var(--fs-body);
+  line-height: 1.6;
   color: #c8c8c8;
 }
 .page-shell .page-main--prose a {
@@ -873,7 +878,7 @@ a.work-tile:focus-visible {
 }
 .work-tile__title {
   font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(1.2rem, 3vw, 1.45rem);
+  font-size: var(--fs-body);
   font-weight: 600;
   letter-spacing: 0.03em;
   color: #f2f2f2;
@@ -885,7 +890,7 @@ a.work-tile:focus-visible {
 }
 .work-tile__soon {
   font-style: normal;
-  font-size: 10px;
+  font-size: var(--fs-meta);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #666;
@@ -930,3 +935,9 @@ a.work-tile:focus-visible {
   }
 }
 
+
+/* type-scale-v2: desktop steps (20 heading) */
+@media (min-width: 801px) {
+  body.home-dummy .home-dummy__links a { font-size: var(--fs-heading); }
+  .work-tile__title { font-size: var(--fs-heading); }
+}

@@ -388,7 +388,7 @@ html:has(body.about-voice-he) {
 .about-trail__list a {
   color: var(--about-ink);
   text-decoration: none;
-  font-size: 17px;
+  font-size: var(--fs-body, 16px);
   font-weight: 500;
   letter-spacing: 0.02em;
   border-bottom: 1px solid transparent;
@@ -412,7 +412,7 @@ html:has(body.about-voice-he) {
 }
 .about-trail__list .is-muted em {
   font-style: normal;
-  font-size: 10px;
+  font-size: var(--fs-meta, 11px);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   opacity: 0.75;
@@ -428,7 +428,7 @@ html:has(body.about-voice-he) {
   gap: 14px 28px;
 }
 .about-close__link {
-  font-size: 14px;
+  font-size: var(--fs-small, 13px);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--about-ink);
