@@ -885,8 +885,7 @@ a.work-tile:focus-visible {
   text-align: center;
 }
 .work-tile.is-soon .work-tile__title {
-  color: #999;
-  font-weight: 500;
+  color: #999; /* greyed via colour only; weight/size/family match Dysphoria (type-scale-v3) */
 }
 .work-tile__soon {
   font-style: normal;
