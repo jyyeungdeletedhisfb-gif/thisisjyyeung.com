@@ -833,7 +833,7 @@
       align-items: start;
       align-content: start;
     }
-    .intro-cover { justify-self: center; max-width: 280px; }
+    .intro-cover { justify-self: stretch; width: 100%; max-width: none; } /* v1.1: phone cover fills content width */
     .intro-copy { justify-self: center; text-align: left; max-width: 360px; }
     .intro-scroll-cue { padding-bottom: 20px; }
   }
