@@ -38,6 +38,11 @@ Living handbook of brand, UX, visual, chrome, and process preferences for Dex, R
 - Era Clarendon **section titles** stay untouched (era type system, not site chrome).
 - Cascade note: `chrome.css` restores Clarendon on the Dysphoria topbar brand after Geist chrome loads.
 
+### Dysphoria type scale (locked — type-scale-v1)
+- ~1.25 ratio on a 16 base, tokens in `css/dysphoria.css` `:root`: **11** meta (footer, liner number, IG link, Listen on, top-bar project title) · **13** small (liners, caret, tracklist) · **16** body (intro + plate title row) · **20** plate heading · Clarendon display **h2 40 / 28**, **h1 64 / 42** (desktop / phone).
+- One Clarendon stack (`--font-clarendon`) for title voice, one Helvetica stack (`--font-helvetica`) for chrome/body. No new one-off sizes on Dysphoria; add a token or reuse one.
+- Exceptions outside the scale: Back home stays **12** (locked above); era brand mark stays at chrome size (17).
+
 ### Interactive text
 
 - Text links that act as buttons (e.g. Privacy prose links): **always underline** (`text-underline-offset` ~0.18em, 1px thickness).
