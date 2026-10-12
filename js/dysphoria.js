@@ -187,9 +187,11 @@
     return { w: w * 0.55, h: h * 0.55 };
   }
 
+  let tracklistOpenY = 0;
   function setTracklistOpen(open) {
     if (!titleJump) return;
     titleJump.classList.toggle("is-open", !!open);
+    if (open) tracklistOpenY = window.scrollY;
     if (titleBtn) titleBtn.setAttribute("aria-expanded", open ? "true" : "false");
   }
   function closeTracklist() { setTracklistOpen(false); }
@@ -989,6 +991,25 @@
           closeTracklist();
         },
         true
+      );
+      // v1.2: page scroll closes the dropdown (small jitter ignored)
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (!titleJump.classList.contains("is-open")) return;
+          if (Math.abs(window.scrollY - tracklistOpenY) > 8) closeTracklist();
+        },
+        { passive: true }
+      );
+      // Outside touch closes too (pointerdown above covers mouse/pen and most touch)
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          if (!titleJump.classList.contains("is-open")) return;
+          if (titleJump.contains(e.target)) return;
+          closeTracklist();
+        },
+        { passive: true, capture: true }
       );
       titleJump.addEventListener("focusout", (e) => {
         // Close when focus leaves the jump control (keyboard)

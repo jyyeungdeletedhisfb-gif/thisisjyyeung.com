@@ -571,6 +571,10 @@
     flex: 1 1 auto; min-height: 0;
     overflow-y: auto; overflow-x: hidden;
     overscroll-behavior: contain;
+    /* v1.2: a scroll container resets the touch-action chain, so the stage's pan-y
+       did not apply here (Android Chrome took horizontal swipes on the flipped caption
+       and cancelled the touch). Re-declare pan-y so L/R stays with the carousel JS. */
+    touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* no inner scrollbar; .has-more fade signals overflow */
   }
@@ -952,4 +956,9 @@
     .gate-img, .enter-bg, .soundtrack-layer, .soundtrack-darken {
       transition: none !important;
     }
+  }
+
+  /* v1.2: phone track dropdown clears Prev/Next arrows */
+  @media (max-width: 800px) {
+    .tracklist { width: min(calc(100vw - 128px), 320px); }
   }
