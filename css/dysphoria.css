@@ -264,7 +264,7 @@
     overflow: auto;
     text-align: left;
     color: var(--fg);
-    padding: 24px 16px;
+    padding: 0; /* v1.3: no 24px pad, embed hugs its content */
     -webkit-overflow-scrolling: touch;
   }
   .soundtrack-inner h2 {
@@ -383,7 +383,7 @@
     margin-right: auto;
     margin-bottom: 18px;
     margin-top: 0;
-    padding: 0 16px;
+    padding: 0; /* v1.3: match soundtrack-inner (padding removed) so left edges align */
     box-sizing: border-box;
     font-family: var(--font-clarendon);
     font-weight: 700;

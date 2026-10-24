@@ -525,20 +525,22 @@ html.nav-open {
 
 /* Clear “Back home” on every page except home (logo + hamburger also go home) */
 .footer-home {
+  /* v1.3: plain underlined text link (was bordered button) */
   display: inline-block;
   margin: 0 0 28px;
-  padding: 12px 20px;
-  border: 1px solid #777;
+  padding: 0;
+  border: 0;
   color: #eee;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .footer-home:hover {
-    border-color: #fff;
     color: #fff;
   }
 }
